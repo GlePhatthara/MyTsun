@@ -25,7 +25,7 @@ const DEFAULT_SETTINGS = {
   // Display names are kept separately from provider settings so they persist
   // when the user switches models.
   userName: '',
-  aiName: 'myTsun',
+  aiName: 'MyTsun',
   activeProvider: 'gemini',
   agenticMode: true,
   providers: {
@@ -121,7 +121,7 @@ function createWindow() {
     height: 820,
     minWidth: 900,
     minHeight: 650,
-    title: 'myTsun (ツンDev) - The Tsundere AI Pair-Programmer',
+    title: 'MyTsun',
     backgroundColor: '#0f1117',
     icon: iconPath,
     webPreferences: {

@@ -385,9 +385,9 @@ body {
    Left Sidebar: LOCKED FIT (NO SCROLLING) with Dynamic Full-Body Scaling
    ========================================================================== */
 .sidebar {
-  width: 340px;
-  min-width: 300px;
-  max-width: 360px;
+  width: 380px;
+  min-width: 340px;
+  max-width: 420px;
   height: 100%;
   background: var(--bg-sidebar);
   backdrop-filter: var(--glass-blur);
@@ -395,8 +395,8 @@ body {
   border-right: 1px solid var(--border-glass);
   display: flex;
   flex-direction: column;
-  padding: 12px 10px;
-  gap: 8px;
+  padding: 14px 12px;
+  gap: 10px;
   overflow: hidden; /* FIT-LOCKED: ABSOLUTELY NO SCROLLBAR */
   position: relative;
   z-index: 5;
@@ -404,40 +404,45 @@ body {
 }
 
 /* ==========================================================================
-   Avatar Showcase Panel — Flex-1 Dynamic Full-Body Height
+   Avatar Showcase Panel — Perfectly Balanced Hero Card
    ========================================================================== */
 .avatar-card {
   flex: 1;
   min-height: 0; /* Crucial for flex child to shrink properly */
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(14, 32, 36, 0.45) 100%);
+  background: radial-gradient(circle at 50% 40%, rgba(16, 185, 129, 0.12) 0%, rgba(14, 32, 36, 0.55) 60%, rgba(9, 21, 24, 0.9) 100%);
   border: 1px solid var(--border-subtle);
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 14px;
   box-shadow: var(--shadow-glass-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  padding: 10px 12px 10px 12px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  justify-content: space-between;
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.avatar-header,
 .avatar-meta {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 6px;
   margin-bottom: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   position: relative;
-  z-index: 2;
+  z-index: 3;
   flex-shrink: 0;
 }
 
 .avatar-name {
-  font-size: 12.5px;
+  font-family: var(--font-sans);
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.2px;
@@ -447,15 +452,16 @@ body {
 .avatar-mood-badge {
   font-family: var(--font-mono);
   font-size: 9.5px;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 9999px;
   background: rgba(16, 185, 129, 0.15);
   color: var(--color-tsun);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(16, 185, 129, 0.35);
   backdrop-filter: blur(8px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .avatar-card.high-tsun .avatar-mood-badge {
@@ -482,72 +488,79 @@ body {
   border-color: rgba(52, 211, 153, 0.35);
 }
 
-/* FULL-BODY Character Stage — Dynamically fills available vertical space */
+/* FULL Character Stage — Centered & balanced, prominent without overflow */
 .avatar-face {
   flex: 1;
   min-height: 0;
   height: 100%;
   width: 100%;
   display: flex;
-  align-items: flex-end; /* Grounded standing full-body figure */
+  align-items: center;
   justify-content: center;
   position: relative;
-  overflow: visible;
+  overflow: hidden; /* Guaranteed no escaping borders */
+  padding: 6px 0;
 }
 
-/* Subtle Glass Pedestal Glow beneath feet */
+/* Atmospheric emerald aura backlight behind character */
 .avatar-face::after {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 15%;
-  right: 15%;
-  height: 14px;
-  background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.35) 0%, rgba(16, 185, 129, 0.05) 50%, transparent 75%);
-  filter: blur(5px);
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+  background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.06) 50%, transparent 75%);
+  filter: blur(16px);
   pointer-events: none;
+  z-index: 1;
 }
 
-/* The Character Image — Full Body Head to Toe, scale-responsive */
+/* The Character Image — Fully visible head-to-waist, never clipped, stands out */
 .avatar-img {
   max-width: 100%;
   max-height: 100%;
   height: 100%;
   width: auto;
   object-fit: contain;
-  object-position: bottom center;
+  object-position: center;
+  position: relative;
+  z-index: 2;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
   user-select: none;
   pointer-events: none;
-  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 16px rgba(16, 185, 129, 0.22));
 }
 
 .avatar-card:hover .avatar-img {
-  transform: scale(1.02) translateY(-2px);
-  filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 16px rgba(16, 185, 129, 0.25));
+  transform: scale(1.02);
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 22px rgba(16, 185, 129, 0.35));
 }
 
-/* Minimalist Floating Dialogue Speech Bubble */
+/* Expanded Visual Novel Dialogue Box */
 .avatar-dialogue {
   flex-shrink: 0;
   width: 100%;
   font-family: var(--font-sans);
   font-style: normal;
-  font-size: 11px;
-  line-height: 1.4;
-  color: var(--text-secondary);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-primary);
   text-align: left;
-  background: rgba(11, 25, 28, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-glass);
-  border-left: 2px solid var(--color-tsun);
-  border-radius: 8px;
-  padding: 6px 10px;
-  margin-top: 6px;
+  background: rgba(10, 24, 27, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  border-left: 3px solid var(--color-tsun);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 8px;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
   position: relative;
-  z-index: 2;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 3;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* ==========================================================================

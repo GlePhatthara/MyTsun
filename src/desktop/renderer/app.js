@@ -113,7 +113,7 @@ const testFeedback = document.getElementById('testFeedback');
 function identity() {
   return {
     userName: currentSettings?.userName?.trim() || 'You',
-    aiName: currentSettings?.aiName?.trim() || 'myTsun'
+    aiName: currentSettings?.aiName?.trim() || 'MyTsun'
   };
 }
 
@@ -128,7 +128,7 @@ function updateIdentityDisplay() {
   } else {
     userInput.placeholder = 'กรุณาเลือกโฟลเดอร์ Workspace ก่อนเริ่มแชท... (คลิก 📂 None ด้านบน)';
   }
-  document.title = `${aiName} — AI Pair-Programmer`;
+  document.title = 'MyTsun';
 }
 
 // Quick Action Buttons
@@ -174,7 +174,9 @@ function updateMoodDisplay(gauge, mood) {
   avatarCard.classList.remove('extreme-tsun', 'high-tsun', 'reluctant', 'soft-tsun', 'dere');
   avatarCard.classList.add(stage.moodClass);
 
-  avatarMoodBadge.textContent = stage.badge;
+  if (avatarMoodBadge) {
+    avatarMoodBadge.textContent = stage.badge;
+  }
   avatarDialogue.textContent = stage.quote;
   heartCountText.style.color = stage.color;
 
