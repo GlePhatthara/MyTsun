@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.env
+.env.local
+
+# Build artifacts
+dist/
+build/
+
+# Local agents and reference plugin
+.agents/
+tsundere-plugin/
+
+# Logs & temp
+*.log
