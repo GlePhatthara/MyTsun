@@ -47,11 +47,32 @@ test('TsunDereState - /apologize decreases Tsun by 10', () => {
   assert.equal(state.getGauge(), 70);
 });
 
-test('TsunDereState - Regular command increases Tsun by 5 (ordering without praise)', () => {
+test('TsunDereState - Demanding regular command increases Tsun by 5', () => {
   const state = new TsunDereState(50);
   const result = state.processInput('เขียนโปรแกรมบวกเลขเดี๋ยวนี้');
   assert.equal(result.delta, 5);
   assert.equal(state.getGauge(), 55);
+});
+
+test('TsunDereState - Polite natural-language request lowers Tsun slightly', () => {
+  const state = new TsunDereState(50);
+  const result = state.processInput('ช่วยเขียนโปรแกรมบวกเลขให้หน่อยนะ');
+  assert.equal(result.delta, -3);
+  assert.equal(state.getGauge(), 47);
+});
+
+test('TsunDereState - Natural-language praise lowers Tsun without a slash command', () => {
+  const state = new TsunDereState(50);
+  const result = state.processInput('วันนี้เธอเก่งมาก ขอบคุณนะ');
+  assert.equal(result.delta, -10);
+  assert.equal(state.getGauge(), 40);
+});
+
+test('TsunDereState - Neutral chat leaves the gauge unchanged', () => {
+  const state = new TsunDereState(50);
+  const result = state.processInput('วันนี้อากาศเป็นยังไงบ้าง');
+  assert.equal(result.delta, 0);
+  assert.equal(state.getGauge(), 50);
 });
 
 test('TsunDereState - Transitions to Dere Breakthrough and unlocks tools when gauge < 40', () => {

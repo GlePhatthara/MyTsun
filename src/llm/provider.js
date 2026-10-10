@@ -73,7 +73,7 @@ export class GeminiProvider extends BaseLLMProvider {
    */
   constructor(options = {}) {
     const apiKey = options.apiKey || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : '');
-    const model = options.model || (typeof process !== 'undefined' ? process.env?.GEMINI_MODEL : '') || 'gemini-3.8-flash';
+    const model = options.model || (typeof process !== 'undefined' ? process.env?.GEMINI_MODEL : '') || 'gemini-3.5-flash';
     super({ name: 'GeminiProvider', model, ...options });
     this.apiKey = apiKey;
     this.baseUrl = options.baseUrl || 'https://generativelanguage.googleapis.com/v1beta';
@@ -84,7 +84,9 @@ export class GeminiProvider extends BaseLLMProvider {
       throw new Error('GEMINI_API_KEY is not set. Please set the environment variable or pass apiKey in constructor.');
     }
 
-    const endpoint = `${this.baseUrl}/models/${this.model}:generateContent?key=${this.apiKey}`;
+    const modelName = String(this.model).trim().replace(/^models\//, '');
+    if (!modelName) throw new Error('A Gemini model ID is required. For example: gemini-3.5-flash');
+    const endpoint = `${this.baseUrl}/models/${encodeURIComponent(modelName)}:generateContent`;
 
     const contents = [];
 
@@ -121,7 +123,10 @@ export class GeminiProvider extends BaseLLMProvider {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        // Header auth is Google\'s current recommended form and avoids
+        // exposing a key in URLs, logs, and proxy history.
+        'x-goog-api-key': this.apiKey
       },
       body: JSON.stringify(requestBody)
     });
@@ -141,13 +146,33 @@ export class GeminiProvider extends BaseLLMProvider {
     }
 
     const data = await response.json();
-    const candidateText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const candidateText = data.candidates?.[0]?.content?.parts
+      ?.map((part) => part.text || '')
+      .join('')
+      .trim();
 
     if (!candidateText) {
       throw new Error('Gemini API returned empty response candidates');
     }
 
-    return candidateText.trim();
+    return candidateText;
+  }
+
+  /** Return every model this API key can use with generateContent. */
+  async listModels() {
+    if (!this.apiKey) throw new Error('Enter a Gemini API key before loading models.');
+    const response = await fetch(`${this.baseUrl}/models?pageSize=1000`, {
+      headers: { 'x-goog-api-key': this.apiKey }
+    });
+    if (!response.ok) {
+      throw new Error(`Gemini model list failed (${response.status}): ${await response.text()}`);
+    }
+    const data = await response.json();
+    return (data.models || [])
+      .filter((model) => (model.supportedGenerationMethods || []).includes('generateContent'))
+      .map((model) => model.name?.replace(/^models\//, ''))
+      .filter(Boolean)
+      .sort();
   }
 }
 
@@ -163,7 +188,7 @@ export class OpenAICompatibleProvider extends BaseLLMProvider {
    */
   constructor(options = {}) {
     const apiKey = options.apiKey || (typeof process !== 'undefined' ? process.env?.OPENAI_API_KEY : '');
-    const model = options.model || (typeof process !== 'undefined' ? process.env?.OPENAI_MODEL : '') || 'gpt-4o-mini';
+    const model = options.model || (typeof process !== 'undefined' ? process.env?.OPENAI_MODEL : '') || 'gpt-4o';
     const baseUrl = options.baseUrl || (typeof process !== 'undefined' ? process.env?.OPENAI_BASE_URL : '') || 'https://api.openai.com/v1';
     super({ name: 'OpenAICompatibleProvider', model, ...options });
     this.apiKey = apiKey;
@@ -230,7 +255,7 @@ export class ClaudeProvider extends BaseLLMProvider {
    */
   constructor(options = {}) {
     const apiKey = options.apiKey || (typeof process !== 'undefined' ? process.env?.ANTHROPIC_API_KEY : '');
-    const model = options.model || (typeof process !== 'undefined' ? process.env?.ANTHROPIC_MODEL : '') || 'claude-3-5-sonnet-20241022';
+    const model = options.model || (typeof process !== 'undefined' ? process.env?.ANTHROPIC_MODEL : '') || 'claude-3-7-sonnet-20250219';
     const baseUrl = options.baseUrl || 'https://api.anthropic.com/v1';
     super({ name: 'ClaudeProvider', model, ...options });
     this.apiKey = apiKey;
@@ -359,4 +384,3 @@ export function createProvider(options = {}) {
   // Default fallback when no key is set: MockProvider for instant zero-config usability!
   return new MockProvider(options);
 }
-

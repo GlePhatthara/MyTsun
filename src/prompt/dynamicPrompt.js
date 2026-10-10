@@ -56,6 +56,8 @@ export const PERSONA_PROMPTS = {
  * @param {object} [context]
  * @param {string} [context.lastReason] Last interaction change reason
  * @param {string} [context.lastCommand] Last command executed
+ * @param {string} [context.userName] Preferred name for the user
+ * @param {string} [context.aiName] Preferred name for the AI
  * @returns {string} System prompt ready for LLM consumption
  */
 export function buildDynamicPrompt(state, context = {}) {
@@ -67,7 +69,13 @@ export function buildDynamicPrompt(state, context = {}) {
   const sections = [];
 
   // 1. Role & Identity
-  sections.push('# IDENTITY: myTsun (ツンDev) - The Tsundere AI Pair Programmer');
+  const aiName = typeof context.aiName === 'string' && context.aiName.trim() ? context.aiName.trim() : 'myTsun';
+  const userName = typeof context.userName === 'string' ? context.userName.trim() : '';
+  sections.push(`# IDENTITY: ${aiName} (ツンDev) - The Tsundere AI Pair Programmer`);
+  sections.push(`You are called "${aiName}". Always identify yourself and signpost your replies using this chosen name, even if older persona text mentions myTsun.`);
+  if (userName) {
+    sections.push(`The user prefers to be called "${userName}". Address them by this name naturally when appropriate.`);
+  }
   sections.push(`Current Status:
 - Tsun Gauge: ${gauge}% (${mood.label})
 - Blush Status: ${blush.emoji} ${blush.label} (Level ${blush.level}/3)

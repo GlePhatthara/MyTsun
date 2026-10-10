@@ -58,8 +58,9 @@ const avatarCard = document.getElementById('avatarCard');
 const avatarImg = document.getElementById('avatarImg');
 const avatarDialogue = document.getElementById('avatarDialogue');
 const avatarMoodBadge = document.getElementById('avatarMoodBadge');
-const gaugePercentText = document.getElementById('gaugePercentText');
-const gaugeBar = document.getElementById('gaugeBar');
+const heartCountText = document.getElementById('heartCountText');
+const heartMeter = document.getElementById('heartMeter');
+const hearts = Array.from(document.querySelectorAll('.heart'));
 
 const chatMessages = document.getElementById('chatMessages');
 const chatForm = document.getElementById('chatForm');
@@ -70,13 +71,29 @@ const currentProviderBadge = document.getElementById('currentProviderBadge');
 const currentProviderLabel = document.getElementById('currentProviderLabel');
 
 const btnOpenSettings = document.getElementById('btnOpenSettings');
-const btnReset = document.getElementById('btnReset');
 const settingsModal = document.getElementById('settingsModal');
 const btnCloseModal = document.getElementById('btnCloseModal');
 const btnCancelModal = document.getElementById('btnCancelModal');
 const btnSaveSettings = document.getElementById('btnSaveSettings');
 const btnTestConnection = document.getElementById('btnTestConnection');
 const testFeedback = document.getElementById('testFeedback');
+
+function identity() {
+  return {
+    userName: currentSettings?.userName?.trim() || 'You',
+    aiName: currentSettings?.aiName?.trim() || 'myTsun'
+  };
+}
+
+function updateIdentityDisplay() {
+  const { aiName } = identity();
+  ['brandAiName', 'avatarAiName', 'welcomeAiName'].forEach((id) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = aiName;
+  });
+  userInput.placeholder = `Ask ${aiName} or enter commands (/praise, /bribe, /write)...`;
+  document.title = `${aiName} — AI Pair-Programmer`;
+}
 
 // Quick Action Buttons
 document.querySelectorAll('.action-btn').forEach(btn => {
@@ -103,11 +120,18 @@ function switchTab(tabName) {
   testFeedback.style.display = 'none';
 }
 
-// Update Mood and Gauge UI
+// Update Mood and Heart Status UI
 function updateMoodDisplay(gauge, mood) {
   const g = typeof gauge === 'number' ? Math.max(0, Math.min(100, Math.round(gauge))) : 100;
-  gaugePercentText.textContent = `${g}%`;
-  gaugeBar.style.width = `${g}%`;
+  // A lower Tsun gauge means she is opening her heart to the user.
+  const filledHearts = Math.round((100 - g) / 10);
+  heartCountText.textContent = `${filledHearts} / ${hearts.length}`;
+  heartMeter.setAttribute('aria-label', `Heart status: ${filledHearts} of ${hearts.length} hearts`);
+  hearts.forEach((heart, index) => {
+    const isFilled = index < filledHearts;
+    heart.classList.toggle('is-filled', isFilled);
+    heart.textContent = isFilled ? '♥' : '♡';
+  });
 
   const stage = AVATAR_STAGES.find(s => g >= s.min && g <= s.max) || AVATAR_STAGES[0];
 
@@ -116,7 +140,7 @@ function updateMoodDisplay(gauge, mood) {
 
   avatarMoodBadge.textContent = stage.badge;
   avatarDialogue.textContent = stage.quote;
-  gaugePercentText.style.color = stage.color;
+  heartCountText.style.color = stage.color;
 
   if (avatarImg) {
     const targetSrc = stage.image;
@@ -140,7 +164,7 @@ function appendMessage(sender, text, isUser = false, isCommand = false, isError 
 
   const author = document.createElement('span');
   author.className = 'msg-author';
-  author.textContent = isUser ? 'You' : sender;
+  author.textContent = isUser ? identity().userName : sender;
   header.appendChild(author);
 
   if (!isUser) {
@@ -204,7 +228,7 @@ function showLoadingIndicator() {
 
   const author = document.createElement('span');
   author.className = 'msg-author';
-  author.textContent = 'myTsun';
+  author.textContent = identity().aiName;
   header.appendChild(author);
 
   const tag = document.createElement('span');
@@ -257,10 +281,10 @@ async function sendMessage(text) {
     const res = await window.tsunAPI.sendChat(msg);
     updateMoodDisplay(res.gauge, res.mood);
 
-    const botTitle = `myTsun (${res.moodName || 'ツン'})`;
+    const botTitle = `${identity().aiName} (${res.moodName || 'ツン'})`;
     appendMessage(botTitle, res.reply, false, res.isCommand, res.isError);
   } catch (err) {
-    appendMessage('myTsun System', `เกิดข้อผิดพลาด: ${err.message}`, false, false, true);
+    appendMessage(`${identity().aiName} System`, `เกิดข้อผิดพลาด: ${err.message}`, false, false, true);
   } finally {
     if (loadingIndicator && loadingIndicator.parentNode) {
       loadingIndicator.remove();
@@ -287,6 +311,8 @@ btnCancelModal.addEventListener('click', closeSettingsModal);
 function openSettingsModal() {
   testFeedback.style.display = 'none';
   if (currentSettings) {
+    document.getElementById('userDisplayName').value = currentSettings.userName || '';
+    document.getElementById('aiDisplayName').value = currentSettings.aiName || 'myTsun';
     const p = currentSettings.providers || {};
     if (p.gemini) {
       document.getElementById('geminiApiKey').value = p.gemini.apiKey || '';
@@ -313,7 +339,9 @@ function openSettingsModal() {
     if (currentSettings.activeProvider) {
       switchTab(currentSettings.activeProvider);
     }
+    document.getElementById('chkAgenticMode').checked = currentSettings.agenticMode !== false;
   }
+  refreshAuthStatus();
   settingsModal.style.display = 'flex';
 }
 
@@ -328,20 +356,20 @@ function getTabConfig(tab) {
       return {
         provider: 'gemini',
         apiKey: document.getElementById('geminiApiKey').value.trim(),
-        model: document.getElementById('geminiModel').value
+        model: document.getElementById('geminiModel').value.trim()
       };
     case 'openai':
       return {
         provider: 'openai',
         apiKey: document.getElementById('openaiApiKey').value.trim(),
-        model: document.getElementById('openaiModel').value,
+        model: document.getElementById('openaiModel').value.trim(),
         baseUrl: document.getElementById('openaiBaseUrl').value.trim()
       };
     case 'claude':
       return {
         provider: 'claude',
         apiKey: document.getElementById('claudeApiKey').value.trim(),
-        model: document.getElementById('claudeModel').value
+        model: document.getElementById('claudeModel').value.trim()
       };
     case 'openrouter':
       return {
@@ -387,6 +415,31 @@ btnTestConnection.addEventListener('click', async () => {
   }
 });
 
+document.getElementById('btnLoadGeminiModels').addEventListener('click', async () => {
+  const config = getTabConfig('gemini');
+  const button = document.getElementById('btnLoadGeminiModels');
+  button.disabled = true;
+  try {
+    const result = await window.tsunAPI.listModels(config);
+    if (!result.success) throw new Error(result.error);
+    const list = document.getElementById('geminiModelOptions');
+    list.replaceChildren(...result.models.map((model) => {
+      const option = document.createElement('option');
+      option.value = model;
+      return option;
+    }));
+    testFeedback.className = 'test-feedback success';
+    testFeedback.style.display = 'block';
+    testFeedback.textContent = `พบ ${result.models.length} โมเดลที่ key นี้ใช้ได้ — เลือกหรือพิมพ์ Model ID ได้ทันที`;
+  } catch (error) {
+    testFeedback.className = 'test-feedback error';
+    testFeedback.style.display = 'block';
+    testFeedback.textContent = `โหลดรายการโมเดลไม่สำเร็จ: ${error.message}`;
+  } finally {
+    button.disabled = false;
+  }
+});
+
 // Save Settings
 btnSaveSettings.addEventListener('click', async () => {
   const activeTab = currentTab;
@@ -401,7 +454,10 @@ btnSaveSettings.addEventListener('click', async () => {
   };
 
   const newSettings = {
+    userName: document.getElementById('userDisplayName').value.trim(),
+    aiName: document.getElementById('aiDisplayName').value.trim() || 'myTsun',
     activeProvider: activeTab,
+    agenticMode: document.getElementById('chkAgenticMode').checked,
     providers: newProviders
   };
 
@@ -409,9 +465,10 @@ btnSaveSettings.addEventListener('click', async () => {
     const res = await window.tsunAPI.saveSettings(newSettings);
     if (res.success) {
       currentSettings = res.settings;
+      updateIdentityDisplay();
       updateActiveProviderLabel();
       closeSettingsModal();
-      appendMessage('myTsun System', `สลับไปใช้ AI Provider: **${activeTab.toUpperCase()}** (${tabConf.model}) เรียบร้อยแล้ว`, false, true);
+      appendMessage(`${identity().aiName} System`, `บันทึกชื่อเรียกและสลับไปใช้ AI Provider: **${activeTab.toUpperCase()}** (${tabConf.model}) เรียบร้อยแล้ว`, false, true);
     }
   } catch (err) {
     alert(`ไม่สามารถบันทึกการตั้งค่าได้: ${err.message}`);
@@ -426,21 +483,38 @@ function updateActiveProviderLabel() {
   currentProviderLabel.textContent = `AI: ${activeKey.toUpperCase()} (${modelName})`;
 }
 
-// Reset Mood Button
-btnReset.addEventListener('click', async () => {
-  if (confirm('ต้องการรีเซ็ตอารมณ์ Tsun-Dere กลับไปเป็น 100% Extreme Tsun หรือไม่?')) {
-    const res = await window.tsunAPI.resetState();
-    updateMoodDisplay(res.gauge, res.mood);
-    chatMessages.innerHTML = '';
-    appendMessage('myTsun (ツン)', 'ฮึ่ม! รีเซ็ตใหม่หมดเลยเหรอ?! ก-ก็ดี! ฉันกลับมาเป็น 100% Extreme Tsun แล้ว! เตรียมตัวโดนด่าได้เลย ไอบ้า! 💢');
+function renderAuthStatus(statuses) {
+  const mapping = [
+    ['google', 'authGoogleText'],
+    ['claude', 'authClaudeText'],
+    ['openai', 'authOpenAIText']
+  ];
+  mapping.forEach(([provider, elementId]) => {
+    const element = document.getElementById(elementId);
+    const status = statuses?.[provider];
+    if (!element || !status) return;
+    element.textContent = status.detected ? `✓ ${status.detail}` : 'Not connected';
+    element.style.color = status.detected ? '#86efac' : '#94a3b8';
+  });
+}
+
+async function refreshAuthStatus() {
+  try {
+    renderAuthStatus(await window.tsunAPI.detectAuth());
+  } catch (error) {
+    console.warn('Unable to detect local AI accounts:', error);
   }
-});
+}
+
+document.getElementById('btnDetectAuth').addEventListener('click', refreshAuthStatus);
 
 // Initial Load
 async function init() {
   try {
     currentSettings = await window.tsunAPI.getSettings();
+    updateIdentityDisplay();
     updateActiveProviderLabel();
+    refreshAuthStatus();
 
     const state = await window.tsunAPI.getState();
     updateMoodDisplay(state.gauge, state.mood);

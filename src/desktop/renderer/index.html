@@ -14,7 +14,7 @@
     <!-- Top Navigation Bar -->
     <header class="top-nav">
       <div class="brand">
-        <span class="brand-title">myTsun</span>
+        <span class="brand-title" id="brandAiName">myTsun</span>
         <span class="brand-separator">/</span>
         <span class="brand-tagline">AI Pair-Programmer ที่ไม่อยากช่วยคุณเขียนโค้ด</span>
       </div>
@@ -26,9 +26,6 @@
         <button id="btnOpenSettings" class="btn btn-ghost" title="ตั้งค่าเชื่อมต่อ AI Account / API">
           ตั้งค่า AI
         </button>
-        <button id="btnReset" class="btn btn-ghost" title="รีเซ็ตอารมณ์เกจกลับเป็น 100% Extreme Tsun">
-          รีเซ็ตสถานะ
-        </button>
       </div>
     </header>
 
@@ -39,7 +36,7 @@
         <!-- Anime Avatar Profile Header -->
         <div class="avatar-card" id="avatarCard">
           <div class="avatar-meta">
-            <span class="avatar-name">myTsun</span>
+            <span class="avatar-name" id="avatarAiName">myTsun</span>
             <span class="avatar-mood-badge" id="avatarMoodBadge">Extreme Tsun</span>
           </div>
           <div class="avatar-face" id="avatarFace">
@@ -50,19 +47,23 @@
           </blockquote>
         </div>
 
-        <!-- Telemetry Gauge -->
-        <div class="gauge-card">
-          <div class="gauge-header">
-            <span class="gauge-title">TSUN-DERE TELEMETRY</span>
-            <span class="gauge-percent" id="gaugePercentText">100%</span>
+        <!-- Heart Status -->
+        <div class="heart-card">
+          <div class="heart-header">
+            <span class="heart-title">TSUN STATUS</span>
+            <span class="heart-count" id="heartCountText">0 / 10</span>
           </div>
-          <div class="gauge-track">
-            <div class="gauge-fill" id="gaugeBar" style="width: 100%;"></div>
-          </div>
-          <div class="gauge-scale">
-            <span>0% DERE</span>
-            <span>50% RELUCTANT</span>
-            <span>100% TSUN</span>
+          <div class="heart-meter" id="heartMeter" role="img" aria-label="Heart status: 0 of 10 hearts">
+            <span class="heart" aria-hidden="true">♡</span>
+            <span class="heart" aria-hidden="true">♡</span>
+            <span class="heart" aria-hidden="true">♡</span>
+            <span class="heart" aria-hidden="true">♡</span>
+            <span class="heart" aria-hidden="true">♡</span>
+            <span class="heart" aria-hidden="true">♡</span>
+            <span class="heart" aria-hidden="true">♡</span>
+            <span class="heart" aria-hidden="true">♡</span>
+            <span class="heart" aria-hidden="true">♡</span>
+            <span class="heart" aria-hidden="true">♡</span>
           </div>
         </div>
 
@@ -96,7 +97,7 @@
           <!-- Welcome Message -->
           <article class="msg-item bot-msg">
             <header class="msg-header">
-              <span class="msg-author">myTsun</span>
+              <span class="msg-author" id="welcomeAiName">myTsun</span>
               <span class="msg-status-tag" id="welcomeStatusTag">Extreme Tsun 100%</span>
             </header>
             <div class="msg-body">
@@ -147,14 +148,60 @@
         </div>
 
         <div class="modal-body">
+          <section class="identity-settings" aria-labelledby="identitySettingsTitle">
+            <div>
+              <h3 id="identitySettingsTitle">ชื่อที่ใช้ในแชต</h3>
+              <p>ตั้งชื่อที่ AI ใช้เรียกคุณ และชื่อที่คุณอยากเรียก AI</p>
+            </div>
+            <div class="identity-fields">
+              <div class="form-group">
+                <label for="userDisplayName">ชื่อของคุณ</label>
+                <input type="text" id="userDisplayName" maxlength="40" placeholder="เช่น มินท์" autocomplete="nickname" />
+              </div>
+              <div class="form-group">
+                <label for="aiDisplayName">ชื่อ AI</label>
+                <input type="text" id="aiDisplayName" maxlength="40" value="myTsun" placeholder="เช่น น้องซึน" />
+              </div>
+            </div>
+          </section>
+          <!-- Account Authentication Section -->
+          <div class="auth-section" id="authSection" style="margin-bottom: 1.25rem; padding: 1rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <span style="font-weight: 600; font-size: 0.9rem; color: #e2e8f0;">🔐 บัญชีที่เชื่อมต่อ (Account Authentication)</span>
+              <button type="button" class="btn btn-secondary" id="btnDetectAuth" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+                🔍 ตรวจจับเซสชันในเครื่องอัตโนมัติ
+              </button>
+            </div>
+            <div id="authStatusList" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; font-size: 0.8rem;">
+              <div class="auth-card" id="authCardGoogle" style="padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #94a3b8; font-size: 0.75rem;">Google (AGY / ADC)</div>
+                <div id="authGoogleText" style="color: #cbd5e1; font-weight: 500; margin-top: 2px;">ตรวจจับอัตโนมัติ</div>
+              </div>
+              <div class="auth-card" id="authCardClaude" style="padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #94a3b8; font-size: 0.75rem;">Claude Code</div>
+                <div id="authClaudeText" style="color: #cbd5e1; font-weight: 500; margin-top: 2px;">ตรวจจับอัตโนมัติ</div>
+              </div>
+              <div class="auth-card" id="authCardOpenAI" style="padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #94a3b8; font-size: 0.75rem;">OpenAI / Codex</div>
+                <div id="authOpenAIText" style="color: #cbd5e1; font-weight: 500; margin-top: 2px;">ตรวจจับอัตโนมัติ</div>
+              </div>
+            </div>
+            <div style="margin-top: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" id="chkAgenticMode" checked style="accent-color: #38bdf8;" />
+              <label for="chkAgenticMode" style="font-size: 0.82rem; color: #cbd5e1; cursor: pointer;">
+                🤖 เปิดใช้งาน <strong>โหมด AI Agent อัตโนมัติ (ReAct Tool Loop)</strong> เหมือน AGY / Claude Code / Codex
+              </label>
+            </div>
+          </div>
+
           <!-- Provider Tabs -->
           <div class="provider-tabs" id="providerTabs">
-            <button class="tab-btn active" data-tab="gemini">Google Gemini</button>
-            <button class="tab-btn" data-tab="openai">OpenAI</button>
-            <button class="tab-btn" data-tab="claude">Anthropic Claude</button>
-            <button class="tab-btn" data-tab="openrouter">OpenRouter</button>
-            <button class="tab-btn" data-tab="ollama">Local Ollama</button>
-            <button class="tab-btn" data-tab="mock">Offline Mock</button>
+            <button type="button" class="tab-btn active" data-tab="gemini">Google Gemini</button>
+            <button type="button" class="tab-btn" data-tab="openai">ChatGPT / OpenAI</button>
+            <button type="button" class="tab-btn" data-tab="claude">Claude / Anthropic</button>
+            <button type="button" class="tab-btn" data-tab="openrouter">OpenRouter</button>
+            <button type="button" class="tab-btn" data-tab="ollama">Local Ollama</button>
+            <button type="button" class="tab-btn" data-tab="mock">Offline Mock</button>
           </div>
 
           <!-- Tab Contents -->
@@ -164,16 +211,16 @@
               <div class="form-group">
                 <label for="geminiApiKey">Gemini API Key</label>
                 <input type="password" id="geminiApiKey" placeholder="AIzaSy..." />
-                <small class="helper-text">รับ API Key ฟรีได้จาก Google AI Studio</small>
+                <small class="helper-text">รับ API Key ฟรีได้จาก Google AI Studio หรือใช้ร่วมกับบัญชี Google</small>
               </div>
               <div class="form-group">
-                <label for="geminiModel">Model</label>
-                <select id="geminiModel">
-                  <option value="gemini-3.8-flash" selected>gemini-3.8-flash (แนะนำ รวดเร็วและแม่นยำสูง)</option>
-                  <option value="gemini-3.8-pro">gemini-3.8-pro (รุ่นเรือธง ความสามารถสูงสุด)</option>
-                  <option value="gemini-3.0-flash">gemini-3.0-flash</option>
-                  <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-                </select>
+                <label for="geminiModel">Model ID</label>
+                <div style="display: flex; gap: 0.5rem;">
+                  <input type="text" id="geminiModel" list="geminiModelOptions" value="gemini-3.5-flash" placeholder="e.g. gemini-3.5-flash" style="flex: 1;" />
+                  <button type="button" class="btn btn-secondary" id="btnLoadGeminiModels">Load models</button>
+                </div>
+                <datalist id="geminiModelOptions"></datalist>
+                <small class="helper-text">พิมพ์ Model ID ใดก็ได้ หรือกด Load models เพื่อดึงรายการที่ API key ของคุณใช้ได้</small>
               </div>
             </div>
 
@@ -184,13 +231,8 @@
                 <input type="password" id="openaiApiKey" placeholder="sk-..." />
               </div>
               <div class="form-group">
-                <label for="openaiModel">Model</label>
-                <select id="openaiModel">
-                  <option value="gpt-4o-mini">gpt-4o-mini (คุ้มค่า รวดเร็ว)</option>
-                  <option value="gpt-4o">gpt-4o (โมเดลมาตรฐานเรือธง)</option>
-                  <option value="o3-mini">o3-mini (โมเดลคิดวิเคราะห์เหตุผล)</option>
-                  <option value="o1">o1 (โมเดลเหตุผลระดับสูง)</option>
-                </select>
+                <label for="openaiModel">Model ID</label>
+                <input type="text" id="openaiModel" value="gpt-4o" placeholder="e.g. gpt-4o, gpt-4.1-mini" />
               </div>
               <div class="form-group">
                 <label for="openaiBaseUrl">Base URL (ถ้าใช้ proxy หรือ compatible API)</label>
@@ -205,12 +247,8 @@
                 <input type="password" id="claudeApiKey" placeholder="sk-ant-..." />
               </div>
               <div class="form-group">
-                <label for="claudeModel">Model</label>
-                <select id="claudeModel">
-                  <option value="claude-3-7-sonnet-20250219" selected>claude-3-7-sonnet-20250219 (รุ่นล่าสุด)</option>
-                  <option value="claude-3-5-sonnet-20241022">claude-3-5-sonnet-20241022</option>
-                  <option value="claude-3-5-haiku-20241022">claude-3-5-haiku-20241022</option>
-                </select>
+                <label for="claudeModel">Model ID</label>
+                <input type="text" id="claudeModel" value="claude-3-7-sonnet-20250219" placeholder="e.g. claude-sonnet-4-5" />
               </div>
             </div>
 

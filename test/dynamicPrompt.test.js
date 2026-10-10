@@ -47,3 +47,13 @@ test('Dynamic Prompt - Includes contextual notes when bribe or praise occurs', (
   });
   assert.ok(praisePrompt.includes('complimented you'), 'Should mention compliment fluster');
 });
+
+test('Dynamic Prompt - Uses the chosen names for the AI and user', () => {
+  const prompt = buildDynamicPrompt(new TsunDereState(50), {
+    aiName: 'น้องซึน',
+    userName: 'มินท์'
+  });
+
+  assert.ok(prompt.includes('IDENTITY: น้องซึน'));
+  assert.ok(prompt.includes('user prefers to be called "มินท์"'));
+});

@@ -48,6 +48,57 @@ const SWEET_BRIBE_KEYWORDS = [
   'cookie', 'คุกกี้', 'โดนัท', 'donut', 'pudding', 'พุดดิ้ง'
 ];
 
+const NATURAL_LANGUAGE_SIGNALS = {
+  affection: ['น่ารัก', 'เก่ง', 'สุดยอด', 'ขอบคุณ', 'ขอบใจ', 'รัก', 'คิดถึง', 'ชอบ', 'เยี่ยม', 'เทพ', 'เจ๋ง', 'amazing', 'awesome', 'cute', 'great', 'love you', 'thank you', 'thanks'],
+  apology: ['ขอโทษ', 'โทษที', 'ขออภัย', 'ผิดไปแล้ว', 'sorry', 'my bad', 'apologize'],
+  politeRequest: ['ช่วย', 'รบกวน', 'กรุณา', 'ได้ไหม', 'ได้มั้ย', 'หน่อยนะ', 'โปรด', 'please', 'could you', 'would you', 'can you'],
+  bribe: SWEET_BRIBE_KEYWORDS,
+  harshOrder: ['เดี๋ยวนี้', 'ทันที', 'รีบ', 'ห้าม', 'ต้อง', 'สั่ง', 'ทำมา', 'ทำให้', 'do it now', 'hurry up', 'you must', 'shut up'],
+  insult: ['โง่', 'น่ารำคาญ', 'ไร้ประโยชน์', 'กาก', 'idiot', 'stupid', 'useless', 'annoying']
+};
+
+function containsAny(text, keywords) {
+  return keywords.some((keyword) => text.includes(keyword));
+}
+
+/**
+ * Infer a gauge change from ordinary conversation rather than treating every
+ * non-command input as a rude order. Signals are deliberately conservative:
+ * warmth outweighs a request, neutral chat does not move the gauge, and only
+ * clearly demanding or hostile phrasing raises it.
+ */
+function analyzeNaturalLanguage(rawInput) {
+  const text = (rawInput || '').trim().toLowerCase();
+  const hasAffection = containsAny(text, NATURAL_LANGUAGE_SIGNALS.affection);
+  const hasApology = containsAny(text, NATURAL_LANGUAGE_SIGNALS.apology);
+  const hasBribe = containsAny(text, NATURAL_LANGUAGE_SIGNALS.bribe);
+  const hasPoliteRequest = containsAny(text, NATURAL_LANGUAGE_SIGNALS.politeRequest);
+  const hasInsult = containsAny(text, NATURAL_LANGUAGE_SIGNALS.insult);
+  const hasHarshOrder = containsAny(text, NATURAL_LANGUAGE_SIGNALS.harshOrder);
+
+  if (hasInsult) {
+    return { delta: 12, reason: 'คำพูดกระแทกหรือดูแคลน เพิ่ม Tsun +12%', soundCue: 'baka' };
+  }
+  if (hasBribe) {
+    return { delta: -15, reason: 'ของอร่อยในบทสนทนาทำให้ใจอ่อน ลด Tsun -15%', soundCue: 'bribe' };
+  }
+  if (hasAffection) {
+    return { delta: -10, reason: 'คำชม/ความเอ็นดูทำให้หน้าแดง ลด Tsun -10%', soundCue: 'dere' };
+  }
+  if (hasApology) {
+    return { delta: -8, reason: 'คำขอโทษอย่างจริงใจ ลด Tsun -8%', soundCue: 'hmph' };
+  }
+  if (hasPoliteRequest) {
+    // At maximum Tsun, a normal polite request earns a neutral response; users
+    // need a stronger sentiment to crack the initial defensive wall.
+    return { delta: -3, reason: 'คำขอสุภาพทำให้ยอมใจอ่อนนิดหน่อย ลด Tsun -3%', soundCue: 'hmph', softensOnly: true };
+  }
+  if (hasHarshOrder || /!{2,}/.test(text)) {
+    return { delta: 5, reason: 'คำสั่งห้วนหรือเร่งเร้า เพิ่ม Tsun +5%', soundCue: 'hmph' };
+  }
+  return { delta: 0, reason: 'บทสนทนาปกติ ไม่กระทบต่อเกจ', soundCue: 'hmph' };
+}
+
 export class TsunDereState {
   /**
    * @param {number} [initialGauge=100] Initial Tsun percentage (default 100)
@@ -259,10 +310,12 @@ export class TsunDereState {
 
         case CommandType.REGULAR:
         default: {
-          // Regular request or ordering around without praise increases Tsun slightly
-          delta = 5;
-          reason = 'สั่งงานห้วนๆ โดยไม่ง้อ เพิ่ม Tsun +5%';
-          soundCue = 'hmph';
+          const analysis = analyzeNaturalLanguage(rawInput);
+          delta = analysis.softensOnly && this.gauge >= 80 ? 0 : analysis.delta;
+          reason = analysis.softensOnly && this.gauge >= 80
+            ? 'คำขอสุภาพได้รับฟังแล้ว แต่เกจซึนสูงมากจึงยังไม่ลด'
+            : analysis.reason;
+          soundCue = analysis.soundCue;
           this.gauge = this._clamp(this.gauge + delta);
           break;
         }

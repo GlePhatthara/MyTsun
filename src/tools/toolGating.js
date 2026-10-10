@@ -13,7 +13,8 @@ import {
   writeFileTool,
   readFileTool,
   runCommandTool,
-  listDirectoryTool
+  listDirectoryTool,
+  resolveSafePath
 } from './agenticTools.js';
 
 export const GatingStatus = {
@@ -70,9 +71,10 @@ export class AgenticToolGating {
     });
 
     this.registerTool('runCommand', async (args) => {
+      const cwd = args.cwd ? resolveSafePath(args.cwd, this.baseDir) : this.baseDir;
       return runCommandTool({
         command: args.command || args.cmd,
-        cwd: args.cwd || this.baseDir,
+        cwd,
         timeout: args.timeout || 15000
       });
     });
@@ -107,6 +109,21 @@ export class AgenticToolGating {
   checkPermission(toolName, options = {}) {
     const gauge = this.state.getGauge();
     const mood = this.state.getMood();
+
+    // The desktop application's Agent mode is an explicit permission given by
+    // the person at the keyboard.  Keep the playful Tsun-Dere gate for the
+    // demo/CLI experience, but do not let it silently prevent a real agent
+    // from doing the file work the user asked it to do.
+    if (options.authorizedAgent === true) {
+      return {
+        allowed: true,
+        status: GatingStatus.ALLOWED,
+        gauge,
+        mood: mood.id,
+        reason: 'Agent mode was explicitly enabled by the user.',
+        message: 'Agent mode is enabled for this workspace.'
+      };
+    }
 
     // Extreme Tsun (80 - 100%): Strict lockout
     if (gauge >= 80) {

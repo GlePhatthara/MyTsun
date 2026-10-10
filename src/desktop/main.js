@@ -7,6 +7,8 @@ import { TsunDereState, MOODS } from '../state/TsunDereState.js';
 import { parseCommand, CommandType } from '../commands/parser.js';
 import { buildDynamicPrompt } from '../prompt/dynamicPrompt.js';
 import { createProvider, GeminiProvider, OpenAICompatibleProvider, ClaudeProvider } from '../llm/provider.js';
+import { accountManager } from '../auth/accountManager.js';
+import { AgentEngine } from '../agent/agentEngine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,16 +18,21 @@ const CONFIG_DIR = path.join(os.homedir(), '.tsundev');
 const SETTINGS_FILE = path.join(CONFIG_DIR, 'settings.json');
 
 const DEFAULT_SETTINGS = {
+  // Display names are kept separately from provider settings so they persist
+  // when the user switches models.
+  userName: '',
+  aiName: 'myTsun',
   activeProvider: 'gemini',
+  agenticMode: true,
   providers: {
     gemini: {
       apiKey: process.env.GEMINI_API_KEY || '',
-      model: 'gemini-3.8-flash',
+      model: 'gemini-3.5-flash',
       label: 'Google Gemini'
     },
     openai: {
       apiKey: process.env.OPENAI_API_KEY || '',
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o',
       baseUrl: 'https://api.openai.com/v1',
       label: 'OpenAI'
     },
@@ -88,6 +95,14 @@ function saveSettings(settings) {
   }
 }
 
+function normalizeDisplayName(value, fallback = '') {
+  if (typeof value !== 'string') return fallback;
+  // Names are displayed in the UI and included in a system prompt. Keep them
+  // short and remove control characters so they cannot alter either surface.
+  const name = value.replace(/[\u0000-\u001F\u007F]/g, '').trim().slice(0, 40);
+  return name || fallback;
+}
+
 // Global state
 let currentSettings = loadSettings();
 const stateMachine = new TsunDereState(100); // starts at 100% Extreme Tsun
@@ -127,6 +142,25 @@ app.on('window-all-closed', () => {
 
 // ================= IPC HANDLERS =================
 
+// Account Authentication Handlers
+ipcMain.handle('auth:detect', async () => {
+  return await accountManager.detectSystemSessions();
+});
+
+ipcMain.handle('auth:get', async () => {
+  return accountManager.loadAccounts();
+});
+
+ipcMain.handle('auth:set', async (_event, { provider, accountData }) => {
+  accountManager.setAccount(provider, accountData);
+  return accountManager.loadAccounts();
+});
+
+ipcMain.handle('auth:logout', async (_event, provider) => {
+  accountManager.logout(provider);
+  return accountManager.loadAccounts();
+});
+
 // Get settings
 ipcMain.handle('settings:get', async () => {
   return currentSettings;
@@ -134,7 +168,12 @@ ipcMain.handle('settings:get', async () => {
 
 // Save settings
 ipcMain.handle('settings:save', async (_event, newSettings) => {
-  currentSettings = { ...currentSettings, ...newSettings };
+  const safeSettings = {
+    ...newSettings,
+    userName: normalizeDisplayName(newSettings?.userName),
+    aiName: normalizeDisplayName(newSettings?.aiName, DEFAULT_SETTINGS.aiName)
+  };
+  currentSettings = { ...currentSettings, ...safeSettings };
   const ok = saveSettings(currentSettings);
   return { success: ok, settings: currentSettings };
 });
@@ -156,6 +195,20 @@ ipcMain.handle('settings:test-connection', async (_event, providerConfig) => {
   }
 });
 
+// Model IDs vary by account, region, and provider plan.  Fetch the models
+// exposed to the user's own Gemini key instead of maintaining a stale list.
+ipcMain.handle('settings:list-models', async (_event, providerConfig) => {
+  try {
+    if (providerConfig?.provider !== 'gemini') {
+      return { success: false, error: 'Model discovery is currently available for Gemini only.' };
+    }
+    const provider = new GeminiProvider(providerConfig);
+    return { success: true, models: await provider.listModels() };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
 // Get current mood state
 ipcMain.handle('state:get', async () => {
   return {
@@ -167,7 +220,10 @@ ipcMain.handle('state:get', async () => {
 
 // Reset session
 ipcMain.handle('state:reset', async () => {
-  stateMachine.gauge = 100;
+  // Reset all interaction bookkeeping as well as the displayed gauge.  Keeping
+  // fields such as lastInput after a reset can make the next message look like
+  // a repeated command to the state machine.
+  stateMachine.reset();
   chatHistory = [];
   return {
     gauge: stateMachine.getGauge(),
@@ -183,7 +239,6 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
   // 1. Check if input is a slash command
   if (parsed.type !== CommandType.REGULAR) {
     let resultMessage = '';
-    let isCommand = true;
 
     switch (parsed.type) {
       case CommandType.PRAISE: {
@@ -232,7 +287,10 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
   stateMachine.processInput(userInput);
 
   // 3. Build dynamic tsundere prompt based on current mood
-  const systemInstruction = buildDynamicPrompt(stateMachine);
+  const systemInstruction = buildDynamicPrompt(stateMachine, {
+    userName: currentSettings.userName,
+    aiName: currentSettings.aiName
+  });
 
   // 4. Resolve active provider configuration
   const providerKey = currentSettings.activeProvider || 'gemini';
@@ -246,12 +304,41 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
   });
 
   try {
-    const aiResponse = await activeProvider.generate({
-      prompt: userInput,
-      systemInstruction,
-      history: chatHistory,
-      temperature: 0.75
-    });
+    let aiResponse = '';
+    let agentSteps = [];
+    let toolCallsCount = 0;
+
+    // Run as Autonomous Agent if agenticMode is true or if prompt contains action verbs
+    const isActionable = /สร้าง|เขียน|อ่าน|ลบ|รัน|เช็ก|ทดสอบ|ไฟล์|โค้ด|create|write|read|run|test|build|file/i.test(userInput);
+
+    if (currentSettings.agenticMode && isActionable) {
+      const agent = new AgentEngine({
+        provider: activeProvider,
+        state: stateMachine,
+        baseDir: process.cwd(),
+        maxSteps: 4,
+        // Enabling Agent mode in Settings is explicit authorization. The
+        // personality gauge remains cosmetic and must not block file work.
+        authorizedAgent: true
+      });
+
+      const agentResult = await agent.run({
+        prompt: userInput,
+        systemInstruction,
+        history: chatHistory
+      });
+
+      aiResponse = agentResult.reply;
+      agentSteps = agentResult.steps;
+      toolCallsCount = agentResult.toolCallsCount;
+    } else {
+      aiResponse = await activeProvider.generate({
+        prompt: userInput,
+        systemInstruction,
+        history: chatHistory,
+        temperature: 0.75
+      });
+    }
 
     // Update history
     chatHistory.push({ role: 'user', content: userInput });
@@ -265,6 +352,8 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
     return {
       isCommand: false,
       reply: aiResponse,
+      steps: agentSteps,
+      toolCallsCount,
       gauge: stateMachine.getGauge(),
       mood: stateMachine.getMood(),
       moodName: stateMachine.getMoodName(),

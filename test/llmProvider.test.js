@@ -52,6 +52,24 @@ test('GeminiProvider - Throws clear error when apiKey is missing', async () => {
   );
 });
 
+test('GeminiProvider normalizes model IDs and sends API key in a header', async (t) => {
+  const originalFetch = globalThis.fetch;
+  let request;
+  globalThis.fetch = async (url, options) => {
+    request = { url: String(url), options };
+    return new Response(JSON.stringify({
+      candidates: [{ content: { parts: [{ text: 'first' }, { text: ' second' }] } }]
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  };
+  t.after(() => { globalThis.fetch = originalFetch; });
+
+  const provider = new GeminiProvider({ apiKey: 'test-key', model: 'models/gemini-custom' });
+  assert.equal(await provider.generate({ prompt: 'ping' }), 'first second');
+  assert.match(request.url, /\/models\/gemini-custom:generateContent$/);
+  assert.equal(request.options.headers['x-goog-api-key'], 'test-key');
+  assert.doesNotMatch(request.url, /test-key/);
+});
+
 test('createProvider - Defaults to MockProvider when no API key is configured', () => {
   const provider = createProvider({ apiKey: '', provider: 'mock' });
   assert.equal(provider.name, 'MockProvider');
