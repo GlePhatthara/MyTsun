@@ -1,0 +1,20 @@
+{
+  "name": "tsundev",
+  "version": "0.1.0",
+  "description": "The Tsundere AI Pair-Programmer for Stupid Hackathon Thailand (SHTX)",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test test/**/*.test.js",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "tsundere",
+    "pair-programming",
+    "shtx",
+    "ai",
+    "copilot"
+  ],
+  "author": "",
+  "license": "MIT"
+}
