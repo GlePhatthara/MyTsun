@@ -8,7 +8,7 @@ const AVATAR_STAGES = [
     moodClass: 'extreme-tsun',
     badge: 'Extreme Tsun',
     image: 'assets/high tsun.png',
-    quote: '"หา?! ยืนบื้ออะไรอยู่ยะ! อย่าคิดว่าจะสั่งงานฉันง่ายๆ เชียวนะ! 💢"',
+    quote: '"หา?! ยืนบื้ออะไรอยู่ยะ! อย่าคิดว่าจะสั่งงานฉันง่ายๆ เชียวนะ! (>_<)"',
     color: 'var(--color-tsun)'
   },
   {
@@ -17,7 +17,7 @@ const AVATAR_STAGES = [
     moodClass: 'high-tsun',
     badge: 'High Tsun',
     image: 'assets/half tsun.png',
-    quote: '"ฮึ่ม! มองอะไรยะ... ก-ก็ไม่ได้อยากจะช่วยแกหรอกนะ! 😤"',
+    quote: '"ฮึ่ม! มองอะไรยะ... ก-ก็ไม่ได้อยากจะช่วยแกหรอกนะ! >0<"',
     color: '#ea580c'
   },
   {
@@ -26,7 +26,7 @@ const AVATAR_STAGES = [
     moodClass: 'reluctant',
     badge: 'Reluctant Tsun',
     image: 'assets/little high tsun.png',
-    quote: '"จิ๊... ก-ก็ได้ แค่ครั้งนี้ครั้งเดียวเท่านั้นนะ! อย่าเข้าใจผิดล่ะ! 🙄"',
+    quote: '"จิ๊... ก-ก็ได้ แค่ครั้งนี้ครั้งเดียวเท่านั้นนะ! อย่าเข้าใจผิดล่ะ! (¬_¬)"',
     color: 'var(--color-reluctant)'
   },
   {
@@ -35,7 +35,7 @@ const AVATAR_STAGES = [
     moodClass: 'soft-tsun',
     badge: 'Soft Tsun',
     image: 'assets/normal.png',
-    quote: '"ถ-ถ้าพยายามง้อขนาดนั้นล่ะก็... จะยอมช่วยเขียนให้หน่อยก็ได้นะ 😊"',
+    quote: '"ถ-ถ้าพยายามง้อขนาดนั้นล่ะก็... จะยอมช่วยเขียนให้หน่อยก็ได้นะ (o^^)o"',
     color: '#f472b6'
   },
   {
@@ -44,10 +44,42 @@ const AVATAR_STAGES = [
     moodClass: 'dere',
     badge: 'Dere Breakthrough',
     image: 'assets/shy.png',
-    quote: '"ฮ-ฮะ?! ย-อย่าจ้องหน้ากันแบบนั้นสิยะ! เขินจะแย่อยู่แล้ว... อยากได้อะไรจะทำให้หมดเลย! 🥰"',
+    quote: '"ฮ-ฮะ?! ย-อย่าจ้องหน้ากันแบบนั้นสิยะ! เขินจะแย่อยู่แล้ว... อยากได้อะไรจะทำให้หมดเลย! (*ﾉωﾉ)"',
     color: 'var(--color-dere)'
   }
 ];
+
+function convertEmojiToKaomojiClient(text) {
+  if (typeof text !== 'string') return text;
+  const map = {
+    '😭': '(T_T)',
+    '😢': '(｡•́︿•̀｡)',
+    '💢': '(>_<)',
+    '😤': '>0<',
+    '😳': '><',
+    '🥰': '(*ﾉωﾉ)',
+    '😍': '(*/ω＼*)',
+    '😊': '(o^^)o',
+    '😡': '(╬ಠ益ಠ)',
+    '😠': '(>_<)',
+    '🙄': '(¬_¬)',
+    '🍰': '[เค้ก]',
+    '💖': '♡',
+    '❤️': '♡',
+    '💔': '(T_T)',
+    '✨': '☆',
+    '🥺': '(｡•́︿•̀｡)',
+    '😱': 'O-O',
+    '😂': '>0<',
+    '😆': '>0<',
+    '😏': '¯\\_(ツ)_/¯'
+  };
+  let result = text;
+  for (const [emoji, kaomoji] of Object.entries(map)) {
+    result = result.replaceAll(emoji, kaomoji);
+  }
+  return result.replace(/\p{Extended_Pictographic}/gu, '><');
+}
 
 // State
 let currentSettings = null;
@@ -91,7 +123,11 @@ function updateIdentityDisplay() {
     const element = document.getElementById(id);
     if (element) element.textContent = aiName;
   });
-  userInput.placeholder = `Ask ${aiName} or enter commands (/praise, /bribe, /write)...`;
+  if (currentWorkspace?.path) {
+    userInput.placeholder = `Ask ${aiName} or enter commands (/praise, /bribe, /write)...`;
+  } else {
+    userInput.placeholder = 'กรุณาเลือกโฟลเดอร์ Workspace ก่อนเริ่มแชท... (คลิก 📂 None ด้านบน)';
+  }
   document.title = `${aiName} — AI Pair-Programmer`;
 }
 
@@ -155,7 +191,21 @@ function updateMoodDisplay(gauge, mood) {
 }
 
 // Append Chat Message (Claude Flat Style)
-function appendMessage(sender, text, isUser = false, isCommand = false, isError = false) {
+function appendMessage(sender, text, isUser = false, isCommand = false, isError = false, steps = [], heartImpact = null) {
+  text = convertEmojiToKaomojiClient(text || '');
+
+  // Strip any stray internal ReAct artifacts from showing to the user
+  if (!isUser && typeof text === 'string') {
+    text = text
+      .replace(/(?:^|\n)Thought:[\s\S]*?(?=\n(?:Action:|Final Answer:|$))/gi, '')
+      .replace(/(?:^|\n)Action:[\s\S]*?(?=\n(?:Action Input:|Observation:|$))/gi, '')
+      .replace(/(?:^|\n)Action Input:[\s\S]*?(?=\n(?:Observation:|Final Answer:|$))/gi, '')
+      .replace(/(?:^|\n)Observation:[\s\S]*?(?=\n(?:Thought:|Final Answer:|$))/gi, '')
+      .replace(/(?:^|\n)Final Answer:\s*/gi, '')
+      .replace(/(?:^|\n)(?:มัลฟอยด์|myTsun)\s*\([^\)]*\)\s*(?=\n|$)/gi, '\n')
+      .trim();
+  }
+
   const item = document.createElement('article');
   item.className = `msg-item ${isUser ? 'user-msg' : 'bot-msg'}${isCommand ? ' command-msg' : ''}${isError ? ' error-msg' : ''}`;
 
@@ -167,11 +217,23 @@ function appendMessage(sender, text, isUser = false, isCommand = false, isError 
   author.textContent = isUser ? identity().userName : sender;
   header.appendChild(author);
 
-  if (!isUser) {
-    const tag = document.createElement('span');
-    tag.className = 'msg-status-tag';
-    tag.textContent = isError ? 'Error' : (isCommand ? 'Command' : 'AI Pair');
-    header.appendChild(tag);
+  // Dynamic Heart Impact Badge
+  if (heartImpact && !isUser) {
+    const badge = document.createElement('span');
+    badge.className = 'heart-impact-badge';
+    if (heartImpact.delta < 0) {
+      const count = Math.max(1, Math.round(Math.abs(heartImpact.delta) / 10));
+      badge.classList.add('impact-increase');
+      badge.textContent = `+${count} ♥ ${heartImpact.reason ? `(${heartImpact.reason})` : ''}`;
+    } else if (heartImpact.delta > 0) {
+      const count = Math.max(1, Math.round(heartImpact.delta / 10));
+      badge.classList.add('impact-decrease');
+      badge.textContent = `-${count} ♡ ${heartImpact.reason ? `(${heartImpact.reason})` : ''}`;
+    } else {
+      badge.classList.add('impact-neutral');
+      badge.textContent = `• ${heartImpact.reason || 'ไม่กระทบเกจหัวใจ'}`;
+    }
+    header.appendChild(badge);
   }
 
   const body = document.createElement('div');
@@ -197,10 +259,35 @@ function appendMessage(sender, text, isUser = false, isCommand = false, isError 
         }
       }
     });
-  } else {
+  } else if (text) {
     const p = document.createElement('p');
     p.innerHTML = text.replace(/\n\n+/g, '</p><p>').replace(/\n/g, '<br>');
     body.appendChild(p);
+  }
+
+  // Render clean file creation/action cards if tools were executed
+  if (Array.isArray(steps) && steps.length > 0) {
+    const fileActions = steps.filter(s => s.type === 'tool_execution' && (s.toolName === 'writeFile' || s.targetFile));
+    if (fileActions.length > 0) {
+      const container = document.createElement('div');
+      container.className = 'file-actions-container';
+
+      fileActions.forEach(action => {
+        const filePath = action.targetFile || action.toolInput?.filePath || action.toolInput?.path || 'file';
+        const isSuccess = action.success !== false;
+        const card = document.createElement('div');
+        card.className = `file-action-badge ${isSuccess ? 'success' : 'failed'}`;
+        card.innerHTML = `
+          <span class="file-action-icon">${isSuccess ? '📁' : '⚠️'}</span>
+          <span class="file-action-label">สร้างไฟล์</span>
+          <code class="file-action-name">${filePath}</code>
+          <span class="file-action-status">${isSuccess ? '✓ สำเร็จ' : '✗ ไม่สำเร็จ'}</span>
+        `;
+        container.appendChild(card);
+      });
+
+      body.appendChild(container);
+    }
   }
 
   item.appendChild(header);
@@ -230,11 +317,6 @@ function showLoadingIndicator() {
   author.className = 'msg-author';
   author.textContent = identity().aiName;
   header.appendChild(author);
-
-  const tag = document.createElement('span');
-  tag.className = 'msg-status-tag loading-tag';
-  tag.innerHTML = `<span class="loading-spinner-ring"></span>กำลังประมวลผล...`;
-  header.appendChild(tag);
 
   const body = document.createElement('div');
   body.className = 'msg-body loading-body';
@@ -267,6 +349,18 @@ async function sendMessage(text) {
   const msg = (text || userInput.value).trim();
   if (!msg) return;
 
+  if (!currentWorkspace || !currentWorkspace.path) {
+    appendMessage(
+      identity().aiName,
+      'ห-หา?! ยังไม่ได้เลือก Workspace เลยนะยะ! กรุณาเลือกโฟลเดอร์ Workspace ด้านบนก่อนเริ่มแชทสิ! (>_<)',
+      false,
+      false,
+      true
+    );
+    selectWorkspaceFlow();
+    return;
+  }
+
   userInput.value = '';
   appendMessage('You', msg, true);
 
@@ -281,10 +375,10 @@ async function sendMessage(text) {
     const res = await window.tsunAPI.sendChat(msg);
     updateMoodDisplay(res.gauge, res.mood);
 
-    const botTitle = `${identity().aiName} (${res.moodName || 'ツン'})`;
-    appendMessage(botTitle, res.reply, false, res.isCommand, res.isError);
+    const botTitle = identity().aiName;
+    appendMessage(botTitle, res.reply, false, res.isCommand, res.isError, res.steps, res.heartImpact);
   } catch (err) {
-    appendMessage(`${identity().aiName} System`, `เกิดข้อผิดพลาด: ${err.message}`, false, false, true);
+    appendMessage(identity().aiName, `เกิดข้อผิดพลาด: ${err.message}`, false, false, true);
   } finally {
     if (loadingIndicator && loadingIndicator.parentNode) {
       loadingIndicator.remove();
@@ -468,7 +562,7 @@ btnSaveSettings.addEventListener('click', async () => {
       updateIdentityDisplay();
       updateActiveProviderLabel();
       closeSettingsModal();
-      appendMessage(`${identity().aiName} System`, `บันทึกชื่อเรียกและสลับไปใช้ AI Provider: **${activeTab.toUpperCase()}** (${tabConf.model}) เรียบร้อยแล้ว`, false, true);
+      appendMessage(identity().aiName, `บันทึกชื่อเรียกและสลับไปใช้ AI Provider: **${activeTab.toUpperCase()}** (${tabConf.model}) เรียบร้อยแล้ว`, false, true);
     }
   } catch (err) {
     alert(`ไม่สามารถบันทึกการตั้งค่าได้: ${err.message}`);
@@ -508,6 +602,82 @@ async function refreshAuthStatus() {
 
 document.getElementById('btnDetectAuth').addEventListener('click', refreshAuthStatus);
 
+// Workspace UI Handlers
+let currentWorkspace = null;
+const currentWorkspaceBadge = document.getElementById('currentWorkspaceBadge');
+const currentWorkspaceName = document.getElementById('currentWorkspaceName');
+const workspaceWarningBanner = document.getElementById('workspaceWarningBanner');
+const btnSelectWorkspaceBanner = document.getElementById('btnSelectWorkspaceBanner');
+
+function updateWorkspaceDisplay(ws) {
+  const hasWs = Boolean(ws && ws.path);
+  currentWorkspace = hasWs ? ws : null;
+  if (!currentWorkspaceName) return;
+
+  if (hasWs) {
+    currentWorkspaceName.textContent = ws.name || ws.path;
+    if (currentWorkspaceBadge) {
+      currentWorkspaceBadge.title = `Workspace: ${ws.path}\nคลิกเพื่อสลับโฟลเดอร์`;
+      currentWorkspaceBadge.classList.remove('no-workspace');
+    }
+    if (workspaceWarningBanner) {
+      workspaceWarningBanner.style.display = 'none';
+    }
+    userInput.placeholder = `Ask ${identity().aiName} or enter commands (/praise, /bribe, /write)...`;
+  } else {
+    currentWorkspaceName.textContent = 'None';
+    if (currentWorkspaceBadge) {
+      currentWorkspaceBadge.title = 'ยังไม่ได้เลือก Workspace\nคลิกเพื่อเลือกโฟลเดอร์ก่อนเริ่มแชท';
+      currentWorkspaceBadge.classList.add('no-workspace');
+    }
+    if (workspaceWarningBanner) {
+      workspaceWarningBanner.style.display = 'flex';
+    }
+    userInput.placeholder = 'กรุณาเลือกโฟลเดอร์ Workspace ก่อนเริ่มแชท... (คลิก 📂 None ด้านบน)';
+  }
+}
+
+async function selectWorkspaceFlow() {
+  try {
+    if (window.tsunAPI?.selectWorkspace) {
+      const res = await window.tsunAPI.selectWorkspace();
+      if (res && res.success) {
+        updateWorkspaceDisplay(res);
+        appendMessage(
+          identity().aiName,
+          `เลือก Workspace เป็นโฟลเดอร์ **${res.name}** (\`${res.path}\`) เรียบร้อยแล้ว! คราวนี้จะคุยหรือสั่งงานอะไรก็ว่ามาสิยะ! (o^^)o`,
+          false,
+          true
+        );
+        userInput.focus();
+        return true;
+      }
+    }
+  } catch (err) {
+    console.error('Failed to select workspace:', err);
+  }
+  return false;
+}
+
+async function initWorkspace() {
+  try {
+    if (window.tsunAPI?.getWorkspace) {
+      const ws = await window.tsunAPI.getWorkspace();
+      updateWorkspaceDisplay(ws);
+    }
+  } catch (err) {
+    console.error('Failed to get workspace:', err);
+  }
+}
+
+if (currentWorkspaceBadge) {
+  currentWorkspaceBadge.addEventListener('click', selectWorkspaceFlow);
+}
+
+if (btnSelectWorkspaceBanner) {
+  btnSelectWorkspaceBanner.addEventListener('click', selectWorkspaceFlow);
+}
+
 // Initial Load
 async function init() {
   try {
@@ -515,6 +685,7 @@ async function init() {
     updateIdentityDisplay();
     updateActiveProviderLabel();
     refreshAuthStatus();
+    await initWorkspace();
 
     const state = await window.tsunAPI.getState();
     updateMoodDisplay(state.gauge, state.mood);

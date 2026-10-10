@@ -33,20 +33,28 @@ export class AgentEngine {
    */
   buildAgentInstructions(systemPrompt = '') {
     const toolsDescription = `
-You have access to the following agentic tools (similar to Antigravity/AGY, Claude Code, and Codex):
+# AUTONOMOUS AGENT EXECUTION RULES:
+You have access to the following agentic tools:
 1. readFile: {"filePath": "relative/or/absolute/path"} - Read content of an existing file.
 2. writeFile: {"filePath": "path", "content": "text content"} - Write or overwrite a file.
 3. runCommand: {"command": "terminal shell command"} - Execute a shell command safely.
 4. listDirectory: {"dirPath": "."} - List files and directories in path.
 
-When you need to perform an action, use the following format:
-Thought: Describe what you plan to do.
-Action: toolName (must be one of: readFile, writeFile, runCommand, listDirectory)
+CRITICAL EXECUTION PROTOCOL:
+- When using tools, be QUIET. Do NOT output any roleplay greetings, character signatures, or conversational dialogue before or during Action execution!
+- Output ONLY internal reasoning and tool calls in this exact format:
+Thought: Brief internal reasoning in English or concise Thai.
+Action: toolName (one of: readFile, writeFile, runCommand, listDirectory)
 Action Input: {"key": "value"} (valid JSON object)
 
-After you receive an Observation, continue thinking or provide your final response:
+- When all tool actions are completed, provide your user-facing response ONLY in Final Answer:
 Thought: I have finished the task.
-Final Answer: [Your complete response in Thai tsundere tone]
+Final Answer: [Your complete dialogue in Thai tsundere tone]
+
+CRITICAL PERSONA CONSISTENCY:
+- Maintain STRICTLY ONE consistent emotional mood in Final Answer aligned with your current status.
+- NEVER switch back and forth between different moods in the same reply (do NOT mix Dere and Extreme Tsun together).
+- Do NOT simulate fake files like baka.c or fake conversations. Just deliver the requested work with your tsundere personality!
 `;
     return `${systemPrompt}\n\n${toolsDescription}`;
   }
@@ -58,27 +66,77 @@ Final Answer: [Your complete response in Thai tsundere tone]
     if (!text || typeof text !== 'string') return null;
 
     const actionMatch = text.match(/Action:\s*([a-zA-Z0-9_-]+)/i);
-    const inputMatch = text.match(/Action Input:\s*({[\s\S]*?}|\[[\s\S]*?\]|"[^"]*"|[^\n]+)/i);
+    if (!actionMatch) return null;
+    const toolName = actionMatch[1].trim();
 
-    if (actionMatch && inputMatch) {
-      const toolName = actionMatch[1].trim();
-      let toolInput = {};
-      const rawInput = inputMatch[1].trim();
+    // Look for Action Input block up until the next section (Observation, Thought, Final Answer) or end of text
+    const inputMatch = text.match(/Action Input:\s*([\s\S]*?)(?=\n\s*(?:Observation|Thought:|Final Answer:|$))/i);
+    if (!inputMatch) return null;
 
-      try {
-        toolInput = JSON.parse(rawInput);
-      } catch {
-        // Fallback for simple string inputs
-        if (toolName === 'readFile') toolInput = { filePath: rawInput.replace(/^"|"$/g, '') };
-        else if (toolName === 'runCommand') toolInput = { command: rawInput.replace(/^"|"$/g, '') };
-        else if (toolName === 'listDirectory') toolInput = { dirPath: rawInput.replace(/^"|"$/g, '') };
-        else toolInput = { raw: rawInput };
+    let raw = inputMatch[1].trim();
+    // Strip markdown code fences if model wrapped the input in ```json ... ```
+    raw = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+
+    let toolInput = {};
+
+    // 1. Try direct JSON parse
+    try {
+      toolInput = JSON.parse(raw);
+      return { toolName, toolInput };
+    } catch {}
+
+    // 2. If direct parse failed, extract the balanced outer JSON block
+    const firstBrace = raw.search(/[{[]/);
+    if (firstBrace !== -1) {
+      const openChar = raw[firstBrace];
+      const closeChar = openChar === '{' ? '}' : ']';
+      let depth = 0;
+      let inString = false;
+      let escape = false;
+      let endIndex = -1;
+
+      for (let i = firstBrace; i < raw.length; i++) {
+        const ch = raw[i];
+        if (escape) {
+          escape = false;
+          continue;
+        }
+        if (ch === '\\') {
+          escape = true;
+          continue;
+        }
+        if (ch === '"') {
+          inString = !inString;
+          continue;
+        }
+        if (!inString) {
+          if (ch === openChar) depth++;
+          else if (ch === closeChar) {
+            depth--;
+            if (depth === 0) {
+              endIndex = i;
+              break;
+            }
+          }
+        }
       }
 
-      return { toolName, toolInput };
+      if (endIndex !== -1) {
+        const jsonCandidate = raw.slice(firstBrace, endIndex + 1);
+        try {
+          toolInput = JSON.parse(jsonCandidate);
+          return { toolName, toolInput };
+        } catch {}
+      }
     }
 
-    return null;
+    // 3. Fallback for simple string inputs
+    if (toolName === 'readFile') toolInput = { filePath: raw.replace(/^"|"$/g, '').trim() };
+    else if (toolName === 'runCommand') toolInput = { command: raw.replace(/^"|"$/g, '').trim() };
+    else if (toolName === 'listDirectory') toolInput = { dirPath: raw.replace(/^"|"$/g, '').trim() };
+    else toolInput = { raw };
+
+    return { toolName, toolInput };
   }
 
   /**
@@ -115,7 +173,18 @@ Final Answer: [Your complete response in Thai tsundere tone]
         const finalMatch = modelOutput.match(/Final Answer:\s*([\s\S]+)$/i);
         if (finalMatch) {
           finalAnswer = finalMatch[1].trim();
+        } else {
+          // If no explicit Final Answer prefix, strip out any stray Thought/Action/Observation lines
+          finalAnswer = finalAnswer
+            .replace(/(?:^|\n)Thought:[\s\S]*?(?=\n(?:Action:|Final Answer:|$))/gi, '')
+            .replace(/(?:^|\n)Action:[\s\S]*?(?=\n(?:Action Input:|Observation:|$))/gi, '')
+            .replace(/(?:^|\n)Action Input:[\s\S]*?(?=\n(?:Observation:|Final Answer:|$))/gi, '')
+            .replace(/(?:^|\n)Observation:[\s\S]*?(?=\n(?:Thought:|Final Answer:|$))/gi, '')
+            .trim();
         }
+
+        // Clean any signature leaks if duplicated
+        finalAnswer = finalAnswer.replace(/(?:^|\n)(?:มัลฟอยด์|myTsun)\s*\([^\)]*\)\s*(?=\n|$)/gi, '\n').trim();
 
         steps.push({
           step: iteration,
@@ -126,7 +195,7 @@ Final Answer: [Your complete response in Thai tsundere tone]
         if (onStep) onStep({ step: iteration, type: 'finish', output: finalAnswer });
 
         return {
-          reply: finalAnswer,
+          reply: finalAnswer || modelOutput,
           steps,
           toolCallsCount: steps.filter(s => s.type === 'tool_execution').length
         };
@@ -157,6 +226,7 @@ Final Answer: [Your complete response in Thai tsundere tone]
         type: 'tool_execution',
         toolName,
         toolInput,
+        targetFile: toolInput?.filePath || toolInput?.path || executionResult?.result?.filePath || null,
         status: executionResult.status,
         success: executionResult.success,
         observation: observationStr

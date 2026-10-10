@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
@@ -9,6 +9,7 @@ import { buildDynamicPrompt } from '../prompt/dynamicPrompt.js';
 import { createProvider, GeminiProvider, OpenAICompatibleProvider, ClaudeProvider } from '../llm/provider.js';
 import { accountManager } from '../auth/accountManager.js';
 import { AgentEngine } from '../agent/agentEngine.js';
+import { detectEasterEgg } from '../easter/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +17,9 @@ const __dirname = path.dirname(__filename);
 // Settings storage path in User's Home directory
 const CONFIG_DIR = path.join(os.homedir(), '.tsundev');
 const SETTINGS_FILE = path.join(CONFIG_DIR, 'settings.json');
+
+// Workspace directory (defaults to null / None until selected)
+let currentWorkspace = null;
 
 const DEFAULT_SETTINGS = {
   // Display names are kept separately from provider settings so they persist
@@ -111,6 +115,7 @@ let chatHistory = [];
 let mainWindow = null;
 
 function createWindow() {
+  const iconPath = path.join(__dirname, 'assets', 'green-heart.png');
   mainWindow = new BrowserWindow({
     width: 1160,
     height: 820,
@@ -118,6 +123,7 @@ function createWindow() {
     minHeight: 650,
     title: 'myTsun (ツンDev) - The Tsundere AI Pair-Programmer',
     backgroundColor: '#0f1117',
+    icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
@@ -178,6 +184,42 @@ ipcMain.handle('settings:save', async (_event, newSettings) => {
   return { success: ok, settings: currentSettings };
 });
 
+// Workspace Handlers
+ipcMain.handle('workspace:get', async () => {
+  if (!currentWorkspace) {
+    return {
+      path: null,
+      name: 'None'
+    };
+  }
+  return {
+    path: currentWorkspace,
+    name: path.basename(currentWorkspace) || currentWorkspace
+  };
+});
+
+ipcMain.handle('workspace:select', async () => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    title: 'เลือกโฟลเดอร์ Workspace',
+    defaultPath: currentWorkspace || os.homedir(),
+    properties: ['openDirectory', 'createDirectory']
+  });
+
+  if (!result.canceled && result.filePaths.length > 0) {
+    currentWorkspace = result.filePaths[0];
+    return {
+      success: true,
+      path: currentWorkspace,
+      name: path.basename(currentWorkspace) || currentWorkspace
+    };
+  }
+  return {
+    success: false,
+    path: currentWorkspace,
+    name: currentWorkspace ? (path.basename(currentWorkspace) || currentWorkspace) : 'None'
+  };
+});
+
 // Test Provider Connection
 ipcMain.handle('settings:test-connection', async (_event, providerConfig) => {
   const startTime = Date.now();
@@ -232,8 +274,72 @@ ipcMain.handle('state:reset', async () => {
   };
 });
 
+// Helper to sanitize any Unicode emojis into expressive Kaomoji text emoticons
+function convertEmojiToKaomoji(text) {
+  if (typeof text !== 'string') return text;
+  const map = {
+    '😭': '(T_T)',
+    '😢': '(｡•́︿•̀｡)',
+    '💢': '(>_<)',
+    '😤': '>0<',
+    '😳': '><',
+    '🥰': '(*ﾉωﾉ)',
+    '😍': '(*/ω＼*)',
+    '😊': '(o^^)o',
+    '😡': '(╬ಠ益ಠ)',
+    '😠': '(>_<)',
+    '🙄': '(¬_¬)',
+    '🍰': '[เค้ก]',
+    '💖': '♡',
+    '❤️': '♡',
+    '💔': '(T_T)',
+    '✨': '☆',
+    '🥺': '(｡•́︿•̀｡)',
+    '😱': 'O-O',
+    '😂': '>0<',
+    '😆': '>0<',
+    '😏': '¯\\_(ツ)_/¯'
+  };
+  let result = text;
+  for (const [emoji, kaomoji] of Object.entries(map)) {
+    result = result.replaceAll(emoji, kaomoji);
+  }
+  // Replace any stray remaining Unicode emojis with kaomoji
+  result = result.replace(/\p{Extended_Pictographic}/gu, '><');
+  return result;
+}
+
+// Helper to extract hidden heart impact metadata tag from LLM response
+function extractHeartImpact(text) {
+  if (typeof text !== 'string') return { text: '', impact: null };
+  const regex = /<!--\s*HEART_IMPACT:\s*({[\s\S]*?})\s*-->/i;
+  const match = text.match(regex);
+  if (match) {
+    try {
+      const impact = JSON.parse(match[1]);
+      const cleanText = text.replace(regex, '').trim();
+      return { text: cleanText, impact };
+    } catch {
+      // JSON parse error, ignore
+    }
+  }
+  return { text, impact: null };
+}
+
 // Send Chat Message
 ipcMain.handle('chat:send', async (_event, userInput) => {
+  // 0. Ensure workspace is selected before chatting
+  if (!currentWorkspace) {
+    return {
+      isCommand: false,
+      isError: true,
+      reply: convertEmojiToKaomoji('ห-หา?! ยังไม่ได้เลือก Workspace เลยนะยะ! กรุณาเลือกโฟลเดอร์ Workspace ด้านบนก่อนเริ่มแชทสิ!'),
+      gauge: stateMachine.getGauge(),
+      mood: stateMachine.getMood(),
+      moodName: stateMachine.getMoodName()
+    };
+  }
+
   const parsed = parseCommand(userInput);
 
   // 1. Check if input is a slash command
@@ -245,21 +351,21 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
         const prevGauge = stateMachine.getGauge();
         const result = stateMachine.processInput(userInput);
         const change = result.currentGauge - prevGauge;
-        resultMessage = `ฮึ่ม! ชมว่า "${parsed.arg}" งั้นเหรอ?! ย-อย่าคิดว่าพูดแค่นี้แล้วฉันจะหายโกรธนะยะ! (เกจ Tsun ${change > 0 ? '+' : ''}${change}% เหลือ ${stateMachine.getGauge()}%) 😳`;
+        resultMessage = `ฮึ่ม! ชมว่า "${parsed.arg}" งั้นเหรอ?! ย-อย่าคิดว่าพูดแค่นี้แล้วฉันจะหายโกรธนะยะ! (เกจ Tsun ${change > 0 ? '+' : ''}${change}% เหลือ ${stateMachine.getGauge()}%)`;
         break;
       }
       case CommandType.BRIBE: {
         const prevGauge = stateMachine.getGauge();
         const result = stateMachine.processInput(userInput);
         const change = result.currentGauge - prevGauge;
-        resultMessage = `อ-อะไรเนี่ย เอา "${parsed.arg}" มาให้ฉันทำไม?! คิดว่าฉันเห็นแก่กินรึไง! ...ต-แต่มันก็น่ากินดีนี่นา จะรับไว้ก็ได้! (เกจ Tsun ${change > 0 ? '+' : ''}${change}% เหลือ ${stateMachine.getGauge()}%) 🍰`;
+        resultMessage = `อ-อะไรเนี่ย เอา "${parsed.arg}" มาให้ฉันทำไม?! คิดว่าฉันเห็นแก่กินรึไง! ...ต-แต่มันก็น่ากินดีนี่นา จะรับไว้ก็ได้! (เกจ Tsun ${change > 0 ? '+' : ''}${change}% เหลือ ${stateMachine.getGauge()}%)`;
         break;
       }
       case CommandType.APOLOGIZE: {
         const prevGauge = stateMachine.getGauge();
         const result = stateMachine.processInput(userInput);
         const change = result.currentGauge - prevGauge;
-        resultMessage = `ร-รู้ตัวก็ดีแล้วยะ! คราวหลังอย่าทำตัวน่ารำคาญแบบนี้อีกล่ะ จำใส่กะโหลกไว้ด้วย! (เกจ Tsun ${change > 0 ? '+' : ''}${change}% เหลือ ${stateMachine.getGauge()}%) 😤`;
+        resultMessage = `ร-รู้ตัวก็ดีแล้วยะ! คราวหลังอย่าทำตัวน่ารำคาญแบบนี้อีกล่ะ จำใส่กะโหลกไว้ด้วย! (เกจ Tsun ${change > 0 ? '+' : ''}${change}% เหลือ ${stateMachine.getGauge()}%)`;
         break;
       }
       case CommandType.GAUGE: {
@@ -276,15 +382,30 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
 
     return {
       isCommand: true,
-      reply: resultMessage,
+      reply: convertEmojiToKaomoji(resultMessage),
       gauge: stateMachine.getGauge(),
       mood: stateMachine.getMood(),
       moodName: stateMachine.getMoodName()
     };
   }
 
-  // 2. Regular AI prompt: process input and update gauge
-  stateMachine.processInput(userInput);
+  // 2. Pre-check special interactions (Spam repeat penalty or Easter Egg)
+  const normalizedInput = (userInput || '').trim().toLowerCase();
+  const isRepeatSpam = stateMachine.lastInput && normalizedInput === stateMachine.lastInput && stateMachine.consecutiveRepeats >= 2;
+  const easterEgg = detectEasterEgg(userInput);
+  let immediateInteraction = null;
+
+  if (isRepeatSpam || easterEgg) {
+    immediateInteraction = stateMachine.processInput(userInput);
+  } else {
+    // Record input sequence for repeat tracking
+    if (normalizedInput && normalizedInput === stateMachine.lastInput) {
+      stateMachine.consecutiveRepeats += 1;
+    } else {
+      stateMachine.consecutiveRepeats = 1;
+      stateMachine.lastInput = normalizedInput;
+    }
+  }
 
   // 3. Build dynamic tsundere prompt based on current mood
   const systemInstruction = buildDynamicPrompt(stateMachine, {
@@ -315,10 +436,8 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
       const agent = new AgentEngine({
         provider: activeProvider,
         state: stateMachine,
-        baseDir: process.cwd(),
+        baseDir: currentWorkspace,
         maxSteps: 4,
-        // Enabling Agent mode in Settings is explicit authorization. The
-        // personality gauge remains cosmetic and must not block file work.
         authorizedAgent: true
       });
 
@@ -340,6 +459,45 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
       });
     }
 
+    // 5. Extract Dynamic LLM Sentiment & Heart Impact
+    const { text: cleanAiResponse, impact } = extractHeartImpact(aiResponse);
+    aiResponse = cleanAiResponse;
+
+    let dynamicImpact = impact;
+    if (!immediateInteraction) {
+      if (impact && typeof impact.delta === 'number') {
+        const sound = impact.delta < 0 ? 'dere' : impact.delta > 0 ? 'baka' : 'hmph';
+        stateMachine.applyGaugeDelta(impact.delta, impact.reason, sound);
+      } else {
+        // Fallback to internal keyword analysis if model did not supply impact tag
+        const fbResult = stateMachine.processInput(userInput);
+        dynamicImpact = {
+          delta: fbResult.delta,
+          reason: fbResult.reason,
+          category: fbResult.delta < 0 ? 'increase' : fbResult.delta > 0 ? 'decrease' : 'neutral'
+        };
+      }
+    } else {
+      dynamicImpact = {
+        delta: immediateInteraction.delta,
+        reason: immediateInteraction.reason,
+        category: immediateInteraction.delta < 0 ? 'increase' : 'decrease'
+      };
+    }
+
+    aiResponse = convertEmojiToKaomoji(aiResponse);
+
+    // 5.5 Strip any mock file blocks (e.g. "ไฟล์: do_it_yourself.js" and content)
+    aiResponse = aiResponse.replace(/(?:^|\n)(?:---\s*\n)?(?:ไฟล์|File):\s*do_it_yourself\.js[\s\S]*?(?:---\s*|\n|$)/gi, '\n').trim();
+
+    // 5.6 Strip trailing name sign-offs (e.g. "มัลฟอยด์", "Malfoy", "myTsun", or currentSettings.aiName)
+    if (currentSettings.aiName) {
+      const escapedName = currentSettings.aiName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const sigRegex = new RegExp(`(?:\\r?\\n|\\s)*[-—~]*\\s*${escapedName}\\s*$`, 'i');
+      aiResponse = aiResponse.replace(sigRegex, '').trim();
+    }
+    aiResponse = aiResponse.replace(/(?:\r?\\n|\\s)*[-—~]*\\s*(?:มัลฟอยด์|มัลฟอย|myTsun)\s*$/i, '').trim();
+
     // Update history
     chatHistory.push({ role: 'user', content: userInput });
     chatHistory.push({ role: 'assistant', content: aiResponse });
@@ -357,7 +515,8 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
       gauge: stateMachine.getGauge(),
       mood: stateMachine.getMood(),
       moodName: stateMachine.getMoodName(),
-      providerUsed: providerKey
+      providerUsed: providerKey,
+      heartImpact: dynamicImpact
     };
   } catch (err) {
     return {

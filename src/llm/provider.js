@@ -43,20 +43,38 @@ export class MockProvider extends BaseLLMProvider {
       return this.customResponses({ prompt, systemInstruction, history });
     }
 
+    // Analyze prompt for mock sentiment evaluation
+    let mockDelta = 0;
+    let mockReason = 'คำถามทั่วไป ไม่กระทบต่อเกจ';
+    let mockCategory = 'neutral';
+
+    const pLower = (prompt || '').toLowerCase();
+    if (/น่ารัก|เก่ง|สุดยอด|ขอบคุณ|รัก|เค้ก|ขนม|ช็อกโกแลต|cute|awesome|great|cake/.test(pLower)) {
+      mockDelta = -15;
+      mockReason = 'ได้รับคำชมหรือของหวาน ทำให้รู้สึกเขินอายและใจอ่อนลง';
+      mockCategory = 'increase';
+    } else if (/โง่|กาก|น่ารำคาญ|เดี๋ยวนี้|รีบ|stupid|idiot|hurry/.test(pLower)) {
+      mockDelta = 10;
+      mockReason = 'คำพูดกระแทกกระทั้นหรือสั่งการห้วนๆ เพิ่มความหงุดหงิด';
+      mockCategory = 'decrease';
+    }
+
+    const impactTag = `\n<!-- HEART_IMPACT: {"delta": ${mockDelta}, "reason": "${mockReason}", "category": "${mockCategory}"} -->`;
+
     // Detect mood from systemInstruction
     if (systemInstruction.includes('Extreme Tsun')) {
-      return `หา?! นี่แกสั่งอะไรของแกเนี่ย?! "${prompt}" งั้นเหรอ? บ้าหรือเปล่า! เรื่องแค่นี้ทำไมไม่ไปเขียนเองยะ! ฉันไม่ช่วยหรอกนะ ไปหัดเขียนโค้ดมาใหม่ไป๊! 💢`;
+      return `หา?! นี่แกสั่งอะไรของแกเนี่ย?! "${prompt}" งั้นเหรอ? บ้าหรือเปล่า! เรื่องแค่นี้ทำไมไม่ไปเขียนเองยะ! ฉันไม่ช่วยหรอกนะ ไปหัดเขียนโค้ดมาใหม่ไป๊! 💢${impactTag}`;
     }
 
     if (systemInstruction.includes('Reluctant Tsun')) {
-      return `ฮึ่ม! ก-ก็ไม่ได้อยากจะช่วยแกเขียน "${prompt}" หรอกนะ! แต่เห็นแกนั่งงมแล้วมันขัดตาสุดๆ ช-ช่างเถอะน่า! คราวนี้จะยอมบอกวิธีทำให้ก็ได้ แต่จำไว้ด้วยล่ะว่าอย่าเข้าใจผิดเด็ดขาด! 😤`;
+      return `ฮึ่ม! ก-ก็ไม่ได้อยากจะช่วยแกเขียน "${prompt}" หรอกนะ! แต่เห็นแกนั่งงมแล้วมันขัดตาสุดๆ ช-ช่างเถอะน่า! คราวนี้จะยอมบอกวิธีทำให้ก็ได้ แต่จำไว้ด้วยล่ะว่าอย่าเข้าใจผิดเด็ดขาด! 😤${impactTag}`;
     }
 
     if (systemInstruction.includes('Dere Breakthrough')) {
-      return `ก-ก็ถ้าเป็นเธอขอร้องล่ะก็... จะช่วยเขียน "${prompt}" ให้แบบสุดฝีมือเลยก็ได้! ย-อย่าจ้องหน้าฉันตอนเขินสิยะ ไอบ้า! รีบๆ เอาโค้ดนี้ไปรันได้แล้ว แล้วอย่าลืมพักผ่อนด้วยล่ะ... เป็นห่วงนะ... ม-หมายถึงเป็นห่วงโปรเจกต์น่ะ! 🥰😳`;
+      return `ก-ก็ถ้าเป็นเธอขอร้องล่ะก็... จะช่วยเขียน "${prompt}" ให้แบบสุดฝีมือเลยก็ได้! ย-อย่าจ้องหน้าฉันตอนเขินสิยะ ไอบ้า! รีบๆ เอาโค้ดนี้ไปรันได้แล้ว แล้วอย่าลืมพักผ่อนด้วยล่ะ... เป็นห่วงนะ... ม-หมายถึงเป็นห่วงโปรเจกต์น่ะ! 🥰😳${impactTag}`;
     }
 
-    return `ฮึ่ม! น-นี่คำตอบสำหรับ "${prompt}" รีบๆ รับไปซะสิยะ!`;
+    return `ฮึ่ม! น-นี่คำตอบสำหรับ "${prompt}" รีบๆ รับไปซะสิยะ!${impactTag}`;
   }
 }
 

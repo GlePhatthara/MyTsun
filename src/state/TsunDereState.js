@@ -133,6 +133,34 @@ export class TsunDereState {
   }
 
   /**
+   * Apply an external gauge delta (e.g. from LLM dynamic sentiment evaluation)
+   * @param {number} delta Amount to change gauge (-100 to +100)
+   * @param {string} [reason] Human-readable reason
+   * @param {string} [soundCue='hmph'] Sound cue to play
+   * @returns {object} Interaction result
+   */
+  applyGaugeDelta(delta, reason = '', soundCue = 'hmph') {
+    const prevGauge = this.gauge;
+    this.gauge = this._clamp(this.gauge + delta);
+    const actualDelta = this.gauge - prevGauge;
+    const currentMood = this.getMood();
+    const result = {
+      command: 'sentiment_analysis',
+      previousGauge: prevGauge,
+      currentGauge: this.gauge,
+      delta: actualDelta,
+      reason: reason || (actualDelta < 0 ? 'AI รู้สึกใจอ่อนลง' : actualDelta > 0 ? 'AI รู้สึกหงุดหงิดขึ้น' : 'ไม่กระทบต่อเกจ'),
+      soundCue: soundCue || (actualDelta < 0 ? 'dere' : actualDelta > 0 ? 'baka' : 'hmph'),
+      mood: currentMood.id,
+      moodLabel: currentMood.label,
+      toolsAllowed: currentMood.toolsAllowed,
+      blush: this.getBlushLevel()
+    };
+    this.history.push(result);
+    return result;
+  }
+
+  /**
    * Returns current mood object
    */
   getMood() {
@@ -167,15 +195,15 @@ export class TsunDereState {
    */
   getBlushLevel() {
     if (this.gauge >= 80) {
-      return { level: 0, emoji: '💢', label: 'โกรธจัด / เย็นชา' };
+      return { level: 0, emoji: '(>_<)', label: 'โกรธจัด / เย็นชา' };
     }
     if (this.gauge >= 40) {
-      return { level: 1, emoji: '😤', label: 'กอดอก / เมินหน้าหนี' };
+      return { level: 1, emoji: '>0<', label: 'กอดอก / เมินหน้าหนี' };
     }
     if (this.gauge >= 15) {
-      return { level: 2, emoji: '😳', label: 'หน้าแดง / ลุกลี้ลุกลน' };
+      return { level: 2, emoji: '><', label: 'หน้าแดง / ลุกลี้ลุกลน' };
     }
-    return { level: 3, emoji: '🥰', label: 'เขินตัวบิด / ยอมทำให้หมดใจ' };
+    return { level: 3, emoji: '(*ﾉωﾉ)', label: 'เขินตัวบิด / ยอมทำให้หมดใจ' };
   }
 
   /**

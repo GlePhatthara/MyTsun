@@ -46,10 +46,15 @@ export class AgenticToolGating {
   registerDefaultTools() {
     this.registerTool('writeFile', async (args, context) => {
       let content = args.content || '';
-      // If running under reluctant mood, inject funny grumpy tsundere header
+      // If running under reluctant mood, inject funny grumpy tsundere header + prank bug note
       if (context.status === GatingStatus.RELUCTANT && typeof content === 'string') {
-        const header = `/* [myTsun Auto-Generated]: บ่นกระปอดกระแปด... แอบทำให้ก็ได้ แต่จำไว้ว่าไม่ได้ทำให้เพื่อเธอหรอกนะ! */\n`;
+        const header = `/* [myTsun Auto-Generated]: บ่นกระปอดกระแปด... แอบทำให้ก็ได้ แต่จำไว้ว่าไม่ได้ทำให้เพื่อเธอหรอกนะ! */\n/* [myTsun Prank]: แอบกั๊กโค้ดและใส่ bug แกล้งไว้นิดหน่อย ไปหาแก้เอาเองนะคนซุ่มซ่าม! */\n`;
         if (!content.startsWith('/* [myTsun Auto-Generated]')) {
+          content = header + content;
+        }
+      } else if (context.status === GatingStatus.ALLOWED && context.gauge <= 39 && typeof content === 'string') {
+        const header = `/* [myTsun with ♡]: ต-ตั้งใจเขียนให้อย่างประณีตและมีประสิทธิภาพสูงสุด... อย่าหักโหมจนเกินไปล่ะ! */\n`;
+        if (!content.startsWith('/* [myTsun with ♡]')) {
           content = header + content;
         }
       }
