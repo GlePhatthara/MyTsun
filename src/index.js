@@ -1,5 +1,5 @@
 /**
- * TsunDev (ツンDev)
+ * myTsun (ツンDev)
  * The Tsundere AI Pair-Programmer for Stupid Hackathon Thailand (SHTX)
  */
 
@@ -13,7 +13,7 @@ export {
   OpenAICompatibleProvider,
   createProvider
 } from './llm/provider.js';
-export { TsunDevChatSession, startCliChat } from './cli/chat.js';
+export { myTsunChatSession, startCliChat } from './cli/chat.js';
 export * from './ui/index.js';
 export * from './tools/index.js';
 export * from './sound/index.js';

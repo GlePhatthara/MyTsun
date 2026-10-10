@@ -1,5 +1,5 @@
 /**
- * Agentic Tools for TsunDev
+ * Agentic Tools for myTsun
  * Provides actual file operations and shell execution with safety checks.
  */
 

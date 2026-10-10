@@ -1,5 +1,5 @@
 /**
- * TsunDereState - Core State Machine for TsunDev
+ * TsunDereState - Core State Machine for myTsun
  * Tracks Tsun-Dere gauge (0 - 100%), mood levels, and tool access permissions.
  *
  * Gauge Reference:
@@ -92,6 +92,14 @@ export class TsunDereState {
       return MOODS.RELUCTANT_TSUN;
     }
     return MOODS.DERE_BREAKTHROUGH;
+  }
+
+  /**
+   * Returns current mood label / name
+   * @returns {string}
+   */
+  getMoodName() {
+    return this.getMood().label;
   }
 
   /**

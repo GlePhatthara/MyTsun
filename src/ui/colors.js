@@ -1,5 +1,5 @@
 /**
- * Terminal Color and Formatting Utilities for TsunDev
+ * Terminal Color and Formatting Utilities for myTsun
  * Provides ANSI color styling, gradients, and string width calculation.
  */
 

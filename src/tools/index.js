@@ -1,5 +1,5 @@
 /**
- * Tools module export for TsunDev
+ * Tools module export for myTsun
  */
 
 export * from './agenticTools.js';

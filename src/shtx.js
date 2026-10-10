@@ -1,1 +1,1 @@
-console.log("TsunDev x SHTX Winner 2026!");
+console.log("myTsun x SHTX Winner 2026!");

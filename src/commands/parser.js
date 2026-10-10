@@ -1,5 +1,5 @@
 /**
- * Command Parser for TsunDev
+ * Command Parser for myTsun
  * Handles slash commands (/praise, /bribe, /apologize, /gauge) and general inputs.
  */
 

@@ -1,4 +1,4 @@
-# PROJECT SPECIFICATION: TsunDev (ツンDev)
+# PROJECT SPECIFICATION: myTsun (ツンDev)
 > **The Tsundere AI Pair-Programmer for Stupid Hackathon Thailand (SHTX)**
 > *"AI Pair-Programmer ที่ไม่อยากช่วยคุณเขียนโค้ด! ยิ่งสั่งยิ่งด่า ยิ่งง้อยิ่งเขิน"*
 
@@ -8,7 +8,7 @@
 
 ในการเขียนโปรแกรมทั่วไป AI Copilot มีหน้าที่ช่วยเหลือและเอาใจโปรแกรมเมอร์ทุกอย่าง... **แต่นั่นมันน่าเบื่อเกินไปสำหรับ Stupid Hackathon!**
 
-**TsunDev** คือ CLI / TUI Pair-Programmer ที่มาพร้อมบุคลิก **Loud Tsundere (สาวซึนปากร้าย)** และระบบ **Tsun-Dere Gauge (0 - 100%)**:
+**myTsun** คือ CLI / TUI Pair-Programmer ที่มาพร้อมบุคลิก **Loud Tsundere (สาวซึนปากร้าย)** และระบบ **Tsun-Dere Gauge (0 - 100%)**:
 - **ตอนเริ่มโปรแกรม:** เกจ Tsun 100% สั่งอะไรก็ปฏิเสธ ด่ากลับ ไม่ยอมเขียนโค้ด หรือแกล้งเขียนโค้ดพังๆ มาให้
 - **วิธีทำให้ทำงาน:** ผู้พัฒนาต้องใช้คำสั่งง้อ พิมพ์ชมเชย ส่งขนมเค้ก ASCII ให้บอท จนหลอด Dere เพิ่มขึ้น
 - **เมื่อ Dere ถึงขีดสุด:** บอทจะหน้าแดง (ASCII Blushing) และยอมรัน Agentic Tool ช่วยเขียนโค้ดและแก้งานให้อย่างสมบูรณ์แบบ พร้อมทิ้งท้ายว่า *"ก-ก็ไม่ได้อยากทำให้ซะหน่อย!"*
@@ -50,7 +50,7 @@
                             │ User Input / Slash Commands
                             ▼
 ┌────────────────────────────────────────────────────────┐
-│               TsunDev Core State Engine                │
+│               myTsun Core State Engine                │
 │  - Mood State Machine (Tsun/Dere Gauge 0-100%)         │
 │  - Interaction Parser (/praise, /bribe, anti-spam)     │
 └───────────────┬────────────────────────┬───────────────┘

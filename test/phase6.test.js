@@ -11,7 +11,7 @@ test('Phase 6: README.md exists and contains complete documentation', () => {
   const content = fs.readFileSync(readmePath, 'utf8');
 
   // Check badges & title
-  assert.match(content, /TsunDev/i);
+  assert.match(content, /myTsun/i);
   assert.match(content, /Stupid Hackathon Thailand/i);
 
   // Check key sections

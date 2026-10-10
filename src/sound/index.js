@@ -1,5 +1,5 @@
 /**
- * Sound FX Engine for TsunDev (Stupid Hackathon Edition)
+ * Sound FX Engine for myTsun (Stupid Hackathon Edition)
  * Provides cross-platform sound effects via terminal bells and system beeps/audio.
  */
 

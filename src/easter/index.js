@@ -1,5 +1,5 @@
 /**
- * Easter Egg definitions & detection for TsunDev
+ * Easter Egg definitions & detection for myTsun
  */
 
 export const EASTER_EGGS = {

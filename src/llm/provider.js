@@ -1,5 +1,5 @@
 /**
- * LLM Provider Module for TsunDev
+ * LLM Provider Module for myTsun
  * Supports Google Gemini (Default), OpenAI/Compatible (Claude/Ollama), and MockProvider (offline/testing).
  */
 
@@ -73,7 +73,7 @@ export class GeminiProvider extends BaseLLMProvider {
    */
   constructor(options = {}) {
     const apiKey = options.apiKey || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : '');
-    const model = options.model || (typeof process !== 'undefined' ? process.env?.GEMINI_MODEL : '') || 'gemini-1.5-flash';
+    const model = options.model || (typeof process !== 'undefined' ? process.env?.GEMINI_MODEL : '') || 'gemini-3.8-flash';
     super({ name: 'GeminiProvider', model, ...options });
     this.apiKey = apiKey;
     this.baseUrl = options.baseUrl || 'https://generativelanguage.googleapis.com/v1beta';
@@ -213,7 +213,89 @@ export class OpenAICompatibleProvider extends BaseLLMProvider {
     }
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content?.trim() || '';
+    const choice = data.choices?.[0];
+    return choice?.message?.content?.trim() || '';
+  }
+}
+
+/**
+ * Anthropic Claude Provider
+ */
+export class ClaudeProvider extends BaseLLMProvider {
+  /**
+   * @param {object} options
+   * @param {string} [options.apiKey]
+   * @param {string} [options.model]
+   * @param {string} [options.baseUrl]
+   */
+  constructor(options = {}) {
+    const apiKey = options.apiKey || (typeof process !== 'undefined' ? process.env?.ANTHROPIC_API_KEY : '');
+    const model = options.model || (typeof process !== 'undefined' ? process.env?.ANTHROPIC_MODEL : '') || 'claude-3-5-sonnet-20241022';
+    const baseUrl = options.baseUrl || 'https://api.anthropic.com/v1';
+    super({ name: 'ClaudeProvider', model, ...options });
+    this.apiKey = apiKey;
+    this.baseUrl = baseUrl.replace(/\/+$/, '');
+  }
+
+  async generate({ prompt, systemInstruction = '', history = [], temperature = 0.7 }) {
+    if (!this.apiKey) {
+      throw new Error('ANTHROPIC_API_KEY is not set. Please provide API Key in settings or environment variable.');
+    }
+
+    const endpoint = `${this.baseUrl}/messages`;
+    const messages = [];
+
+    if (Array.isArray(history)) {
+      for (const item of history) {
+        messages.push({
+          role: item.role === 'model' || item.role === 'assistant' ? 'assistant' : 'user',
+          content: item.content || ''
+        });
+      }
+    }
+
+    messages.push({ role: 'user', content: prompt });
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': this.apiKey,
+      'anthropic-version': '2023-06-01'
+    };
+
+    const requestBody = {
+      model: this.model,
+      max_tokens: 2048,
+      temperature: Number(temperature) || 0.7,
+      messages
+    };
+
+    if (systemInstruction && systemInstruction.trim().length > 0) {
+      requestBody.system = systemInstruction;
+    }
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      let errMsg = `Claude API Error (${response.status} ${response.statusText})`;
+      try {
+        const parsed = JSON.parse(errText);
+        if (parsed.error?.message) {
+          errMsg += `: ${parsed.error.message}`;
+        }
+      } catch {
+        errMsg += `: ${errText}`;
+      }
+      throw new Error(errMsg);
+    }
+
+    const data = await response.json();
+    const textBlock = data.content?.find(c => c.type === 'text');
+    return textBlock?.text?.trim() || '';
   }
 }
 
@@ -223,14 +305,39 @@ export class OpenAICompatibleProvider extends BaseLLMProvider {
  * @returns {BaseLLMProvider}
  */
 export function createProvider(options = {}) {
-  const providerType = options.provider || (typeof process !== 'undefined' ? process.env?.LLM_PROVIDER : null);
+  const providerType = (options.provider || (typeof process !== 'undefined' ? process.env?.LLM_PROVIDER : null) || '').toLowerCase();
 
   if (providerType === 'mock') {
     return new MockProvider(options);
   }
 
-  if (providerType === 'openai' || providerType === 'ollama') {
-    return new OpenAICompatibleProvider(options);
+  if (providerType === 'claude' || providerType === 'anthropic') {
+    return new ClaudeProvider(options);
+  }
+
+  if (providerType === 'openai') {
+    return new OpenAICompatibleProvider({
+      baseUrl: options.baseUrl || 'https://api.openai.com/v1',
+      model: options.model || 'gpt-4o-mini',
+      ...options
+    });
+  }
+
+  if (providerType === 'openrouter') {
+    return new OpenAICompatibleProvider({
+      baseUrl: options.baseUrl || 'https://openrouter.ai/api/v1',
+      model: options.model || 'meta-llama/llama-3.3-70b-instruct',
+      ...options
+    });
+  }
+
+  if (providerType === 'ollama') {
+    return new OpenAICompatibleProvider({
+      baseUrl: options.baseUrl || 'http://localhost:11434/v1',
+      model: options.model || 'llama3',
+      apiKey: options.apiKey || 'ollama',
+      ...options
+    });
   }
 
   // If apiKey is explicitly provided or GEMINI_API_KEY exists, use Gemini
@@ -244,6 +351,12 @@ export function createProvider(options = {}) {
     return new OpenAICompatibleProvider(options);
   }
 
+  const claudeKey = typeof process !== 'undefined' ? process.env?.ANTHROPIC_API_KEY : '';
+  if (claudeKey) {
+    return new ClaudeProvider(options);
+  }
+
   // Default fallback when no key is set: MockProvider for instant zero-config usability!
   return new MockProvider(options);
 }
+

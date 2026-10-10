@@ -12,7 +12,7 @@ import {
   runCommandTool,
   resolveSafePath
 } from '../src/tools/index.js';
-import { TsunDevChatSession } from '../src/cli/chat.js';
+import { myTsunChatSession } from '../src/cli/chat.js';
 import { MockProvider } from '../src/llm/provider.js';
 
 test('AgenticTools - resolveSafePath protects against directory traversal', () => {
@@ -51,11 +51,11 @@ test('AgenticTools - writeFileTool and readFileTool operate properly', async () 
 
 test('AgenticTools - runCommandTool executes command and captures output', async () => {
   const result = await runCommandTool({
-    command: 'node -e "console.log(\'TsunDev Agentic Tool Ready\')"'
+    command: 'node -e "console.log(\'myTsun Agentic Tool Ready\')"'
   });
 
   assert.equal(result.exitCode, 0);
-  assert.equal(result.stdout, 'TsunDev Agentic Tool Ready');
+  assert.equal(result.stdout, 'myTsun Agentic Tool Ready');
 
   // Test dangerous command prevention
   await assert.rejects(
@@ -136,14 +136,14 @@ test('AgenticToolGating - Dere Breakthrough (0-39%) UNLOCKS full tool execution 
 
     const execRes = await gating.execute('writeFile', {
       filePath: 'lovely_app.js',
-      content: 'console.log("Success with TsunDev Dere Mode!");'
+      content: 'console.log("Success with myTsun Dere Mode!");'
     });
 
     assert.equal(execRes.success, true);
     assert.equal(execRes.blocked, false);
 
     const fileContent = await fs.readFile(path.join(tempDir, 'lovely_app.js'), 'utf-8');
-    assert.equal(fileContent, 'console.log("Success with TsunDev Dere Mode!");');
+    assert.equal(fileContent, 'console.log("Success with myTsun Dere Mode!");');
   } finally {
     await fs.rm(tempDir, { recursive: true, force: true });
   }
@@ -153,7 +153,7 @@ test('ChatSession Integration - /write and /run are blocked at 100% and succeed 
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tsundev-chat-'));
   try {
     const state = new TsunDereState(100);
-    const session = new TsunDevChatSession({
+    const session = new myTsunChatSession({
       state,
       baseDir: tempDir,
       provider: new MockProvider()
@@ -169,7 +169,7 @@ test('ChatSession Integration - /write and /run are blocked at 100% and succeed 
     assert.match(runBlocked.reply, /TOOL BLOCKED/);
     assert.equal(runBlocked.toolExecution.blocked, true);
 
-    // 3. Flatter and bribe TsunDev to drop gauge into Dere Breakthrough (< 40%)
+    // 3. Flatter and bribe myTsun to drop gauge into Dere Breakthrough (< 40%)
     await session.handleTurn('/bribe chocolate parfait'); // -35
     await session.handleTurn('/bribe เค้กสตรอว์เบอร์รี');  // -35
     await session.handleTurn('/praise น่ารักและเก่งที่สุด'); // -25
@@ -202,7 +202,7 @@ test('ChatSession Integration - Intercepts and executes agentic LLM tool calls w
 TOOL_CALL: writeFile {"filePath": "auto_generated.js", "content": "export const ok = true;"}`
     });
 
-    const session = new TsunDevChatSession({
+    const session = new myTsunChatSession({
       state,
       baseDir: tempDir,
       provider: mockProvider

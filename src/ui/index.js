@@ -1,5 +1,5 @@
 /**
- * TsunDev TUI Module
+ * myTsun TUI Module
  * Exports all UI, ASCII Avatar, and formatting components.
  */
 

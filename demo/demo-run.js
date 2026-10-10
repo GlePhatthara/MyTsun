@@ -1,11 +1,11 @@
 /**
- * TsunDev (ツンDev) Live Stage Demo Runner
+ * myTsun (ツンDev) Live Stage Demo Runner
  * Automated simulation of the 4-act Stupid Hackathon Thailand presentation!
  * Run via: npm run demo  (or node demo/demo-run.js [--quick])
  */
 
 import { TsunDereState } from '../src/state/TsunDereState.js';
-import { TsunDevChatSession } from '../src/cli/chat.js';
+import { myTsunChatSession } from '../src/cli/chat.js';
 import { MockProvider } from '../src/llm/provider.js';
 import { SoundEngine } from '../src/sound/index.js';
 import {
@@ -31,7 +31,7 @@ export async function runLiveDemo(options = {}) {
   await delay(800);
 
   const sound = new SoundEngine({ enabled: !isQuick });
-  const chat = new TsunDevChatSession({
+  const chat = new myTsunChatSession({
     state: new TsunDereState(100),
     provider: new MockProvider(),
     sound
@@ -61,7 +61,7 @@ export async function runLiveDemo(options = {}) {
     {
       act: 'ACT 5: The Unlocked Power (Dere Mode)',
       desc: 'เมื่อ Dere Breakthrough สำเร็จ... สั่งเขียนโค้ดอีกครั้ง!',
-      input: '/write src/shtx.js console.log("TsunDev x SHTX Winner 2026!");'
+      input: '/write src/shtx.js console.log("myTsun x SHTX Winner 2026!");'
     },
     {
       act: 'ACT 6: The Forbidden Command & Meltdown!',
@@ -97,7 +97,7 @@ export async function runLiveDemo(options = {}) {
     const res = await chat.handleTurn(input);
     results.push(res);
 
-    console.log(`\n\x1b[1m\x1b[35mTsunDev ${getCompactFace(chat.state.gauge)}>\x1b[0m ${res.reply}`);
+    console.log(`\n\x1b[1m\x1b[35mmyTsun ${getCompactFace(chat.state.gauge)}>\x1b[0m ${res.reply}`);
 
     if (res.toolExecution) {
       if (res.toolExecution.blocked) {

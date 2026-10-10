@@ -1,5 +1,5 @@
 /**
- * TUI Renderer for TsunDev
+ * TUI Renderer for myTsun
  * Renders complete terminal UI frames, side-by-side avatar cards, and banners.
  */
 
@@ -13,7 +13,7 @@ export const LOGO_ASCII = [
   '  | | / __| | | | \'_ \\  | | | |/ _ \\ \\ / /',
   '  | | \\__ \\ |_| | | | | | |_| |  __/\\ V / ',
   '  |_| |___/\\__,_|_| |_| |____/ \\___| \\_/  ',
-  '     ツンデレ AI Pair-Programmer (TsunDev - SHTX)   '
+  '     ツンデレ AI Pair-Programmer (myTsun - SHTX)   '
 ];
 
 /**

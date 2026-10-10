@@ -1,5 +1,5 @@
 /**
- * CLI Interactive Chat Console for TsunDev
+ * CLI Interactive Chat Console for myTsun
  * Provides an interactive terminal REPL connecting user, TsunDereState, Dynamic Prompt, and LLM Provider.
  */
 
@@ -19,7 +19,7 @@ import {
   AVATAR_LEVELS
 } from '../ui/index.js';
 
-export class TsunDevChatSession {
+export class myTsunChatSession {
   /**
    * @param {object} [options]
    * @param {TsunDereState} [options.state]
@@ -86,7 +86,7 @@ export class TsunDevChatSession {
   }
 
   /**
-   * Handle a single user turn and get TsunDev response
+   * Handle a single user turn and get myTsun response
    * @param {string} userInput
    * @returns {Promise<{ reply: string, stateDelta: object, gauge: number, mood: object, toolExecution?: object }>}
    */
@@ -357,9 +357,9 @@ export class TsunDevChatSession {
         const execRes = await this.toolGating.execute(call.tool, call.args);
         executedTools.push(execRes);
         if (execRes.blocked) {
-          reply += `\n\n[⛔ TsunDev Gating: สกัดกั้น Tool "${call.tool}"! ${execRes.message}]`;
+          reply += `\n\n[⛔ myTsun Gating: สกัดกั้น Tool "${call.tool}"! ${execRes.message}]`;
         } else if (execRes.success) {
-          reply += `\n\n[✅ TsunDev Gating: ดำเนินการ Tool "${call.tool}" สำเร็จ! ${execRes.message}]`;
+          reply += `\n\n[✅ myTsun Gating: ดำเนินการ Tool "${call.tool}" สำเร็จ! ${execRes.message}]`;
         }
       }
     } catch (err) {
@@ -389,7 +389,7 @@ export class TsunDevChatSession {
  * Starts interactive CLI chat loop
  */
 export async function startCliChat(options = {}) {
-  const session = new TsunDevChatSession(options);
+  const session = new myTsunChatSession(options);
   const rl = readline.createInterface({ input, output });
 
   console.log(renderWelcomeBanner({
@@ -405,7 +405,7 @@ export async function startCliChat(options = {}) {
       const trimmed = line.trim();
 
       if (trimmed.toLowerCase() === '/exit' || trimmed.toLowerCase() === 'exit') {
-        console.log('\n\x1b[35mTsunDev >\x1b[0m ฮึ่ม! จะไปไหนก็ไปเลยนะ! ไม่ได้ง้อให้อยู่ต่อสักหน่อย... บ๊ายบายย่ะ! 💢\n');
+        console.log('\n\x1b[35mmyTsun >\x1b[0m ฮึ่ม! จะไปไหนก็ไปเลยนะ! ไม่ได้ง้อให้อยู่ต่อสักหน่อย... บ๊ายบายย่ะ! 💢\n');
         break;
       }
 
@@ -422,7 +422,7 @@ export async function startCliChat(options = {}) {
 
       // Print quick status summary
       console.log(`\n${renderTurnSummary(result, session.state, true)}`);
-      console.log(`\x1b[35mTsunDev >\x1b[0m ${result.reply}\n`);
+      console.log(`\x1b[35mmyTsun >\x1b[0m ${result.reply}\n`);
     }
   } finally {
     rl.close();

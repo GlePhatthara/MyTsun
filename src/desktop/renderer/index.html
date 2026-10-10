@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>myTsun — AI Pair-Programmer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="brand">
+        <span class="brand-title">myTsun</span>
+        <span class="brand-separator">/</span>
+        <span class="brand-tagline">AI Pair-Programmer ที่ไม่อยากช่วยคุณเขียนโค้ด</span>
+      </div>
+      <div class="top-actions">
+        <button class="provider-pill" id="currentProviderBadge" title="คลิกเพื่อตั้งค่า AI Provider">
+          <span class="provider-dot"></span>
+          <span id="currentProviderLabel">AI: Gemini 1.5 Flash</span>
+        </button>
+        <button id="btnOpenSettings" class="btn btn-ghost" title="ตั้งค่าเชื่อมต่อ AI Account / API">
+          ตั้งค่า AI
+        </button>
+        <button id="btnReset" class="btn btn-ghost" title="รีเซ็ตอารมณ์เกจกลับเป็น 100% Extreme Tsun">
+          รีเซ็ตสถานะ
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="main-body">
+      <!-- Left Sidebar: Unified Devtool Column -->
+      <aside class="sidebar">
+        <!-- Anime Avatar Profile Header -->
+        <div class="avatar-card" id="avatarCard">
+          <div class="avatar-meta">
+            <span class="avatar-name">myTsun</span>
+            <span class="avatar-mood-badge" id="avatarMoodBadge">Extreme Tsun</span>
+          </div>
+          <div class="avatar-face" id="avatarFace">
+            <img class="avatar-img" id="avatarImg" src="assets/high tsun.png" alt="Tsun Avatar" />
+          </div>
+          <blockquote class="avatar-dialogue" id="avatarDialogue">
+            "หา?! ยืนบื้ออะไรอยู่ยะ! อย่าคิดว่าจะสั่งงานฉันง่ายๆ เชียวนะ!"
+          </blockquote>
+        </div>
+
+        <!-- Telemetry Gauge -->
+        <div class="gauge-card">
+          <div class="gauge-header">
+            <span class="gauge-title">TSUN-DERE TELEMETRY</span>
+            <span class="gauge-percent" id="gaugePercentText">100%</span>
+          </div>
+          <div class="gauge-track">
+            <div class="gauge-fill" id="gaugeBar" style="width: 100%;"></div>
+          </div>
+          <div class="gauge-scale">
+            <span>0% DERE</span>
+            <span>50% RELUCTANT</span>
+            <span>100% TSUN</span>
+          </div>
+        </div>
+
+        <!-- Slash Commands Bar -->
+        <div class="quick-actions-card">
+          <div class="card-subtitle">QUICK COMMANDS</div>
+          <div class="action-grid">
+            <button class="action-btn" data-cmd="/praise เธอเก่งและน่ารักที่สุดเลย!" title="ชมเชยเพื่อลด Tsun">
+              <span class="action-cmd">/praise</span>
+              <span class="action-desc">ชมเชย</span>
+            </button>
+            <button class="action-btn" data-cmd="/bribe เค้กสตรอว์เบอร์รีสุดหรู" title="ติดสินบนด้วยของกิน">
+              <span class="action-cmd">/bribe</span>
+              <span class="action-desc">ขนมเค้ก</span>
+            </button>
+            <button class="action-btn" data-cmd="/apologize" title="กล่าวคำขอโทษอย่างจริงใจ">
+              <span class="action-cmd">/apologize</span>
+              <span class="action-desc">ขอโทษ</span>
+            </button>
+            <button class="action-btn" data-cmd="/gauge" title="ตรวจเช็กระดับเกจ">
+              <span class="action-cmd">/gauge</span>
+              <span class="action-desc">ตรวจเกจ</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Panel: Linear-Style Minimal Feed -->
+      <main class="chat-panel">
+        <div class="chat-messages" id="chatMessages">
+          <!-- Welcome Message -->
+          <article class="msg-item bot-msg">
+            <header class="msg-header">
+              <span class="msg-author">myTsun</span>
+              <span class="msg-status-tag" id="welcomeStatusTag">Extreme Tsun 100%</span>
+            </header>
+            <div class="msg-body">
+              <p>หา?! ม-มองอะไรยะ! นึกว่าจะสั่งให้ฉันช่วยเขียนโค้ดได้ตามใจชอบรึไง!</p>
+              <p>ตอนนี้เกจ Tsun ฉันอยู่ที่ <strong>100%</strong> เชียวนะ สั่งอะไรมาฉันก็ไม่ทำให้หรอก... บ-บ้าจริง! ถ้าอยากให้ช่วยก็ลองหาของอร่อยๆ มาง้อก่อนสิยะ!</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- Chat Command Bar Composer -->
+        <div class="chat-input-wrapper">
+          <div class="chat-input-box">
+            <form id="chatForm" class="chat-form">
+              <div class="input-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="4 17 10 11 4 5"></polyline>
+                  <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
+              </div>
+              <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Ask myTsun or enter commands (/praise, /bribe, /write)..." 
+                autocomplete="off"
+              />
+              <button type="submit" id="btnSend" class="btn btn-send" aria-label="ส่งข้อความ">
+                <span>Send</span>
+                <kbd class="key-badge">↵</kbd>
+              </button>
+            </form>
+          </div>
+          <div class="input-hints">
+            <span>Tip: ลด Tsun ให้ต่ำกว่า 40% ด้วย <code>/praise</code> หรือ <code>/bribe</code> เพื่อปลดล็อกโหมดเขียนโค้ด (Dere Breakthrough)</span>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- AI Account Connection Modal -->
+    <div class="modal-backdrop" id="settingsModal" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <h2>ตั้งค่าผู้ให้บริการ AI (AI Provider)</h2>
+            <p class="modal-subtitle">กำหนดค่า API Key หรือเชื่อมต่อ Local LLM โมเดลที่ต้องการ</p>
+          </div>
+          <button class="modal-close" id="btnCloseModal" aria-label="ปิด">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Provider Tabs -->
+          <div class="provider-tabs" id="providerTabs">
+            <button class="tab-btn active" data-tab="gemini">Google Gemini</button>
+            <button class="tab-btn" data-tab="openai">OpenAI</button>
+            <button class="tab-btn" data-tab="claude">Anthropic Claude</button>
+            <button class="tab-btn" data-tab="openrouter">OpenRouter</button>
+            <button class="tab-btn" data-tab="ollama">Local Ollama</button>
+            <button class="tab-btn" data-tab="mock">Offline Mock</button>
+          </div>
+
+          <!-- Tab Contents -->
+          <div class="tab-content" id="tabContentContainer">
+            <!-- Gemini Tab -->
+            <div class="tab-pane active" id="pane-gemini">
+              <div class="form-group">
+                <label for="geminiApiKey">Gemini API Key</label>
+                <input type="password" id="geminiApiKey" placeholder="AIzaSy..." />
+                <small class="helper-text">รับ API Key ฟรีได้จาก Google AI Studio</small>
+              </div>
+              <div class="form-group">
+                <label for="geminiModel">Model</label>
+                <select id="geminiModel">
+                  <option value="gemini-3.8-flash" selected>gemini-3.8-flash (แนะนำ รวดเร็วและแม่นยำสูง)</option>
+                  <option value="gemini-3.8-pro">gemini-3.8-pro (รุ่นเรือธง ความสามารถสูงสุด)</option>
+                  <option value="gemini-3.0-flash">gemini-3.0-flash</option>
+                  <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- OpenAI Tab -->
+            <div class="tab-pane" id="pane-openai">
+              <div class="form-group">
+                <label for="openaiApiKey">OpenAI API Key</label>
+                <input type="password" id="openaiApiKey" placeholder="sk-..." />
+              </div>
+              <div class="form-group">
+                <label for="openaiModel">Model</label>
+                <select id="openaiModel">
+                  <option value="gpt-4o-mini">gpt-4o-mini (คุ้มค่า รวดเร็ว)</option>
+                  <option value="gpt-4o">gpt-4o (โมเดลมาตรฐานเรือธง)</option>
+                  <option value="o3-mini">o3-mini (โมเดลคิดวิเคราะห์เหตุผล)</option>
+                  <option value="o1">o1 (โมเดลเหตุผลระดับสูง)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="openaiBaseUrl">Base URL (ถ้าใช้ proxy หรือ compatible API)</label>
+                <input type="text" id="openaiBaseUrl" value="https://api.openai.com/v1" />
+              </div>
+            </div>
+
+            <!-- Claude Tab -->
+            <div class="tab-pane" id="pane-claude">
+              <div class="form-group">
+                <label for="claudeApiKey">Anthropic API Key</label>
+                <input type="password" id="claudeApiKey" placeholder="sk-ant-..." />
+              </div>
+              <div class="form-group">
+                <label for="claudeModel">Model</label>
+                <select id="claudeModel">
+                  <option value="claude-3-7-sonnet-20250219" selected>claude-3-7-sonnet-20250219 (รุ่นล่าสุด)</option>
+                  <option value="claude-3-5-sonnet-20241022">claude-3-5-sonnet-20241022</option>
+                  <option value="claude-3-5-haiku-20241022">claude-3-5-haiku-20241022</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- OpenRouter Tab -->
+            <div class="tab-pane" id="pane-openrouter">
+              <div class="form-group">
+                <label for="openrouterApiKey">OpenRouter API Key</label>
+                <input type="password" id="openrouterApiKey" placeholder="sk-or-v1-..." />
+              </div>
+              <div class="form-group">
+                <label for="openrouterModel">Model Identifier</label>
+                <input type="text" id="openrouterModel" value="meta-llama/llama-3.3-70b-instruct" />
+                <small class="helper-text">เช่น deepseek/deepseek-chat, anthropic/claude-3.7-sonnet, meta-llama/llama-3.3-70b-instruct</small>
+              </div>
+            </div>
+
+            <!-- Ollama Tab -->
+            <div class="tab-pane" id="pane-ollama">
+              <div class="form-group">
+                <label for="ollamaBaseUrl">Ollama Server Endpoint</label>
+                <input type="text" id="ollamaBaseUrl" value="http://localhost:11434/v1" />
+                <small class="helper-text">เปิดใช้งานบนเครื่องด้วยคำสั่ง <code>ollama serve</code></small>
+              </div>
+              <div class="form-group">
+                <label for="ollamaModel">Local Model Name</label>
+                <input type="text" id="ollamaModel" value="llama3.3" placeholder="llama3.3, deepseek-r1, qwen2.5-coder" />
+              </div>
+            </div>
+
+            <!-- Mock Tab -->
+            <div class="tab-pane" id="pane-mock">
+              <div class="mock-notice">
+                <h3>โหมดจำลองออฟไลน์ (Offline Mock)</h3>
+                <p>เหมาะสำหรับการเดโม นำเสนอบนเวที หรือทดสอบการทำงานของระบบ Tsundere โดยไม่ต้องเชื่อมต่ออินเทอร์เน็ตหรือใช้โควตา API Key</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Connection Test Feedback -->
+          <div class="test-feedback" id="testFeedback" style="display: none;"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnTestConnection">
+            ทดสอบการเชื่อมต่อ
+          </button>
+          <div class="footer-actions">
+            <button type="button" class="btn btn-ghost" id="btnCancelModal">ยกเลิก</button>
+            <button type="button" class="btn btn-primary" id="btnSaveSettings">บันทึกการตั้งค่า</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

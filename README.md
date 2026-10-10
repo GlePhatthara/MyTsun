@@ -1,4 +1,4 @@
-# TsunDev (ツンDev) 🎀
+# myTsun (ツンDev) 🎀
 
 <p align="center">
   <img src="https://img.shields.io/badge/Stupid_Hackathon-Thailand_SHTX-ff69b4?style=for-the-badge" alt="SHTX" />
@@ -10,12 +10,12 @@
 ```text
   ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
  ｜                                                                                  ｜
- ｜   ( > ⌒ < )  TsunDev: "ฮ-หา?! คิดว่าสั่งแล้วฉันต้องรีบกระดิกหางทำให้เหรอ?!"     ｜
+ ｜   ( > ⌒ < )  myTsun: "ฮ-หา?! คิดว่าสั่งแล้วฉันต้องรีบกระดิกหางทำให้เหรอ?!"     ｜
  ｜   [██████████] 100% EXTREME TSUN                                                 ｜
  ｜                                                                                  ｜
  ｜                 ▼  ...แต่พอง้อด้วย /bribe และ /praise ...  ▼                     ｜
  ｜                                                                                  ｜
- ｜   (⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄) TsunDev: "ก-ก็ไม่ได้อยากช่วยนายเขียนโค้ดซะหน่อยนะ บ้าจริง!"    ｜
+ ｜   (⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄) myTsun: "ก-ก็ไม่ได้อยากช่วยนายเขียนโค้ดซะหน่อยนะ บ้าจริง!"    ｜
  ｜   [██░░░░░░░░] 20% DERE BREAKTHROUGH [✨ TOOLS UNLOCKED]                         ｜
  ｜＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿｜
 ```
@@ -41,7 +41,7 @@
 
 ในการเขียนโปรแกรมทั่วไป AI Copilot มีหน้าที่ช่วยเหลือและเอาใจโปรแกรมเมอร์ทุกอย่าง คอยเดาใจ ตอบสุภาพ ประจบประแจง... **แต่นั่นมันน่าเบื่อเกินไปสำหรับ Stupid Hackathon!**
 
-**TsunDev (ツンDev)** ถูกสร้างขึ้นมาเพื่อแก้ปัญหานี้:
+**myTsun (ツンDev)** ถูกสร้างขึ้นมาเพื่อแก้ปัญหานี้:
 * **ตอนเปิดโปรแกรม:** เกจ Tsun 100% สั่งอะไรก็ปฏิเสธ ด่ากลับ บ่นกระปอดกระแปด หรือล็อกไม่ยอมให้เขียนโค้ดลงเครื่อง
 * **อยากให้ช่วยทำงาน?:** คุณต้องพูดจาไพเราะ พิมพ์ง้อ (`/praise`) ติดสินบนด้วยของกิน (`/bribe ชานมไข่มุก`) หรือขอโทษ (`/apologize`) จนหลอด Dere เพิ่มขึ้น
 * **เมื่อ Dere ถึงขีดสุด (< 40%):** บอทจะหน้าแดงจัด (`(⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄)`) และยอมปลดล็อก Agentic Tool ช่วยเขียนไฟล์ รันคำสั่งคอมไพล์งานให้อย่างสมบูรณ์แบบ พร้อมทิ้งท้ายว่า:
@@ -122,7 +122,7 @@
                             │ User Input / Slash Commands
                             ▼
 ┌────────────────────────────────────────────────────────┐
-│               TsunDev Core State Engine                │
+│               myTsun Core State Engine                │
 │  - Mood State Machine (Tsun/Dere Gauge 0-100%)         │
 │  - Interaction Parser (/praise, /bribe, anti-spam)     │
 └───────────────┬────────────────────────┬───────────────┘
@@ -162,8 +162,12 @@ export GEMINI_API_KEY="your-gemini-api-key"
 # หรือสำหรับ Windows PowerShell:
 # $env:GEMINI_API_KEY="your-gemini-api-key"
 
-# 5. เริ่มต้นใช้งาน TsunDev
+# 5. เริ่มต้นใช้งาน myTsun
+# รันโหมด Terminal CLI / TUI:
 npm start
+
+# รันโหมด Desktop App (หน้าต่างแยก สไตล์ Cyberpunk รองรับทุก AI Provider):
+npm run desktop
 ```
 
 ---
@@ -185,7 +189,7 @@ npm start
 
 ## 8. English Summary
 
-**TsunDev (ツンDev)** is the ultimate satirical AI pair-programmer created for **Stupid Hackathon Thailand (SHTX)**. While conventional AI assistants eagerly follow every developer command, TsunDev introduces the **Tsun-Dere State Machine (0–100%)**:
+**myTsun (ツンDev)** is the ultimate satirical AI pair-programmer created for **Stupid Hackathon Thailand (SHTX)**. While conventional AI assistants eagerly follow every developer command, myTsun introduces the **Tsun-Dere State Machine (0–100%)**:
 - **At 100% (Extreme Tsun):** She rejects code generation, locks your tools, hurls insults, and tells you to code it yourself.
 - **Bribing & Flattery:** Developers must lower her defenses using `/bribe` (offering boba or cake) and `/praise` (sincere flattery).
 - **Below 40% (Dere Breakthrough):** The terminal avatar blushes profusely, agentic file-writing tools are unlocked, and she secretly writes pristine code while insisting: *"I-It's not like I did this for you or anything, baka!"*

@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TsunDereState } from '../src/state/TsunDereState.js';
-import { TsunDevChatSession } from '../src/cli/chat.js';
+import { myTsunChatSession } from '../src/cli/chat.js';
 import { MockProvider } from '../src/llm/provider.js';
 
-test('TsunDevChatSession - Full interaction lifecycle from Extreme Tsun to Dere Breakthrough', async () => {
+test('myTsunChatSession - Full interaction lifecycle from Extreme Tsun to Dere Breakthrough', async () => {
   const state = new TsunDereState(100);
   const provider = new MockProvider();
-  const session = new TsunDevChatSession({ state, provider });
+  const session = new myTsunChatSession({ state, provider });
 
   // 1. Initial extreme tsun turn
   const turn1 = await session.handleTurn('ช่วยเขียนโค้ดหน่อย');
@@ -37,8 +37,8 @@ test('TsunDevChatSession - Full interaction lifecycle from Extreme Tsun to Dere 
   assert.ok(session.history.length >= 8, 'Should keep track of conversation history');
 });
 
-test('TsunDevChatSession - Handles empty input gracefully', async () => {
-  const session = new TsunDevChatSession({ provider: new MockProvider() });
+test('myTsunChatSession - Handles empty input gracefully', async () => {
+  const session = new myTsunChatSession({ provider: new MockProvider() });
   const turn = await session.handleTurn('   ');
   assert.ok(turn.reply.includes('ฮึ่ม! เงียบทำไมยะ'));
 });

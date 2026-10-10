@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { TsunDereState } from '../src/state/TsunDereState.js';
 import { detectEasterEgg, EASTER_EGGS } from '../src/easter/index.js';
 import { SoundEngine } from '../src/sound/index.js';
-import { TsunDevChatSession } from '../src/cli/chat.js';
+import { myTsunChatSession } from '../src/cli/chat.js';
 import {
   AVATAR_LEVELS,
   getAvatarLines,
@@ -122,7 +122,7 @@ test('ChatSession - Intercepts Easter Eggs and sound commands', async () => {
     lastSoundPlayed = preset;
   };
 
-  const session = new TsunDevChatSession({
+  const session = new myTsunChatSession({
     sound: mockSound
   });
 

@@ -1,5 +1,5 @@
 /**
- * Tsun-Dere Gauge Bar Renderer for TsunDev
+ * Tsun-Dere Gauge Bar Renderer for myTsun
  * Provides colorful ANSI graphical progress bars, percentages, and status tags.
  */
 

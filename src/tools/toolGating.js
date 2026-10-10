@@ -1,5 +1,5 @@
 /**
- * Agentic Tool Gating Interceptor for TsunDev
+ * Agentic Tool Gating Interceptor for myTsun
  * Intercepts tool execution based on the Tsun-Dere State Gauge (0-100%).
  *
  * Rules:
@@ -47,8 +47,8 @@ export class AgenticToolGating {
       let content = args.content || '';
       // If running under reluctant mood, inject funny grumpy tsundere header
       if (context.status === GatingStatus.RELUCTANT && typeof content === 'string') {
-        const header = `/* [TsunDev Auto-Generated]: บ่นกระปอดกระแปด... แอบทำให้ก็ได้ แต่จำไว้ว่าไม่ได้ทำให้เพื่อเธอหรอกนะ! */\n`;
-        if (!content.startsWith('/* [TsunDev Auto-Generated]')) {
+        const header = `/* [myTsun Auto-Generated]: บ่นกระปอดกระแปด... แอบทำให้ก็ได้ แต่จำไว้ว่าไม่ได้ทำให้เพื่อเธอหรอกนะ! */\n`;
+        if (!content.startsWith('/* [myTsun Auto-Generated]')) {
           content = header + content;
         }
       }

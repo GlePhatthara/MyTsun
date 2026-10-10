@@ -17,7 +17,7 @@ import {
   renderStatusCard,
   renderTurnSummary
 } from '../src/ui/tuiRenderer.js';
-import { TsunDevChatSession } from '../src/cli/chat.js';
+import { myTsunChatSession } from '../src/cli/chat.js';
 import { MockProvider } from '../src/llm/provider.js';
 
 test('TUI - getAvatarLevel maps gauge accurately', () => {
@@ -103,7 +103,7 @@ test('TUI - renderWelcomeBanner contains key startup information', () => {
     colored: false
   });
 
-  assert.ok(banner.includes('TsunDev'));
+  assert.ok(banner.includes('myTsun'));
   assert.ok(banner.includes('TestProvider'));
   assert.ok(banner.includes('/praise'));
   assert.ok(banner.includes('/bribe'));
@@ -137,7 +137,7 @@ test('TUI - renderTurnSummary outputs compact overview', () => {
 
 test('TUI - ChatSession handles /avatar and /card without affecting gauge', async () => {
   const state = new TsunDereState(90);
-  const session = new TsunDevChatSession({
+  const session = new myTsunChatSession({
     state,
     provider: new MockProvider()
   });
