@@ -8,6 +8,7 @@
  */
 
 import { parseCommand, CommandType } from '../commands/parser.js';
+import { detectEasterEgg, EASTER_EGGS } from '../easter/index.js';
 
 export const MOODS = {
   EXTREME_TSUN: {
@@ -55,6 +56,7 @@ export class TsunDereState {
     this.gauge = this._clamp(initialGauge);
     this.lastInput = null;
     this.consecutiveRepeats = 0;
+    this.begStreak = 0;
     this.history = [];
   }
 
@@ -128,6 +130,11 @@ export class TsunDereState {
     let delta = 0;
     let reason = '';
     let penaltyTriggered = false;
+    let specialEvent = null;
+    let soundCue = 'hmph';
+
+    // 1. Check Easter Eggs first (both slash command & natural language)
+    const easterEgg = detectEasterEgg(rawInput);
 
     // Check consecutive repeat spam penalty
     const normalizedInput = (rawInput || '').trim().toLowerCase();
@@ -141,9 +148,63 @@ export class TsunDereState {
     if (this.consecutiveRepeats >= 3) {
       penaltyTriggered = true;
       this.gauge = 100;
+      this.begStreak = 0;
       delta = 100 - prevGauge;
       reason = 'Anti-Spam Penalty: สั่งคำเดิมซ้ำๆ จนบอทโมโหจัด Tsun พุ่งกลับ 100%!';
+      soundCue = 'baka';
+    } else if (parsed.type === CommandType.NUKE || (easterEgg && easterEgg.type === EASTER_EGGS.NUKE)) {
+      // Easter Egg: NUKE TRAP!
+      this.gauge = 100;
+      this.begStreak = 0;
+      delta = 100 - prevGauge;
+      reason = 'Nuke Trap: สั่งลบเครื่องเหรอ?! อันตะบากะะะ! โดนกักบริเวณ Tsun พุ่ง 100%!';
+      specialEvent = 'nuke';
+      soundCue = 'nuke';
+    } else if (parsed.type === CommandType.BEG || (easterEgg && easterEgg.type === EASTER_EGGS.BEG)) {
+      // Easter Egg: Begging streak
+      this.begStreak += 1;
+      if (this.begStreak >= 3) {
+        delta = -30;
+        reason = `Begging Combo (x${this.begStreak}): อ้อนวอนจนทนดูไม่ได้ ยอมใจอ่อน ลด Tsun ${delta}%!`;
+        specialEvent = 'beg_combo';
+        soundCue = 'dere';
+      } else {
+        delta = -10;
+        reason = `ก้มกราบขอร้อง (ครั้งที่ ${this.begStreak}) ลด Tsun ${delta}%`;
+        specialEvent = 'beg';
+        soundCue = 'beg';
+      }
+      this.gauge = this._clamp(this.gauge + delta);
+    } else if (parsed.type === CommandType.CONFESS || (easterEgg && easterEgg.type === EASTER_EGGS.CONFESS)) {
+      // Easter Egg: Confession
+      this.begStreak = 0;
+      delta = -45;
+      reason = 'สารภาพรัก! บอทหน้าแดงจนระบบโอเวอร์ฮีท ลด Tsun -45%! ♨️';
+      specialEvent = 'confess';
+      soundCue = 'dere';
+      this.gauge = this._clamp(this.gauge + delta);
+    } else if (parsed.type === CommandType.COFFEE || (easterEgg && easterEgg.type === EASTER_EGGS.COFFEE)) {
+      // Easter Egg: Coffee
+      this.begStreak = 0;
+      delta = -15;
+      reason = 'ให้กาแฟหอมกรุ่น บอทตาสว่างอารมณ์ดีขึ้น ลด Tsun -15% ☕';
+      specialEvent = 'coffee';
+      soundCue = 'bribe';
+      this.gauge = this._clamp(this.gauge + delta);
+    } else if (parsed.type === CommandType.SUDO || (easterEgg && easterEgg.type === EASTER_EGGS.SUDO)) {
+      // Easter Egg: Fake Sudo
+      this.begStreak = 0;
+      delta = 15;
+      reason = 'แกล้งใช้ sudo สั่งเหรอ?! ฉันเป็น Root ของเครื่องนี้ย่ะ! เพิ่ม Tsun +15% 💢';
+      specialEvent = 'sudo';
+      soundCue = 'baka';
+      this.gauge = this._clamp(this.gauge + delta);
     } else {
+      // Normal commands
+      if (parsed.type !== CommandType.BEG) {
+        this.begStreak = 0;
+      }
+
       switch (parsed.type) {
         case CommandType.PRAISE: {
           const text = (parsed.arg || '').toLowerCase();
@@ -152,6 +213,7 @@ export class TsunDereState {
           reason = hasSweetWords
             ? `คำชมถูกใจเป็นพิเศษ! ลด Tsun ${delta}%`
             : `ได้รับคำชม ลด Tsun ${delta}%`;
+          soundCue = 'dere';
           this.gauge = this._clamp(this.gauge + delta);
           break;
         }
@@ -163,6 +225,7 @@ export class TsunDereState {
           reason = hasSweetSnacks
             ? `ติดสินบนด้วยของหวานสุดโปรด! ลด Tsun ${delta}%`
             : `ได้รับสินบน ลด Tsun ${delta}%`;
+          soundCue = 'bribe';
           this.gauge = this._clamp(this.gauge + delta);
           break;
         }
@@ -170,14 +233,19 @@ export class TsunDereState {
         case CommandType.APOLOGIZE: {
           delta = -10;
           reason = `ขอโทษอย่างจริงใจ ลด Tsun ${delta}%`;
+          soundCue = 'hmph';
           this.gauge = this._clamp(this.gauge + delta);
           break;
         }
 
+        case CommandType.SOUND:
         case CommandType.GAUGE:
+        case CommandType.AVATAR:
+        case CommandType.CARD:
         case CommandType.HELP: {
           delta = 0;
-          reason = 'ตรวจสอบสถานะ / ขอความช่วยเหลือ ไม่กระทบต่อเกจ';
+          reason = 'ตรวจสอบสถานะ / อวาตาร์ / เสียง ไม่กระทบต่อเกจ';
+          soundCue = 'hmph';
           break;
         }
 
@@ -186,6 +254,7 @@ export class TsunDereState {
           // Regular request or ordering around without praise increases Tsun slightly
           delta = 5;
           reason = 'สั่งงานห้วนๆ โดยไม่ง้อ เพิ่ม Tsun +5%';
+          soundCue = 'hmph';
           this.gauge = this._clamp(this.gauge + delta);
           break;
         }
@@ -201,6 +270,8 @@ export class TsunDereState {
       delta,
       reason,
       penaltyTriggered,
+      specialEvent,
+      soundCue,
       mood: currentMood.id,
       moodLabel: currentMood.label,
       toolsAllowed: currentMood.toolsAllowed,
@@ -218,6 +289,7 @@ export class TsunDereState {
     this.gauge = 100;
     this.lastInput = null;
     this.consecutiveRepeats = 0;
+    this.begStreak = 0;
     this.history = [];
   }
 }

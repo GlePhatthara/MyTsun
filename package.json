@@ -4,9 +4,13 @@
   "description": "The Tsundere AI Pair-Programmer for Stupid Hackathon Thailand (SHTX)",
   "type": "module",
   "main": "src/index.js",
+  "bin": {
+    "tsundev": "./bin/tsundev.js"
+  },
   "scripts": {
     "test": "node --test test/**/*.test.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "demo": "node demo/demo-run.js"
   },
   "keywords": [
     "tsundere",

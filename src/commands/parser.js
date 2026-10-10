@@ -8,7 +8,18 @@ export const CommandType = {
   BRIBE: 'bribe',
   APOLOGIZE: 'apologize',
   GAUGE: 'gauge',
+  AVATAR: 'avatar',
+  CARD: 'card',
   HELP: 'help',
+  WRITE: 'write',
+  RUN: 'run',
+  TOOL: 'tool',
+  SOUND: 'sound',
+  BEG: 'beg',
+  CONFESS: 'confess',
+  COFFEE: 'coffee',
+  SUDO: 'sudo',
+  NUKE: 'nuke',
   REGULAR: 'regular'
 };
 
@@ -40,8 +51,36 @@ export function parseCommand(input) {
       return { type: CommandType.APOLOGIZE, raw: trimmed, arg };
     case '/gauge':
       return { type: CommandType.GAUGE, raw: trimmed, arg };
+    case '/avatar':
+      return { type: CommandType.AVATAR, raw: trimmed, arg };
+    case '/card':
+      return { type: CommandType.CARD, raw: trimmed, arg };
     case '/help':
       return { type: CommandType.HELP, raw: trimmed, arg };
+    case '/write':
+      return { type: CommandType.WRITE, raw: trimmed, arg };
+    case '/run':
+    case '/sh':
+    case '/exec':
+      return { type: CommandType.RUN, raw: trimmed, arg };
+    case '/tool':
+      return { type: CommandType.TOOL, raw: trimmed, arg };
+    case '/sound':
+      return { type: CommandType.SOUND, raw: trimmed, arg };
+    case '/beg':
+    case '/please':
+      return { type: CommandType.BEG, raw: trimmed, arg };
+    case '/love':
+    case '/confess':
+    case '/marry':
+      return { type: CommandType.CONFESS, raw: trimmed, arg };
+    case '/coffee':
+      return { type: CommandType.COFFEE, raw: trimmed, arg };
+    case '/sudo':
+      return { type: CommandType.SUDO, raw: trimmed, arg };
+    case '/nuke':
+    case '/selfdestruct':
+      return { type: CommandType.NUKE, raw: trimmed, arg };
     default:
       return { type: CommandType.REGULAR, raw: trimmed, arg: trimmed };
   }
