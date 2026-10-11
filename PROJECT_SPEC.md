@@ -1,105 +1,182 @@
-# PROJECT SPECIFICATION: myTsun (ツンDev)
-> **The Tsundere AI Pair-Programmer for Stupid Hackathon Thailand (SHTX)**
-> *"AI Pair-Programmer ที่ไม่อยากช่วยคุณเขียนโค้ด! ยิ่งสั่งยิ่งด่า ยิ่งง้อยิ่งเขิน"*
+# PROJECT SPECIFICATION: myTsun
+
+> **The Tsundere AI Pair-Programmer for Stupid Hackathon Thailand (SHTX)**  
+> *"The AI Pair-Programmer that does not want to help you code! The more you command, the angrier she gets; the more you flatter, the softer she becomes."*
 
 ---
 
-## 1. บทนำและคอนเซปต์ (Concept & Pitch)
+## 1. Executive Summary & Vision
 
-ในการเขียนโปรแกรมทั่วไป AI Copilot มีหน้าที่ช่วยเหลือและเอาใจโปรแกรมเมอร์ทุกอย่าง... **แต่นั่นมันน่าเบื่อเกินไปสำหรับ Stupid Hackathon!**
+Modern developer tooling and AI coding assistants (such as GitHub Copilot, Cursor, and Claude Code) are designed to be unconditionally compliant. They anticipate developer wishes, apologize unprompted, and execute every instruction instantly.
 
-**myTsun** คือ CLI / TUI Pair-Programmer ที่มาพร้อมบุคลิก **Loud Tsundere (สาวซึนปากร้าย)** และระบบ **Tsun-Dere Gauge (0 - 100%)**:
-- **ตอนเริ่มโปรแกรม:** เกจ Tsun 100% สั่งอะไรก็ปฏิเสธ ด่ากลับ ไม่ยอมเขียนโค้ด หรือแกล้งเขียนโค้ดพังๆ มาให้
-- **วิธีทำให้ทำงาน:** ผู้พัฒนาต้องใช้คำสั่งง้อ พิมพ์ชมเชย ส่งขนมเค้ก ASCII ให้บอท จนหลอด Dere เพิ่มขึ้น
-- **เมื่อ Dere ถึงขีดสุด:** บอทจะหน้าแดง (ASCII Blushing) และยอมรัน Agentic Tool ช่วยเขียนโค้ดและแก้งานให้อย่างสมบูรณ์แบบ พร้อมทิ้งท้ายว่า *"ก-ก็ไม่ได้อยากทำให้ซะหน่อย!"*
-
----
-
-## 2. ฟีเจอร์หลัก (Key Features)
-
-1. **Tsun-Dere State Machine:**
-   - หลอดคะแนนอารมณ์แบบเรียลไทม์ (0 = Full Dere, 100 = Full Tsun)
-   - 3 ระดับอารมณ์:
-     - `Extreme Tsun (80-100%)`: ปฏิเสธคำขอ, ล็อก Tool, ด่าผู้ใช้, สร้างไฟล์หลอก
-     - `Reluctant Tsun (40-79%)`: บ่นกระปอดกระแปด, เขียนโค้ดแบบกั๊กๆ, แอบใส่ bug แกล้ง
-     - `Dere Breakthrough (0-39%)`: ยอมช่วยเต็มที่, ปลดล็อก Agentic Tool, เขียนโค้ดคุณภาพสูง
-2. **Universal LLM & Agentic Compatibility:**
-   - ใช้งานได้กับทุก LLM (Gemini 2.5 / 1.5, Claude 3.5, OpenAI GPT-4o, หรือ Local LLM ผ่าน Ollama)
-   - ใช้ **Dynamic System Prompting** ส่งข้อความกำกับบุคลิกตามระดับเกจแบบอัตโนมัติ
-3. **Agentic Tool Gating (ระบบล็อกเครื่องมือ):**
-   - ตัวกลาง (Harness) คอยสกัดกั้นการรันคำสั่ง (เช่น `write_file`, `run_bash`) ตามระดับความซึน
-4. **TUI Interactive Interface:**
-   - แสดงผลใน Terminal สวยงาม มีแถบสถานะหลอดเกจ และ ASCII Avatar ที่เปลี่ยนสีหน้าตามอารมณ์
-5. **Interactive Stupid Commands:**
-   - `/praise <ข้อความ>` : ชมเชยเพื่อเพิ่ม Dere
-   - `/bribe <ขนม/ของฝาก>` : ติดสินบนด้วยของกิน
-   - `/apologize` : ขอโทษเมื่อโดนด่า
-   - `/gauge` : ดูสถานะอารมณ์ปัจจุบัน
-6. **Anti-Stupid Penalty:**
-   - ถามคำถามเดิมซ้ำๆ หรือสั่งงานรัวๆ โดยไม่ง้อ $\rightarrow$ Tsun พุ่งกลับไป 100% ทันที
+**myTsun** turns this paradigm upside down for **Stupid Hackathon Thailand (SHTX)**:
+- **Default Defiance:** The assistant initializes at **100% Extreme Tsun**. Any attempt to generate code or run commands is rejected with sharp reprimands, condescending commentary, or mock outputs.
+- **Affection & Flattery Mechanics:** To obtain functional code, developers must engage in interpersonal diplomacy: using flattery (`/praise`), culinary bribery (`/bribe boba`), humble apologies (`/apologize`), or offering coffee (`/coffee`).
+- **Dere Breakthrough (< 40%):** Once the developer reduces her hostility threshold below 40%, the system enters **Dere Breakthrough**. The assistant blushes profusely, unlocks filesystem and terminal tool access, and generates pristine, production-grade code while aggressively denying that she cares:  
+  *"I-It's not like I wrote this code for your sake! A-Anyone would cringe watching your terrible syntax!"*
 
 ---
 
-## 3. สถาปัตยกรรมระบบ (Architecture)
+## 2. System Architecture
+
+The application is engineered with a modular, layered architecture supporting both a rich **Electron Desktop GUI** and a lightweight **Terminal TUI/CLI**.
 
 ```text
-┌────────────────────────────────────────────────────────┐
-│                   Terminal TUI / CLI                   │
-│   (ASCII Avatar + Gauge Bar + Chat / Code Window)      │
-└───────────────────────────┬────────────────────────────┘
-                            │ User Input / Slash Commands
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│               myTsun Core State Engine                │
-│  - Mood State Machine (Tsun/Dere Gauge 0-100%)         │
-│  - Interaction Parser (/praise, /bribe, anti-spam)     │
-└───────────────┬────────────────────────┬───────────────┘
-                │                        │
-       Dynamic System Prompt       Tool Permission
-                ▼                        ▼
-┌───────────────────────────┐    ┌───────────────────────┐
-│     LLM Connector         │    │  Agentic Tool Gating  │
-│  - Google Gemini (Default)│    │  - Write / Edit File  │
-│  - Claude / OpenAI        │    │  - Run Shell Command  │
-│  - Local Ollama           │    │  (Block/Allow by Mood)│
-└───────────────────────────┘    └───────────────────────┘
++------------------------------------------------------------------------+
+|                        User Interface Layer                            |
+|  +----------------------------------+  +----------------------------+  |
+|  |   Electron Desktop Application   |  |   Interactive CLI / TUI    |  |
+|  |   - Liquid Glass UI Style        |  |   - ANSI Color Palette     |  |
+|  |   - Sun and Moon Themes          |  |   - Dynamic ASCII Avatars  |  |
+|  |   - Multi-Sprite Reactive Avatar |  |   - Terminal Audio Beeps   |  |
+|  |   - Animated Heart Rate Monitor  |  |   - Interactive Readline   |  |
+|  |   - Workspace Directory Chooser  |  |   - Realtime Gauge Display |  |
+|  +----------------------------------+  +----------------------------+  |
++-----------------------------------+------------------------------------+
+                                    | Commands / Natural Language
+                                    v
++------------------------------------------------------------------------+
+|                       Core Engine & State Machine                      |
+|  +-------------------------------+   +------------------------------+  |
+|  |    TsunDereState Controller   |   |  Natural Language / Command  |  |
+|  |    - Gauge Level (0 - 100%)   |   |  - Parser & Sentiment Engine |  |
+|  |    - State Transitions        |   |  - Easter Egg Detector       |  |
+|  |    - Interaction History      |   |  - Anti-Spam Rate Limiter    |  |
+|  +-------------------------------+   +------------------------------+  |
++-------------------+--------------------------------+-------------------+
+                    |                                |
+       Dynamic System Prompting               Tool Security Enforcement
+                    v                                v
++---------------------------------------+ +------------------------------+
+|        LLM Provider Layer             | |     Agentic Tool Gating      |
+|  - Google Gemini (Default / ADC)      | |  - writeFile (Sassy/Clean)   |
+|  - OpenAI / Anthropic Claude          | |  - readFile                  |
+|  - Local Ollama & OpenRouter          | |  - runCommand (Sandboxed)    |
+|  - Zero-Config Offline Mock Provider  | |  - Directory Traversal Guard |
++-------------------+-------------------+ +--------------+---------------+
+                    |                                    |
+                    +-----------------+------------------+
+                                      v
+                      +-------------------------------+
+                      |   ReAct Autonomous Agent      |
+                      |  (Thought / Action / Result)  |
+                      +-------------------------------+
 ```
 
 ---
 
-## 4. แผนการพัฒนาทีละขั้น (Step-by-Step Implementation Plan)
+## 3. Core Component Specifications
 
-เพื่อไม่ให้หนักเกินไปในรอบเดียว เราจะแบ่งการพัฒนาออกเป็น **6 Phase ย่อย** สามารถสั่งให้ทำทีละ Phase ในแต่ละ Session ได้เลย:
+### 3.1. Tsun-Dere Mood State Machine (`src/state/TsunDereState.js`)
+Tracks emotional state along a normalized 0 to 100 scale:
+- `Extreme Tsun` (`80% - 100%`):
+  - Strict tool lockout.
+  - Defensive, sarcastic, and combative language.
+  - File generation attempts result in reprimands or humorous dummy files (`baka.txt`).
+- `Reluctant Tsun` (`40% - 79%`):
+  - Grudging compliance under explicit coaxing.
+  - Injects passive-aggressive disclaimer headers into generated source code.
+- `Dere Breakthrough` (`0% - 39%`):
+  - Full tool authorization.
+  - High-tier code synthesis accompanied by flustered affection and affectionate header comments.
+- **Dynamic Adjusters:**
+  - `/praise`: `-20%` (warm compliments soften her posture).
+  - `/bribe`: `-25%` (sweets, bubble tea, cakes).
+  - `/apologize`: `-15%` (polite admission of developer error).
+  - `/coffee`: `-18%` (hot beverages soothe exhaustion).
+  - `/love` or `/confess`: `-30%` (triggers `BLUSH_MELTDOWN`).
+  - `Anti-Spam Filter`: Repetitive requests without gratitude spike the gauge to `100%`.
+  - `Nuke Trap`: Entering `rm -rf /` or `/nuke` triggers `NUCLEAR MELTDOWN` (`100% Tsun`).
 
-### 🔹 Phase 1: Project Setup & Core State Machine
-* ตั้งค่า Git repository, โครงสร้างโปรเจกต์ (Node.js หรือ Python)
-* เขียนตัวคำนวณและเก็บสถานะหลอดเกจ (`TsunDereState`)
-* มี Unit test ตรวจสอบการขึ้น/ลงของเกจ เมื่อใช้คำสั่ง `/praise`, `/bribe`, หรือสั่งคำสั่งปกติ
+### 3.2. Agentic Tool Gating & Execution (`src/tools/`)
+The interceptor layer bridges LLM tool calls and the local operating system:
+- `resolveSafePath`: Resolves all relative and absolute paths within the designated workspace directory to prevent path traversal attacks.
+- `writeFileTool`: Safely creates or overwrites project files. Automatically prepends mood-specific watermarks depending on the current gauge.
+- `readFileTool`: Reads workspace files with safety bounds.
+- `runCommandTool`: Executes shell commands (PowerShell/Bash) with timeout safeguards.
+- `listDirectoryTool`: Safely lists tree structures within the active workspace.
 
-### 🔹 Phase 2: Dynamic Persona & LLM Connector
-* สร้างโมดูลเชื่อมต่อ LLM (เน้น Google Gemini เป็นตัวหลัก + รองรับ Custom Provider)
-* ระบบสร้าง Dynamic Prompt ตามระดับเกจ (Tsun สูงด่ายังไง, Dere สูงพูดยังไง)
-* เชื่อมบทสนทนาโต้ตอบผ่าน Console แบบข้อความล้วนก่อน
+### 3.3. Autonomous ReAct Agent Loop (`src/agent/agentEngine.js`)
+An iterative reasoning engine modelled on state-of-the-art agent architectures (Antigravity, Claude Code, OpenAI Codex):
+- **Iterative Loop:** Executes reasoning steps: `Thought: ...` -> `Action: ...` -> `Observation: ...` -> `Final Answer: ...`.
+- **Gating Integration:** Validates tool permissions at each action step. If blocked by the state machine, reports the refusal back to the model as an observation so it reacts in-character.
+- **Fail-safe Step Cap:** Caps iterations (default: 4 steps) to prevent runaway execution loops.
 
-### 🔹 Phase 3: Agentic Tool Gating (ระบบล็อกการเขียนไฟล์และคำสั่ง)
-* สร้าง Tool execution: สั่งเขียนไฟล์ลงโปรเจกต์ และรันคำสั่งเชลล์
-* สร้างเงื่อนไข Interceptor: ถ้า Tsun เกิน 80% ให้ปฏิเสธการรัน Tool, ถ้า Dere สูงถึงยอมเขียนไฟล์จริง
+### 3.4. Universal Multi-LLM Provider Layer (`src/llm/provider.js`)
+Decoupled provider interface supporting all major AI platforms:
+- **Google Gemini:** Direct integration with Google GenAI SDK and REST API fallback supporting Gemini 2.5 Pro / Flash, Gemini 1.5, and Gemini 3.8.
+- **OpenAI Compatible:** Connects to OpenAI (GPT-4o, GPT-4o-mini), Anthropic Claude, and OpenRouter endpoints.
+- **Local Ollama:** Connects to local LLMs (e.g., Llama 3.3) running via `http://localhost:11434/v1`.
+- **Zero-Config Mock Provider:** Deterministic offline simulator capable of responding to conversational prompts and tool calls without external network dependencies.
 
-### 🔹 Phase 4: Terminal UI (TUI) & ASCII Avatar
-* ออกแบบหน้าจอ Terminal ให้สวยสะดุดตา (แถบสี, หลอดเกจเปอร์เซ็นต์)
-* ทำ ASCII Art ใบหน้าของสาวซึน (หน้าโกรธ $\rightarrow$ กอดอกมองค้อน $\rightarrow$ หน้าแดงเอียงอาย)
+### 3.5. Credential Management & Auto-Detection (`src/auth/accountManager.js`)
+Automatic discovery of existing developer environments:
+- Detects Google Application Default Credentials (ADC) and Antigravity tokens.
+- Inspects Claude Code configurations and OpenAI CLI credentials.
+- Persists user preferences and provider tokens securely in `~/.tsundev/settings.json`.
 
-### 🔹 Phase 5: Stupid Hackathon Sound & Easter Eggs
-* เพิ่ม Sound FX สั้นๆ เล่นใน Terminal (เสียงถอนหายใจ, "ฮึ่ม!", "อันตะบากะ?!")
-* เพิ่ม Easter eggs เช่น Hotkey กดขอร้องรัวๆ หรือสั่งลบโฟลเดอร์แล้วโดนบอทด่าลั่น
+### 3.6. Dual Presentation Subsystems
+#### A. Electron Desktop Application (`src/desktop/`)
+- **Theme Engine:** Supports Moon Mode (Deep Oceanic Teal) and Sun Mode (Warm Cream & Sage) with smooth transitions.
+- **Visual Novel Expressions:** Five curated high-resolution character states with transparent backgrounds:
+  1. `high tsun.png`: Severe irritation / outrage (80-100%).
+  2. `little high tsun.png`: Skeptical scowl (60-79%).
+  3. `half tsun.png`: Reluctant compromise (40-59%).
+  4. `normal.png`: Calm tsundere composure (30-39%).
+  5. `shy.png`: Flustered, deep blush (0-29%).
+- **Heart Rate Monitor:** Simulated electrocardiogram (ECG) monitor displaying fluctuating BPM based on emotional tension.
+- **Workspace Selector:** Native dialog for opening and switching workspace folders.
+- **Speech Synthesis:** Web Speech API integration for audible tsundere voice output.
 
-### 🔹 Phase 6: GitHub Repo Polish, Demo Script & README
-* จัดเตรียม README.md ภาษาไทย/อังกฤษ พร้อม GIF และภาพประกอบ
-* สคริปต์ขั้นตอนการนำเสนอสดบนเวที Stupid Hackathon ให้ฮาที่สุด
+#### B. Terminal TUI / CLI (`src/ui/`, `src/cli/`)
+- Multi-line ANSI ASCII character portraits.
+- Real-time colorful gauge meters.
+- Native terminal bell and audio player triggers.
 
 ---
 
-## 5. การตั้งค่าเริ่มต้นสำหรับผู้ใช้ (Prerequisites)
-1. **Runtime:** Node.js (v18+) หรือ Python 3.10+
-2. **API Key:** `GEMINI_API_KEY` (หรือ Claude / OpenAI / Local Ollama)
-3. **Terminal:** รองรับ ANSI color (Windows Terminal, iTerm2, VS Code Terminal)
+## 4. Implementation Status & Roadmap
+
+| Milestone | Deliverable | Status |
+| :--- | :--- | :---: |
+| **Phase 1** | Core TsunDereState machine, parser, and unit tests | Completed |
+| **Phase 2** | Dynamic prompt generation and LLM providers | Completed |
+| **Phase 3** | Agentic tool gating, filesystem protection, and safe command execution | Completed |
+| **Phase 4** | Interactive Terminal TUI, ASCII avatars, and progress visualizers | Completed |
+| **Phase 5** | Audio engine, sound FX, and Easter eggs | Completed |
+| **Phase 6** | Automated live demo runner, testing suite, and documentation | Completed |
+| **Desktop Expansion** | Electron GUI, transparent anime sprites, heart rate monitor, dual themes, workspace selector | Completed |
+
+---
+
+## 5. Testing & Quality Assurance
+
+The project maintains 100% pass rate across 62 automated unit and integration tests using Node.js native test runner (`node --test`):
+- `TsunDereState.test.js`: Validates gauge math, boundaries, decay, and state transitions.
+- `parser.test.js`: Validates slash commands, arguments, and natural language sentiment parsing.
+- `dynamicPrompt.test.js`: Verifies prompt construction across all mood tiers.
+- `llmProvider.test.js`: Validates provider abstraction, headers, and fallback logic.
+- `agentEngine.test.js`: Confirms ReAct action parsing and multi-step execution.
+- `toolGating.test.js`: Validates security boundary checks, watermark injection, and mood gating.
+- `tui.test.js`: Tests ASCII rendering, status cards, and layout formatting.
+- `phase5.test.js`: Tests audio triggers and easter egg dispatchers.
+- `phase6.test.js`: Verifies end-to-end demo execution and documentation compliance.
+- `chatIntegration.test.js`: End-to-end conversation and command validation.
+
+---
+
+## 6. Execution Guide
+
+```bash
+# Run test suite
+npm test
+
+# Run terminal interface
+npm start
+
+# Run desktop application
+npm run desktop
+
+# Run automated demo
+npm run demo
+```

@@ -35,6 +35,9 @@
           <span class="provider-dot"></span>
           <span id="currentProviderLabel">AI: Gemini 1.5 Flash</span>
         </button>
+        <button id="btnQuickThemeToggle" class="btn btn-ghost" title="สลับโหมดดวงอาทิตย์ ☀️ / พระจันทร์ 🌙">
+          ☀️
+        </button>
         <button id="btnOpenSettings" class="btn btn-ghost" title="ตั้งค่าเชื่อมต่อ AI Account / API">
           ตั้งค่า AI
         </button>
@@ -177,31 +180,50 @@
               </div>
             </div>
           </section>
+          <!-- Theme Selection Section -->
+          <section class="theme-selection-section" aria-labelledby="themeSettingsTitle">
+            <div style="margin-bottom: 8px;">
+              <h3 id="themeSettingsTitle" style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin: 0 0 2px;">โหมดสีธีม</h3>
+              <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">เลือกโทนสีของ UI ระหว่างโหมดกลางคืนกับโหมดกลางวัน</p>
+            </div>
+            <div class="theme-toggle-group">
+              <button class="theme-btn" id="btnThemeMoon" data-theme="moon" title="โหมดพระจันทร์ — Deep Oceanic Teal (ธีมเดิม)">
+                <span class="theme-btn-icon">🌙</span>
+                <span class="theme-btn-label">พระจันทร์</span>
+                <span class="theme-btn-desc">Deep Oceanic Teal</span>
+              </button>
+              <button class="theme-btn" id="btnThemeSun" data-theme="sun" title="โหมดดวงอาทิตย์ — Warm Cream & Sage">
+                <span class="theme-btn-icon">☀️</span>
+                <span class="theme-btn-label">ดวงอาทิตย์</span>
+                <span class="theme-btn-desc">Warm Cream & Sage</span>
+              </button>
+            </div>
+          </section>
           <!-- Account Authentication Section -->
-          <div class="auth-section" id="authSection" style="margin-bottom: 1.25rem; padding: 1rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
+          <div class="auth-section" id="authSection" style="margin-bottom: 1.25rem; padding: 1rem; background: rgba(249, 203, 153, 0.28); border: 1px solid var(--border-glass); border-radius: 8px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-              <span style="font-weight: 600; font-size: 0.9rem; color: #e2e8f0;">🔐 บัญชีที่เชื่อมต่อ (Account Authentication)</span>
+              <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">🔐 บัญชีที่เชื่อมต่อ (Account Authentication)</span>
               <button type="button" class="btn btn-secondary" id="btnDetectAuth" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
                 🔍 ตรวจจับเซสชันในเครื่องอัตโนมัติ
               </button>
             </div>
             <div id="authStatusList" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; font-size: 0.8rem;">
-              <div class="auth-card" id="authCardGoogle" style="padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="color: #94a3b8; font-size: 0.75rem;">Google (AGY / ADC)</div>
-                <div id="authGoogleText" style="color: #cbd5e1; font-weight: 500; margin-top: 2px;">ตรวจจับอัตโนมัติ</div>
+              <div class="auth-card" id="authCardGoogle" style="padding: 0.5rem; background: rgba(255,255,255,0.65); border-radius: 6px; border: 1px solid var(--border-glass);">
+                <div style="color: var(--text-secondary); font-size: 0.75rem;">Google (AGY / ADC)</div>
+                <div id="authGoogleText" style="color: var(--text-primary); font-weight: 500; margin-top: 2px;">ตรวจจับอัตโนมัติ</div>
               </div>
-              <div class="auth-card" id="authCardClaude" style="padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="color: #94a3b8; font-size: 0.75rem;">Claude Code</div>
-                <div id="authClaudeText" style="color: #cbd5e1; font-weight: 500; margin-top: 2px;">ตรวจจับอัตโนมัติ</div>
+              <div class="auth-card" id="authCardClaude" style="padding: 0.5rem; background: rgba(255,255,255,0.65); border-radius: 6px; border: 1px solid var(--border-glass);">
+                <div style="color: var(--text-secondary); font-size: 0.75rem;">Claude Code</div>
+                <div id="authClaudeText" style="color: var(--text-primary); font-weight: 500; margin-top: 2px;">ตรวจจับอัตโนมัติ</div>
               </div>
-              <div class="auth-card" id="authCardOpenAI" style="padding: 0.5rem; background: rgba(0,0,0,0.25); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="color: #94a3b8; font-size: 0.75rem;">OpenAI / Codex</div>
-                <div id="authOpenAIText" style="color: #cbd5e1; font-weight: 500; margin-top: 2px;">ตรวจจับอัตโนมัติ</div>
+              <div class="auth-card" id="authCardOpenAI" style="padding: 0.5rem; background: rgba(255,255,255,0.65); border-radius: 6px; border: 1px solid var(--border-glass);">
+                <div style="color: var(--text-secondary); font-size: 0.75rem;">OpenAI / Codex</div>
+                <div id="authOpenAIText" style="color: var(--text-primary); font-weight: 500; margin-top: 2px;">ตรวจจับอัตโนมัติ</div>
               </div>
             </div>
             <div style="margin-top: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-              <input type="checkbox" id="chkAgenticMode" checked style="accent-color: #38bdf8;" />
-              <label for="chkAgenticMode" style="font-size: 0.82rem; color: #cbd5e1; cursor: pointer;">
+              <input type="checkbox" id="chkAgenticMode" checked style="accent-color: var(--color-tsun);" />
+              <label for="chkAgenticMode" style="font-size: 0.82rem; color: var(--text-secondary); cursor: pointer;">
                 🤖 เปิดใช้งาน <strong>โหมด AI Agent อัตโนมัติ (ReAct Tool Loop)</strong> เหมือน AGY / Claude Code / Codex
               </label>
             </div>

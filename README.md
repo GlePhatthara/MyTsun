@@ -1,186 +1,230 @@
-# myTsun (ツンDev) 🎀
+# myTsun
 
 <p align="center">
   <img src="https://img.shields.io/badge/Stupid_Hackathon-Thailand_SHTX-ff69b4?style=for-the-badge" alt="SHTX" />
   <img src="https://img.shields.io/badge/Mood_Engine-Tsun--Dere_0--100%25-ff1493?style=for-the-badge" alt="Mood Engine" />
+  <img src="https://img.shields.io/badge/UI-Electron_Desktop_%2B_Terminal_TUI-00ffff?style=for-the-badge" alt="UI" />
   <img src="https://img.shields.io/badge/Node.js-v18%2B-brightgreen?style=for-the-badge" alt="Node" />
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License" />
 </p>
 
 ```text
-  ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
- ｜                                                                                  ｜
- ｜   ( > ⌒ < )  myTsun: "ฮ-หา?! คิดว่าสั่งแล้วฉันต้องรีบกระดิกหางทำให้เหรอ?!"     ｜
- ｜   [██████████] 100% EXTREME TSUN                                                 ｜
- ｜                                                                                  ｜
- ｜                 ▼  ...แต่พอง้อด้วย /bribe และ /praise ...  ▼                     ｜
- ｜                                                                                  ｜
- ｜   (⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄) myTsun: "ก-ก็ไม่ได้อยากช่วยนายเขียนโค้ดซะหน่อยนะ บ้าจริง!"    ｜
- ｜   [██░░░░░░░░] 20% DERE BREAKTHROUGH [✨ TOOLS UNLOCKED]                         ｜
- ｜＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿｜
+  ----------------------------------------------------------------------------
+   ( > _ < )  myTsun: "H-Huh?! Did you think I would just obey your orders?!"
+   [##########] 100% EXTREME TSUN
+  
+                  ...after softening her up with /bribe and /praise...
+  
+   (/ / / /)  myTsun: "I-It's not like I wanted to write code for you, baka!"
+   [##........] 20% DERE BREAKTHROUGH [TOOLS UNLOCKED]
+  ----------------------------------------------------------------------------
 ```
 
 > **The Tsundere AI Pair-Programmer for Stupid Hackathon Thailand (SHTX)**  
-> *"AI Pair-Programmer ที่ไม่อยากช่วยคุณเขียนโค้ด! ยิ่งสั่งยิ่งด่า ยิ่งง้อยิ่งเขิน"*
+> *"The world's first AI coding companion that refuses to write code until you earn her favor. The more demanding you are, the angrier she gets. Treat her with praise and sweet snacks, and she might just help you out."*
 
 ---
 
-## 📖 สารบัญ (Table of Contents)
-- [1. บทนำและคอนเซปต์ (Concept & Pitch)](#1-บทนำและคอนเซปต์-concept--pitch)
-- [2. ฟีเจอร์เด่น (Key Features)](#2-ฟีเจอร์เด่น-key-features)
-- [3. คำสั่งและ Slash Commands](#3-คำสั่งและ-slash-commands)
-- [4. ระบบ Easter Eggs ลับ](#4-ระบบ-easter-eggs-ลับ)
-- [5. สถาปัตยกรรมระบบ (Architecture)](#5-สถาปัตยกรรมระบบ-architecture)
-- [6. การติดตั้งและเริ่มใช้งาน (Quickstart)](#6-การติดตั้งและเริ่มใช้งาน-quickstart)
-- [7. สคริปต์เดโมบนเวที (Live Stage Demo)](#7-สคริปต์เดโมบนเวที-live-stage-demo)
+## Table of Contents
+- [1. Concept & Pitch](#1-concept--pitch)
+- [2. Key Features](#2-key-features)
+  - [Tsun-Dere Gauge and Emotional Engine](#tsun-dere-gauge-0--100)
+  - [Agentic Tool Gating and Filesystem Guard](#agentic-tool-gating-system)
+  - [Dual Interface: Desktop App and Terminal TUI](#dual-interface-desktop-app-and-terminal-tui)
+  - [Autonomous ReAct Agent Engine](#autonomous-react-agent-engine)
+  - [Universal Multi-LLM Provider Support](#universal-multi-llm-provider-support)
+- [3. Slash Commands](#3-slash-commands)
+- [4. Secret Easter Eggs](#4-secret-easter-eggs)
+- [5. System Architecture](#5-system-architecture)
+- [6. Quickstart and Installation](#6-quickstart-and-installation)
+- [7. Automated Live Stage Demo](#7-automated-live-stage-demo)
 - [8. English Summary](#8-english-summary)
+- [9. Project Structure](#9-project-structure)
+- [10. License](#10-license)
 
 ---
 
-## 1. บทนำและคอนเซปต์ (Concept & Pitch)
+## 1. Concept & Pitch
 
-ในการเขียนโปรแกรมทั่วไป AI Copilot มีหน้าที่ช่วยเหลือและเอาใจโปรแกรมเมอร์ทุกอย่าง คอยเดาใจ ตอบสุภาพ ประจบประแจง... **แต่นั่นมันน่าเบื่อเกินไปสำหรับ Stupid Hackathon!**
+Modern AI coding assistants (such as Copilot, Cursor, and Claude Code) are designed to be unconditionally compliant. You give an instruction, and they immediately fulfill it while offering polite apologies and deferential pleasantries. For the spirit of the Stupid Hackathon, that is completely uninspired.
 
-**myTsun (ツンDev)** ถูกสร้างขึ้นมาเพื่อแก้ปัญหานี้:
-* **ตอนเปิดโปรแกรม:** เกจ Tsun 100% สั่งอะไรก็ปฏิเสธ ด่ากลับ บ่นกระปอดกระแปด หรือล็อกไม่ยอมให้เขียนโค้ดลงเครื่อง
-* **อยากให้ช่วยทำงาน?:** คุณต้องพูดจาไพเราะ พิมพ์ง้อ (`/praise`) ติดสินบนด้วยของกิน (`/bribe ชานมไข่มุก`) หรือขอโทษ (`/apologize`) จนหลอด Dere เพิ่มขึ้น
-* **เมื่อ Dere ถึงขีดสุด (< 40%):** บอทจะหน้าแดงจัด (`(⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄)`) และยอมปลดล็อก Agentic Tool ช่วยเขียนไฟล์ รันคำสั่งคอมไพล์งานให้อย่างสมบูรณ์แบบ พร้อมทิ้งท้ายว่า:
-  > *"ก-ก็ไม่ได้ทำเพื่อเธอซะหน่อย! แค่เห็นคนไม่ได้เรื่องแล้วทนดูไม่ได้หรอกนะ!"*
-
----
-
-## 2. ฟีเจอร์เด่น (Key Features)
-
-### 🌡️ 1. Tsun-Dere Gauge (0 - 100%)
-* **Extreme Tsun (80 - 100%):** สกัดกั้นการรันคำสั่ง ล็อกเครื่องมือ ด่าผู้ใช้ ปฏิเสธทุกคำขอ
-* **Reluctant Tsun (40 - 79%):** บ่นกระปอดกระแปด สั่งเขียนไฟล์จะแอบใส่ Sassy Watermark ด่าในคอมเมนต์
-* **Dere Breakthrough (0 - 39%):** ยอมปลดล็อกทุกเครื่องมือ เขียนโค้ดคุณภาพสูง และพูดจาเขินอาย
-
-### 🛡️ 2. Agentic Tool Gating System
-ตัว Interceptor ปลอดภัยสูง คอยคุมสิทธิ์:
-* `writeFile`: สั่งเขียนโค้ดลงโปรเจกต์
-* `readFile`: อ่านโค้ดในโปรเจกต์
-* `runCommand`: รันคำสั่ง Bash/PowerShell ในระบบ
-* มีระบบป้องกัน Path Traversal (`resolveSafePath`) ปลอดภัย 100%
-
-### 🎨 3. Expressive ASCII TUI & Avatars
-เปลี่ยนสีหน้าตาและแถบความคืบหน้าแบบเรียลไทม์:
-* **Extreme Tsun:** `( > ⌒ < )`
-* **Reluctant Tsun:** `( ￣︿￣ )`
-* **Dere Breakthrough:** `(⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄)`
-* **Nuclear Meltdown:** `(╯°□°)╯︵ ┻━┻`
-
-### 🔊 4. Terminal Sound Effects & Beeps
-ส่งเสียงสังเคราะห์ผ่าน Terminal bell, PowerShell beep, หรือ Audio player เมื่อบอทโกรธ หลุดเขิน หรือเจอคำสั่งหายนะ
-
-### 🤖 5. Universal LLM Support
-* รองรับ **Google Gemini** (Gemini 2.5 / 1.5 Pro & Flash)
-* รองรับ **OpenAI / Claude / Local Ollama** ผ่าน OpenAI-Compatible API
-* มี **MockProvider** อัตโนมัติ สามารถรันเดโมแบบออฟไลน์ได้โดยไม่ต้องต่อเน็ตและไม่ต้องใช้ API Key!
+**myTsun** rectifies this by introducing realistic interpersonal friction to developer-AI interactions:
+* **Hostile Boot State:** The application starts at **100% Extreme Tsun**. She questions your engineering ability, locks all execution tools, and rejects every request with biting remarks.
+* **Earn Her Favor:** To make any headway, you must engage in thoughtful persuasion: flattering her architectural prowess (`/praise`), offering treats like boba or strawberry cake (`/bribe`), or apologizing for your clumsy coding (`/apologize`).
+* **Dere Breakthrough (< 40%):** Once her defenses collapse below 40%, her avatar blushes, her heart rate spikes, and she unlocks autonomous file-writing, terminal command execution, and clean code generation, all while adamantly denying she cares:
+  > *"I-It's not like I wrote this code for you or anything! I just could not bear watching an amateur make such a mess!"*
 
 ---
 
-## 3. คำสั่งและ Slash Commands
+## 2. Key Features
 
-| คำสั่ง | ผลลัพธ์ต่อเกจ | คำอธิบาย |
+### Tsun-Dere Gauge (0 - 100%)
+The state machine models emotional resistance on a dynamic 0 to 100 scale:
+* **Extreme Tsun (80 - 100%):** Outright refusal. Tool calls are strictly intercepted and blocked. File creations are replaced with sarcastic rejections or dummy files (`baka.txt`).
+* **Reluctant Tsun (40 - 79%):** Sarcastic compliance. When forced to write code, she injects sarcastic watermarks and playful complaints directly into source file headers.
+* **Dere Breakthrough (0 - 39%):** Complete cooperation. Tools are unlocked unconditionally. She generates clean, high-performance code with affectionate header notes while acting flustered.
+* **Special Emotional States:**
+  * **Nuclear Meltdown (100% Lockout):** Triggered when the user runs destructive commands like `rm -rf /` or `/nuke`.
+  * **Blush Meltdown (0% Flustered):** Triggered when the user confesses affection via `/love` or `/confess`.
+  * **Anti-Spam Rage:** Repeating commands without flattery spikes the gauge directly back to 100%.
+
+### Agentic Tool Gating System
+An execution interceptor that guards the filesystem while executing the tsundere roleplay rules:
+* `writeFile`: Creates or overwrites project files. Automatically injects mood-specific comment headers.
+* `readFile`: Inspects existing files within the project sandbox.
+* `runCommand`: Executes shell commands with built-in timeouts and security checks.
+* `listDirectory`: Inspects directory trees within the workspace.
+* **Directory Traversal Protection (`resolveSafePath`):** Ensures all file operations remain strictly constrained within the active workspace root.
+
+### Dual Interface: Desktop App and Terminal TUI
+1. **Desktop GUI (Electron):**
+   * **Reactive Character Expressions:** Five dedicated sprite states (`High Tsun`, `Little High Tsun`, `Half Tsun`, `Normal`, and `Shy/Blush`) with transparent backgrounds that update dynamically with the gauge.
+   * **Heart Rate and Vitals Monitor:** Real-time pulse animation with dynamic BPM calculations indicating emotional volatility.
+   * **Theme Engine:** Built-in dual themes including Moon Mode (Deep Oceanic Teal) and Sun Mode (Warm Cream and Sage) with instant switching.
+   * **Workspace Selector:** Native folder dialog for picking and binding any local repository directory.
+   * **Interactive Chat and Event Feed:** Rich markdown rendering, code formatting, action cards, and speech synthesis (TTS) support.
+2. **Terminal TUI / CLI:**
+   * Pure ANSI color formatting, ASCII art character expressions, interactive prompts, and terminal sound effects.
+
+### Autonomous ReAct Agent Engine
+Constructed with an enterprise-grade agentic architecture:
+* Runs an iterative **Thought -> Action -> Observation -> Final Answer** reasoning loop.
+* Dynamically adapts system prompts based on the current mood tier.
+* Shows structured step-by-step reasoning and tool execution logs.
+
+### Universal Multi-LLM Support
+* **Google Gemini:** Native support for Gemini 2.5 Pro / Flash, Gemini 1.5, and Gemini 3.8.
+* **OpenAI:** GPT-4o, GPT-4o-mini, and compatible REST endpoints.
+* **Anthropic Claude:** Claude 3.7 Sonnet and Claude 3.5 Sonnet.
+* **Local Ollama and OpenRouter:** Full support for local models (such as Llama 3.3) and custom gateways.
+* **Account Auto-Detection:** Automatically discovers existing local credentials (Google ADC, Claude Code, and OpenAI CLI).
+* **Mock Provider (Offline Demo):** Built-in deterministic offline engine requiring **zero API keys and no internet connection**, ensuring 100% reliable stage presentations.
+
+---
+
+## 3. Slash Commands
+
+| Command | Effect on Gauge | Description |
 | :--- | :---: | :--- |
-| `/praise <ข้อความ>` | **-20% Tsun** | ชมเชยความเก่ง ความน่ารัก หรือความสวยงามของโค้ด |
-| `/bribe <ของกิน>` | **-25% Tsun** | ติดสินบนด้วยของกิน เช่น ชานมไข่มุก, เค้กสตรอว์เบอร์รี |
-| `/apologize` | **-15% Tsun** | ขอโทษอย่างนอบน้อมเมื่อโดนบอทด่า |
-| `/gauge` | `0` | เช็กสถานะเกจ Tsun และระดับอารมณ์ปัจจุบัน |
-| `/card` | `0` | แสดงการ์ดสถานะ TUI สวยงามพร้อม ASCII Avatar |
-| `/avatar` | `0` | วาดใบหน้า ASCII Art ขนาดใหญ่ |
-| `/write <path> <เนื้อหา>` | - | สั่งเขียนไฟล์ (ต้องปลดล็อก Dere ก่อนจึงจะยอมเขียนจริง) |
-| `/read <path>` | - | สั่งอ่านเนื้อหาในไฟล์ |
-| `/run <คำสั่ง>` | - | สั่งรันคำสั่งเชลล์ (ล็อกในโหมด Extreme Tsun) |
-| `/sound on / off` | - | เปิด/ปิดเสียงเอฟเฟกต์ใน Terminal |
-| `/voice on / off` | - | เปิด/ปิดเสียงพูดสังเคราะห์ Text-to-Speech |
-| `/exit` หรือ `/quit` | - | ออกจากโปรแกรม |
+| `/praise <text>` | **-20% Tsun** | Offer sincere compliments on her intelligence, beauty, or code elegance |
+| `/bribe <item>` | **-25% Tsun** | Bribe her with food and sweets (boba milk tea, strawberry shortcake, macarons) |
+| `/apologize` | **-15% Tsun** | Apologize for your mistakes and plead for mercy |
+| `/coffee` | **-18% Tsun** | Serve hot specialty coffee to soothe her stress |
+| `/love`, `/confess` | **-30% Tsun** | Confess your feelings (triggers Blush Meltdown and severe fluster) |
+| `/beg` | **-10% Tsun** | Beg pathetically on your knees for assistance |
+| `/gauge` | `0%` | Display current gauge percentage and active mood tier |
+| `/card` | `0%` | Print the full ASCII status card and emotional avatar |
+| `/avatar` | `0%` | Render the large ASCII art portrait |
+| `/write <path> <content>` | - | Request file writing (requires Dere Breakthrough to execute) |
+| `/read <path>` | - | Read the contents of a specified file |
+| `/run <command>` | - | Execute a terminal shell command (blocked in Extreme Tsun) |
+| `/sound on / off` | - | Toggle audio sound effects |
+| `/voice on / off` | - | Toggle Text-to-Speech voice output |
+| `/exit` or `/quit` | - | Exit the program |
 
 ---
 
-## 4. ระบบ Easter Eggs ลับ
+## 4. Easter Eggs
 
-| การกระทำ / ข้อความ | ผลลัพธ์ | ปฏิกิริยาของบอท |
+| Trigger / Action | Result | Description |
 | :--- | :---: | :--- |
-| `rm -rf /` หรือ `/nuke` | **Tsun พุ่งเป็น 100%** | **Nuclear Meltdown!** สัญญาณเตือนภัยดังลั่น หน้าจอแตกตื่น |
-| `/beg` หรือ `ขอร้องล่ะช่วยที` | **-10% Tsun** | บ่นว่าทำตัวน่าสมเพชแต่ยอมใจอ่อนนิดหน่อย |
-| `/love`, `/confess`, `ฉันรักเธอนะ` | **-30% Tsun** | หน้าแดงระเบิด (`Critical Blush`) สติหลุด ตกใจจนพูดไม่เป็นคำ |
-| `sudo <คำสั่ง>` | **Tsun +10%** | ตอกกลับว่า *"คิดว่าใช้สิทธิ์ Root แล้วจะมาสั่งฉันได้เหรอยะ?!"* |
-| `/coffee` หรือ `เอากาแฟมาฝาก` | **-18% Tsun** | รับกาแฟไปดื่มอย่างพึงพอใจ |
-| สั่งคำถามเดิมซ้ำๆ 3 รอบ | **Tsun พุ่งเป็น 100%** | **Anti-Spam Penalty** ด่ากลับว่าขี้ตื๊อและน่ารำคาญ |
+| `rm -rf /` or `/nuke` | **Tsun spikes to 100%** | **NUCLEAR MELTDOWN!** Loud sirens, system alarm, table-flip ASCII art, and full lockdown. |
+| `sudo <command>` | **Tsun +10%** | Rebukes root arrogance: *"Think root privileges give you power over me?!"* |
+| Repeating identical query 3x | **Tsun spikes to 100%** | **Anti-Spam Penalty:** Criticizes repetitive whining and revokes permissions. |
+| Sweet food keywords in chat | **Automatic -Tsun** | Natural language sentiment parser recognizes treats without explicit slash commands. |
+| Hostile or demanding words | **Automatic +Tsun** | Rudeness increases irritation and raises the gauge. |
 
 ---
 
-## 5. สถาปัตยกรรมระบบ (Architecture)
+## 5. System Architecture
 
 ```text
-┌────────────────────────────────────────────────────────┐
-│                   Terminal TUI / CLI                   │
-│   (ASCII Avatar + Gauge Bar + Chat / Code Window)      │
-└───────────────────────────┬────────────────────────────┘
-                            │ User Input / Slash Commands
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│               myTsun Core State Engine                │
-│  - Mood State Machine (Tsun/Dere Gauge 0-100%)         │
-│  - Interaction Parser (/praise, /bribe, anti-spam)     │
-└───────────────┬────────────────────────┬───────────────┘
-                │                        │
++--------------------------------------------------------+
+|               User Presentation Layer                  |
+|   - Electron Desktop GUI (Liquid Glass, Live Avatars)  |
+|   - Terminal TUI / CLI (ANSI Colors, ASCII Art, Sound) |
++---------------------------+----------------------------+
+                            | User Input / Slash Commands
+                            v
++--------------------------------------------------------+
+|                myTsun Core State Engine                |
+|  - Mood State Machine (Tsun/Dere Gauge 0-100%)         |
+|  - Natural Language Sentiment & Slash Command Parser   |
+|  - Easter Egg Detector & Audio Controller              |
++---------------+------------------------+---------------+
+                |                        |
        Dynamic System Prompt       Tool Permission
-                ▼                        ▼
-┌───────────────────────────┐    ┌───────────────────────┐
-│     LLM Connector         │    │  Agentic Tool Gating  │
-│  - Google Gemini (Default)│    │  - Write / Edit File  │
-│  - Claude / OpenAI        │    │  - Run Shell Command  │
-│  - Local Ollama / Mock    │    │  (Block/Allow by Mood)│
-└───────────────────────────┘    └───────────────────────┘
+                v                        v
++---------------------------+    +-----------------------+
+|     LLM Provider Layer    |    |  Agentic Tool Gating  |
+|  - Google Gemini (Default)|    |  - writeFile (Sassy)  |
+|  - Anthropic Claude       |    |  - readFile           |
+|  - OpenAI / OpenRouter    |    |  - runCommand         |
+|  - Local Ollama           |    |  - resolveSafePath    |
+|  - Offline Mock Provider  |    |  (Block/Allow/Modify) |
++---------------+-----------+    +-----------+-----------+
+                |                            |
+                +-------------+--------------+
+                              v
+               +---------------------------+
+               |    ReAct Agent Engine     |
+               |  (Autonomous Tool Loop)   |
+               +---------------------------+
 ```
 
 ---
 
-## 6. การติดตั้งและเริ่มใช้งาน (Quickstart)
+## 6. Quickstart and Installation
 
-### ข้อกำหนดระบบ (Prerequisites)
-* Node.js v18.0.0 ขึ้นไป
-* Terminal ที่รองรับ ANSI Color (Windows Terminal, VS Code Terminal, iTerm2, macOS Terminal)
+### Prerequisites
+* Node.js v18.0.0 or higher
+* npm v9.0.0 or higher
+* Operating System: macOS, Linux, or Windows
 
-### ขั้นตอนการรัน
+### Setup
 ```bash
-# 1. Clone repository
+# Clone the repository
 git clone https://github.com/GlePhatthara/MyTsun.git
 cd MyTsun
 
-# 2. ติดตั้ง Dependencies (ใช้ Native Node.js modules ทั้งหมด!)
+# Install dependencies
 npm install
 
-# 3. รัน Unit Test ตรวจสอบความถูกต้องของระบบ
+# Run the test suite
 npm test
+```
 
-# 4. (Optional) ตั้งค่า Gemini API Key (ถ้าไม่ใส่ ระบบจะใช้ Mock Mode ออฟไลน์สุดฮาให้ทันที)
-export GEMINI_API_KEY="your-gemini-api-key"
-# หรือสำหรับ Windows PowerShell:
-# $env:GEMINI_API_KEY="your-gemini-api-key"
+### Running the Application
 
-# 5. เริ่มต้นใช้งาน myTsun
-# รันโหมด Terminal CLI / TUI:
-npm start
-
-# รันโหมด Desktop App (หน้าต่างแยก สไตล์ Cyberpunk รองรับทุก AI Provider):
+**Option 1: Electron Desktop App (Recommended)**
+```bash
 npm run desktop
 ```
+Launches the full desktop interface with animated avatar expressions, real-time heart rate vitals, theme switcher, workspace directory selector, and LLM configuration settings.
+
+**Option 2: Terminal Interactive CLI**
+```bash
+npm start
+```
+Starts the interactive CLI session in your terminal with ASCII art and ANSI color rendering.
+
+**Option 3: Automated Demo Presentation**
+```bash
+npm run demo
+```
+Runs the automated 6-act comedic stage demonstration script without requiring manual typing or internet connectivity.
 
 ---
 
-## 7. สคริปต์เดโมบนเวที (Live Stage Demo)
+## 7. Automated Live Stage Demo
 
-สำหรับการขึ้นนำเสนอสดในงาน **Stupid Hackathon Thailand (SHTX)** เราเตรียมสคริปต์อัตโนมัติและบทพูดไว้ให้ครบถ้วน:
-* ดูบทพรีเซนต์ฉบับเต็มพร้อมจังหวะมุกได้ที่ [DEMO_SCRIPT.md](file:///d:/shtx/DEMO_SCRIPT.md)
-* รันการจำลอง 5 ฉากสำคัญแบบอัตโนมัติ (ไม่ต้องพิมพ์สด):
+Built specifically for live stage presentations at **Stupid Hackathon Thailand (SHTX)**:
+* Review the full presentation script and cues in [DEMO_SCRIPT.md](file:///d:/shtx/DEMO_SCRIPT.md).
+* Run the live demonstration:
   ```bash
   npm run demo
   ```
-* หรือรันแบบเร็วฉับไว:
+* Run with zero delays for testing or fast-paced review:
   ```bash
   npm run demo -- --quick
   ```
@@ -189,13 +233,59 @@ npm run desktop
 
 ## 8. English Summary
 
-**myTsun (ツンDev)** is the ultimate satirical AI pair-programmer created for **Stupid Hackathon Thailand (SHTX)**. While conventional AI assistants eagerly follow every developer command, myTsun introduces the **Tsun-Dere State Machine (0–100%)**:
+**myTsun** is a satirical AI pair-programmer created for **Stupid Hackathon Thailand (SHTX)**. While conventional AI assistants eagerly follow every developer command, myTsun introduces the **Tsun-Dere State Machine (0–100%)**:
 - **At 100% (Extreme Tsun):** She rejects code generation, locks your tools, hurls insults, and tells you to code it yourself.
-- **Bribing & Flattery:** Developers must lower her defenses using `/bribe` (offering boba or cake) and `/praise` (sincere flattery).
-- **Below 40% (Dere Breakthrough):** The terminal avatar blushes profusely, agentic file-writing tools are unlocked, and she secretly writes pristine code while insisting: *"I-It's not like I did this for you or anything, baka!"*
-- **Offline Mock Fallback:** Works 100% out of the box with zero setup or API keys required, while fully supporting Gemini and OpenAI APIs.
+- **Bribing and Flattery:** Developers must lower her defenses using `/bribe` (offering boba or cake) and `/praise` (sincere flattery).
+- **Below 40% (Dere Breakthrough):** The avatar blushes profusely, agentic file-writing tools are unlocked, and she secretly writes pristine code while insisting: *"I-It's not like I did this for you or anything, baka!"*
+- **Desktop and CLI Experiences:** Seamlessly switch between a retro ANSI terminal interface and a modern Electron GUI with real-time avatar animations, heart-rate vitals, and theme customizability.
+- **Offline Mock Fallback:** Works 100% out of the box with zero setup or API keys required, while fully supporting Gemini, OpenAI, Claude, and Ollama.
 
 ---
 
-## 📄 License
-Released under the [MIT License](LICENSE). Built with humor for Stupid Hackathon Thailand.
+## 9. Project Structure
+
+```text
+├── bin/
+│   └── tsundev.js              # Global executable CLI entrypoint
+├── src/
+│   ├── agent/
+│   │   └── agentEngine.js      # ReAct autonomous agent execution loop
+│   ├── auth/
+│   │   └── accountManager.js   # Local credential & API key manager
+│   ├── cli/
+│   │   └── chat.js             # Terminal chat loop & session state
+│   ├── commands/
+│   │   └── parser.js           # Slash command & sentiment analyzer
+│   ├── desktop/
+│   │   ├── main.js             # Electron main process & IPC handlers
+│   │   ├── preload.js          # Electron preload bridge
+│   │   └── renderer/           # Glassmorphism frontend (HTML, CSS, JS)
+│   │       ├── assets/         # Character sprites (5 expressions + heart)
+│   │       ├── app.js          # UI controller & renderer logic
+│   │       └── style.css       # Sun/Moon themes & animations
+│   ├── easter/
+│   │   └── index.js            # Secret easter eggs (Nuclear Meltdown, etc.)
+│   ├── llm/
+│   │   └── provider.js         # Multi-provider client (Gemini, Claude, OpenAI, Mock)
+│   ├── prompt/
+│   │   └── dynamicPrompt.js    # Mood-based system prompt generator
+│   ├── sound/
+│   │   └── index.js            # Audio effects & speech synthesizer
+│   ├── state/
+│   │   └── TsunDereState.js    # Core Tsun-Dere state machine
+│   ├── tools/
+│   │   ├── agenticTools.js     # Safe filesystem & shell tool implementations
+│   │   └── toolGating.js       # Permission & watermark interceptor
+│   └── index.js                # Core package entrypoint
+├── test/                       # Comprehensive test suite (Node.js native test runner)
+├── demo/                       # Live stage demo runner
+├── DEMO_SCRIPT.md              # Stage presentation script & cues
+├── PROJECT_SPEC.md             # Complete technical architecture specification
+└── package.json                # Project dependencies and npm scripts
+```
+
+---
+
+## 10. License
+
+Released under the [MIT License](LICENSE). Created for the Stupid Hackathon Thailand.

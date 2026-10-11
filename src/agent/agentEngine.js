@@ -70,7 +70,7 @@ CRITICAL PERSONA CONSISTENCY:
     const toolName = actionMatch[1].trim();
 
     // Look for Action Input block up until the next section (Observation, Thought, Final Answer) or end of text
-    const inputMatch = text.match(/Action Input:\s*([\s\S]*?)(?=\n\s*(?:Observation|Thought:|Final Answer:|$))/i);
+    const inputMatch = text.match(/Action Input:\s*([\s\S]*?)(?=(?:\n\s*(?:Observation|Thought:|Final Answer:)|$))/i);
     if (!inputMatch) return null;
 
     let raw = inputMatch[1].trim();

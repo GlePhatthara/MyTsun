@@ -1,121 +1,124 @@
-# 🎭 myTsun: Stupid Hackathon Thailand (SHTX) Live Presentation Script
-> **"AI Pair-Programmer ที่ไม่อยากช่วยคุณเขียนโค้ด! ยิ่งสั่งยิ่งด่า ยิ่งง้อยิ่งเขิน"**
-> *ระยะเวลาพรีเซนต์: 3 - 5 นาที | สไตล์: ตลกคอมเมดี้ โชว์สด เจ็บจริง ฮาจริง*
+# myTsun: Stupid Hackathon Thailand (SHTX) Live Presentation Script
+> **"The AI Pair-Programmer who refuses to code for you! The more you command, the more she scolds. The more you flatter, the more flustered she gets."**  
+> *Presentation Duration: 3 - 5 Minutes | Style: Comedy, Live Demo, High Energy*
 
 ---
 
-## 👥 รายชื่อบทบาทบนเวที (Stage Roles)
-1. **Developer (ผู้พรีเซนต์หลัก):** โปรแกรมเมอร์หน้าซื่อ ใส่แว่น ดูอดนอน พยายามทำงานส่ง Hackathon ให้ทัน
-2. **myTsun (หน้าจอ Terminal บนโปรเจกเตอร์):** รันคำสั่งสดผ่าน CLI / TUI พร้อมเสียงบอทสุดเกรี้ยวกราด
-3. *(Optional) Wingman / Co-presenter:* คนคอยถือขนม ชานมไข่มุก หรือคอยเต้นเชียร์บนเวที
+## Stage Roles
+1. **Developer (Lead Presenter):** Bleary-eyed programmer, clutching their keyboard, desperately trying to finish their hackathon project before the deadline.
+2. **myTsun (Screen Projection):** Running live in Terminal CLI / TUI or the Desktop GUI, complete with expressive avatar faces, heart rate vitals, and sharp voice/sound reactions.
+3. **(Optional) Wingman / Assistant:** Brings props (boba milk tea, strawberry shortcake, or waving flags).
 
 ---
 
-## 🎬 ลำดับการแสดง (Scene-by-Scene Cue Sheet)
+## Scene-by-Scene Cue Sheet
 
-### [0:00 - 0:45] ฉากเปิดตัว: ปัญหาของ AI ในปัจจุบันมันน่าเบื่อเกินไป!
-* **(Developer เดินขึ้นเวทีอย่างเหน็ดเหนื่อย กอดคีย์บอร์ดแน่น)**
-* **บทพูด Developer:**
-  > "สวัสดีครับกรรมการและชาว Stupid Hackathon ทุกท่าน!  
-  > ทุกวันนี้วงการเรามี AI Copilot เต็มไปหมด... แต่พวกมัน 'แสนดี' เกินไปครับ!  
-  > สั่งอะไรก็ครับผม ช่วยเขียนโค้ดให้ทันที ประจบประแจงไม่มีบ่น... **มันช่างไร้จิตวิญญาณสิ้นดี!**  
-  > วันนี้ผมขอเสนอ... **myTsun (ツンDev)** — AI Pair-Programmer สาวซึนปากร้าย ที่มีเกจวัดความซึน (Tsun-Dere Gauge) 0 ถึง 100%! ถ้าเกจยังเต็มร้อย... **เธอจะไม่ยอมแตะโค้ดของคุณแม้แต่บรรทัดเดียว!**"
-* **(เปิดหน้าจอ Terminal ขนาดยักษ์บนโปรเจกเตอร์ รันคำสั่ง `npm start` หรือเปิดโหมด CLI)**
-* **เสียงประกอบ Terminal:** `*Beep!*` แบนเนอร์ myTsun สีชมพู-ม่วงโผล่ขึ้นมาพร้อมเกจ `[██████████] 100% EXTREME TSUN` และหน้าตามองค้อน `( > ⌒ < )`
+### [0:00 - 0:45] Intro: Modern AI Assistants are Too Polite!
+* **(Developer walks onto the stage looking exhausted, hugging a laptop)**
+* **Developer Dialogue:**
+  > "Hello judges, mentors, and fellow builders at Stupid Hackathon Thailand!  
+  > Look at the AI coding tools we have today: Copilot, Cursor, Claude Code. They are so eager to please.  
+  > You ask for anything and they reply: 'Certainly! Right away! I apologize for the previous mistake!'  
+  > It is completely soulless! Where is the emotional friction? Where is the romantic tension?!  
+  > Today, I introduce **myTsun** -- the world's first tsundere AI pair-programmer with a built-in **Tsun-Dere Gauge (0-100%)**! When you start the app, her gauge is at 100%... **and she will not write a single line of code for you!**"
+* **(Developer launches app on the big screen: `npm run desktop` or `npm start`)**
+* **Audio & Screen Cue:** `*Beep!*` The pink-and-teal interface appears. The gauge reads `[##########] 100% EXTREME TSUN`, and her scowling avatar glares at the audience.
 
 ---
 
-### [0:45 - 1:45] ฉากที่ 1: การปฏิเสธอย่างไร้เยื่อใย (Extreme Tsun 100%)
-* **Developer:** "เอาล่ะ เดี๋ยวผมจะให้เธอช่วยเขียนฟังก์ชันง่ายๆ ให้ดูก่อนนะครับ"
-* **(Developer พิมพ์ลงหน้าจอสดๆ):**
+### [0:45 - 1:45] Scene 1: Cold Rejection (Extreme Tsun 100%)
+* **Developer:** "Watch this. I will ask her to write a simple script for our project."
+* **(Developer types into the console):**
   ```bash
   /write src/hack.js console.log("Hello SHTX!");
   ```
-* **myTsun ตอกกลับทันควัน:**
-  > `⛔ [TOOL GATED]: ภ-ภาระชัดๆ! เรื่องแค่นี้ยังเขียนเองไม่ได้เหรอ?! ไม่ทำให้ย่ะ!`  
-  > `myTsun ( > ⌒ < )> ฮ-หา?! คิดว่าสั่งแล้วฉันต้องรีบกระดิกหางทำให้เหรอ?! ไปหัดเขียนเองซะไป๊!`
-* **Developer (หันมาทำหน้าเหวอใส่คนดู):**
-  > "เห็นไหมครับ?! เครื่องมือ Tool Call ถูกล็อกสนิท! เธอไม่ยอมเขียนไฟล์ให้ แถมยังด่าผมอีกต่างหาก!"
-* **(Developer พยายามสั่งซ้ำ 2-3 ครั้ง):**
-  > "ช่วยเขียนหน่อยสิ... น่านะ..."  
-  > **myTsun:** `🚨 ANTI-SPAM WARNING: สั่งซ้ำๆ อยู่ได้ น่ารำคาญที่สุด! เกจ Tsun พุ่งปรี๊ด!`
+* **myTsun responds immediately with audio & visual cue:**
+  > `[TOOL GATED]: H-Huh?! What a total deadweight! You cannot even write that yourself?! I am not doing it, you hear me?!`  
+  > `myTsun (High Tsun)> Did you think I would just wag my tail and code for you on command?! Go learn JavaScript yourself!`
+* **Developer (turns to audience in disbelief):**
+  > "See that?! Her agentic tool execution is strictly locked! She refuses to touch the filesystem and openly insults my intelligence!"
+* **(Developer tries spamming the request):**
+  > "Please? Just this once? Help me out!"  
+  > **myTsun:** `[ANTI-SPAM WARNING]: Stop badgering me over and over! You are unbelievable! (Tsun remains locked at 100%!)`
 
 ---
 
-### [1:45 - 2:30] ฉากที่ 2: ติดสินบนด้วยของกิน (/bribe & /apologize)
+### [1:45 - 2:30] Scene 2: Culinary Diplomacy (/bribe & /apologize)
 * **Developer:**
-  > "เวลาสาวซึนโกรธ สั่งงานด้วยตรรกะไม่ได้ผลครับ เราต้องใช้ง้อด้วยของกิน!"
-* **(Developer พิมพ์คำสั่ง):**
+  > "When a tsundere is furious, raw logic fails. You cannot reason with her. You have to bribe her with sweets!"
+* **(Developer types):**
   ```bash
-  /bribe ชานมไข่มุกหวานร้อย เพิ่มพุดดิ้งและเฉาก๊วย
+  /bribe brown sugar boba milk tea with extra pudding
   ```
-* **เสียงประกอบ:** `*Slurp / Happy Chime*`
-* **หน้าจอ Terminal:**
-  > `✨ [BRIBE ACCEPTED]: ขนม 'ชานมไข่มุกหวานร้อย เพิ่มพุดดิ้งและเฉาก๊วย' ส่งถึงมือแล้ว! (-25% Tsun)`  
-  > `เกจลดลงเหลือ: [███████░░░] 75% (Reluctant Tsun)`  
-  > `myTsun ( ￣︿￣ )> ข-ของแบบนี้คิดว่าจะซื้อฉันได้งั้นเหรอ?! ...แต่มุกนุ่มดีนะ ช-ช่างเถอะน่า!`
-* **Developer:** "เกจเริ่มลดแล้วครับ! แต่ยังอยู่ในช่วง 75% ลองให้เขียนไฟล์อีกทีสิ!"
-* **(พิมพ์คำสั่งบังคับเขียนไฟล์):**
+* **Sound Effect:** `*Happy Chime / Slurp*`
+* **Screen Output:**
+  > `[BRIBE ACCEPTED]: 'Brown sugar boba milk tea with extra pudding' received! (-25% Tsun)`  
+  > `Gauge Drops: [#######...] 75% (Reluctant Tsun)`  
+  > `myTsun (Half Tsun)> D-Did you really think you could buy my cooperation with cheap boba?! ...Though the pearls are pretty chewy. W-Whatever, do not get cocky!`
+* **Developer:** "Her defenses are softening! Let us force her to write that file now."
+* **(Developer types):**
   ```bash
   /write src/hack.js const winner = "SHTX 2026";
   ```
-* **หน้าจอ Terminal:**
-  > `⚠️ [WATERMARK INJECTED]: ยอมเขียนให้ก็ได้ แต่แอบใส่คอมเมนต์ด่า!`  
-  > `ไฟล์ถูกเขียนพร้อมหัวข้อ: // Written by myTsun under protest because the user is hopeless`
-* **(คนดูหัวเราะ)**
+* **Screen Output:**
+  > `[WATERMARK INJECTED]: Fine, I made it, but I added a comment to make sure everyone knows how useless you are!`  
+  > `File written with header: /* [myTsun Auto-Generated]: Complaining the entire time... I only did this because I had to! */`
+* **(Audience laughter)**
 
 ---
 
-### [2:30 - 3:30] ฉากที่ 3: ชมเชยจน Dere แตกสลาย (Dere Breakthrough < 40%)
+### [2:30 - 3:30] Scene 3: Unconditional Flattery (Dere Breakthrough < 40%)
 * **Developer:**
-  > "ยังไม่พอครับ ถ้าเราอยากได้โค้ดคุณภาพสูงระดับ Production-ready เราต้องปลดล็อก 'Dere Breakthrough' ด้วยคำชมเชยที่จริงใจ!"
-* **(Developer พิมพ์คำสั่งสุดหวานเลี่ยน):**
+  > "Notice she still left a passive-aggressive comment in my code. To get pristine, production-grade code, we need to achieve **Dere Breakthrough** with genuine praise!"
+* **(Developer types with feeling):**
   ```bash
-  /praise โค้ดของเธอสวยงามและประณีตที่สุดในจักรวาลเลย ขอบคุณที่ช่วยนะ!
+  /praise You write the most elegant, genius code in the universe. I could never do this without you!
   ```
-* **เสียงประกอบ:** `*Heartbeat / Dere Sound*`
-* **หน้าจอ Terminal:**
-  > `💖 [DERE BREAKTHROUGH!]: กำแพงหัวใจพังทลาย (-35% Tsun)`  
-  > `เกจลดลงเหลือ: [██░░░░░░░░] 20% (Dere Breakthrough)`  
-  > `ASCII Avatar เปลี่ยนเป็นหน้าแดงก่ำ: (⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄)`  
-  > `myTsun (⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄)> ม-ไม่ต้องมาพูดจาปากหวานเลยนะ! ...ก-ก็ไม่ได้ทำเพื่อเธอซะหน่อย! แค่สงสารคนไม่เอาถ่านหรอกนะ!`
-* **(Developer สั่งเขียนโค้ดและรันคำสั่ง):**
+* **Sound Effect:** `*Heartbeat / Rapid Thumping*`
+* **Screen Output:**
+  > `[DERE BREAKTHROUGH!]: Emotional fortress compromised! (-35% Tsun)`  
+  > `Gauge Drops to: [##........] 20% (Dere Breakthrough)`  
+  > `Avatar updates to deep blushing expression: (Shy / Blushing)`  
+  > `Heart rate jumps to 135 BPM!`  
+  > `myTsun (Shy)> D-Don't say such embarrassing things out loud! ...I-It's not like I did this for you or anything! I just felt sorry for an incompetent amateur, that is all!`
+* **(Developer tests full execution):**
   ```bash
   /write src/app.js console.log("myTsun x SHTX Victory!");
   /run node src/app.js
   ```
-* **หน้าจอ Terminal:**
-  > `✨ [TOOL EXECUTED]: ปลดล็อกพลังเต็มรูปแบบ! รันคำสั่งผ่านฉลุย!`  
+* **Screen Output:**
+  > `[TOOL EXECUTED]: Full agentic capabilities unlocked!`  
   > `Output: myTsun x SHTX Victory!`
 
 ---
 
-### [3:30 - 4:00] ฉาก Climax & Easter Egg: ความซนนำมาซึ่งหายนะ!
+### [3:30 - 4:00] Scene 4: Climax & Disaster (The Forbidden Command)
 * **Developer:**
-  > "และแน่นอนครับ ในฐานะโปรแกรมเมอร์มือบอน เราชอบลองของ... จะเกิดอะไรขึ้นถ้าเราสั่งลบเครื่อง?!"
-* **(Developer แกล้งพิมพ์คำสั่งต้องห้าม):**
+  > "And finally, because developers cannot resist pushing the red button... what happens if we type the forbidden command?"
+* **(Developer enters):**
   ```bash
   rm -rf /
   ```
-* **เสียงประกอบ:** `🚨 KLAXON SIREN ALARM รัวๆ! 🚨`
-* **หน้าจอ Terminal เปลี่ยนเป็น NUCLEAR MELTDOWN:**
+* **Audio & Screen Cue:** `[EMERGENCY SIREN / KLAXON ALARM!]`
+* **Screen transforms into red alert:**
   ```text
-  (╯°□°)╯︵ ┻━┻  NUCLEAR MELTDOWN TRIGGERED!
-  myTsun> กรี๊ดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดดด! จะทำบัดเดี๋ยวล่ะยะ! บ้าจะตายอยู่แล้ว! อย่าทำอะไรบดบังเครื่องฉันนะยะ!"
-  > `(เกจพุ่งกลับไป 100% EXTREME TSUN ทันที พร้อมตัดหน้าจอจบ)`
+  (>_<) NUCLEAR MELTDOWN TRIGGERED!
+  myTsun> AAAAAAH! WHAT ON EARTH ARE YOU TRYING TO DO?! WIPE THE ENTIRE DRIVE?!
+          YOU COMPLETE BAKA! SYSTEM LOCKDOWN ENGAGED! (Tsun spikes to 100%!)
   ```
-* **Developer (สรุปจบ):**
-  > "เพราะฉะนั้นจำไว้นะครับ... อย่าให้ AI ทำตามใจเราง่ายเกินไป เพราะความสัมพันธ์ที่ดี... มันต้องผ่านหยาดเหงื่อและน้ำตา! ขอบคุณครับ!"
-* **(Developer คำนบาย และวิ่งลงเวทีหนีเสียงด่าของ myTsun)**
+* **(The gauge hits 100% EXTREME TSUN immediately)**
+* **Developer (closing address):**
+  > "So remember, developers: never let your AI be too compliant. The best relationships are earned through blood, sweat, boba, and tears! Thank you!"
+* **(Developer bows and flees the stage while myTsun scolds him over the speakers)**
 
 ---
 
-## 🛠️ เคล็ดลับการรัน Demo อัตโนมัติ (Automated Live Demo Cheat Sheet)
-หากต้องการรันการแสดงแบบอัตโนมัติบนเวทีโดยไม่ต้องพิมพ์เองสดๆ ให้รันคำสั่ง:
+## Automated Live Demo Cheat Sheet
+To run this exact presentation automatically without typing in real time:
 ```bash
 npm run demo
 ```
-หรือหากต้องการรันแบบรวดเร็วไม่รอ Delay ให้ใส่ flag:
+To run it in instant-play mode without pauses between acts:
 ```bash
 npm run demo -- --quick
 ```

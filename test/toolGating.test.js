@@ -143,7 +143,8 @@ test('AgenticToolGating - Dere Breakthrough (0-39%) UNLOCKS full tool execution 
     assert.equal(execRes.blocked, false);
 
     const fileContent = await fs.readFile(path.join(tempDir, 'lovely_app.js'), 'utf-8');
-    assert.equal(fileContent, 'console.log("Success with myTsun Dere Mode!");');
+    assert.match(fileContent, /console\.log\("Success with myTsun Dere Mode!"\);/);
+    assert.match(fileContent, /\[myTsun with ♡\]/);
   } finally {
     await fs.rm(tempDir, { recursive: true, force: true });
   }
@@ -181,7 +182,8 @@ test('ChatSession Integration - /write and /run are blocked at 100% and succeed 
     assert.equal(writeSuccess.toolExecution.success, true);
 
     const saved = await fs.readFile(path.join(tempDir, 'notes.txt'), 'utf-8');
-    assert.equal(saved, 'unlocked-info');
+    assert.match(saved, /unlocked-info/);
+    assert.match(saved, /\[myTsun with ♡\]/);
 
     // 5. Try /run again -> Success!
     const runSuccess = await session.handleTurn('/run node -e "console.log(\'Dere Run Done\')"');
@@ -212,7 +214,8 @@ TOOL_CALL: writeFile {"filePath": "auto_generated.js", "content": "export const 
     assert.match(turnRes.reply, /ดำเนินการ Tool "writeFile" สำเร็จ/);
 
     const written = await fs.readFile(path.join(tempDir, 'auto_generated.js'), 'utf-8');
-    assert.equal(written, 'export const ok = true;');
+    assert.match(written, /export const ok = true;/);
+    assert.match(written, /\[myTsun with ♡\]/);
   } finally {
     await fs.rm(tempDir, { recursive: true, force: true });
   }

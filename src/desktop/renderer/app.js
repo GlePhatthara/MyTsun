@@ -84,6 +84,7 @@ function convertEmojiToKaomojiClient(text) {
 // State
 let currentSettings = null;
 let currentTab = 'gemini';
+let currentTheme = 'moon'; // 'moon' | 'sun'
 
 // Elements
 const avatarCard = document.getElementById('avatarCard');
@@ -109,6 +110,55 @@ const btnCancelModal = document.getElementById('btnCancelModal');
 const btnSaveSettings = document.getElementById('btnSaveSettings');
 const btnTestConnection = document.getElementById('btnTestConnection');
 const testFeedback = document.getElementById('testFeedback');
+
+// Theme elements
+const btnQuickThemeToggle = document.getElementById('btnQuickThemeToggle');
+const btnThemeMoon = document.getElementById('btnThemeMoon');
+const btnThemeSun = document.getElementById('btnThemeSun');
+
+// Theme Management
+function applyTheme(theme) {
+  currentTheme = theme;
+  document.body.setAttribute('data-theme', theme);
+  try { localStorage.setItem('mytsun-theme', theme); } catch (_) {}
+
+  // Sync quick toggle button emoji/title
+  if (btnQuickThemeToggle) {
+    btnQuickThemeToggle.textContent = theme === 'sun' ? '🌙' : '☀️';
+    btnQuickThemeToggle.title = theme === 'sun'
+      ? 'สลับไปโหมดพระจันทร์ 🌙'
+      : 'สลับไปโหมดดวงอาทิตย์ ☀️';
+  }
+
+  // Sync modal theme buttons
+  syncThemeButtons(theme);
+}
+
+function syncThemeButtons(theme) {
+  if (btnThemeMoon) btnThemeMoon.classList.toggle('active', theme === 'moon');
+  if (btnThemeSun)  btnThemeSun.classList.toggle('active', theme === 'sun');
+}
+
+function loadTheme() {
+  let saved = 'moon';
+  try { saved = localStorage.getItem('mytsun-theme') || 'moon'; } catch (_) {}
+  applyTheme(saved === 'sun' ? 'sun' : 'moon');
+}
+
+// Quick toggle button (top nav)
+if (btnQuickThemeToggle) {
+  btnQuickThemeToggle.addEventListener('click', () => {
+    applyTheme(currentTheme === 'moon' ? 'sun' : 'moon');
+  });
+}
+
+// Modal theme buttons
+if (btnThemeMoon) {
+  btnThemeMoon.addEventListener('click', () => applyTheme('moon'));
+}
+if (btnThemeSun) {
+  btnThemeSun.addEventListener('click', () => applyTheme('sun'));
+}
 
 function identity() {
   return {
@@ -683,6 +733,7 @@ if (btnSelectWorkspaceBanner) {
 // Initial Load
 async function init() {
   try {
+    loadTheme();
     currentSettings = await window.tsunAPI.getSettings();
     updateIdentityDisplay();
     updateActiveProviderLabel();
