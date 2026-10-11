@@ -99,10 +99,10 @@ An execution interceptor that guards the filesystem while enforcing roleplay rul
 * Displays step-by-step reasoning and tool execution logs.
 
 ### Universal Multi-LLM Provider Support
-* **Google Gemini:** Native support for Gemini 2.5 Pro / Flash, Gemini 1.5, and Gemini 3.8.
-* **OpenAI:** GPT-4o, GPT-4o-mini, and compatible REST endpoints.
-* **Anthropic Claude:** Claude 3.7 Sonnet and Claude 3.5 Sonnet.
-* **Local Ollama and OpenRouter:** Full support for local models (such as Llama 3.3) and custom gateways.
+* **Google Gemini:** Direct integration via Google GenAI SDK and REST API fallback.
+* **OpenAI:** Official OpenAI models and compatible REST endpoints.
+* **Anthropic Claude:** Claude models via compatible API gateways.
+* **Local Ollama and OpenRouter:** Full support for local open-source models and custom gateways.
 * **Offline Mock Provider:** Built-in deterministic offline engine requiring **zero API keys and no internet connection**, ensuring 100% reliable stage presentations.
 
 ---

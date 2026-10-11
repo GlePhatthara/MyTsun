@@ -105,9 +105,9 @@ An iterative reasoning engine modelled on state-of-the-art agent architectures:
 
 ### 3.4. Universal Multi-LLM Provider Layer (`src/llm/provider.js`)
 Decoupled provider interface supporting all major AI platforms:
-- **Google Gemini:** Direct integration with Google GenAI SDK and REST API fallback supporting Gemini 2.5 Pro / Flash, Gemini 1.5, and Gemini 3.8.
-- **OpenAI Compatible:** Connects to OpenAI (GPT-4o, GPT-4o-mini), Anthropic Claude, and OpenRouter endpoints.
-- **Local Ollama:** Connects to local LLMs (e.g., Llama 3.3) running via `http://localhost:11434/v1`.
+- **Google Gemini:** Direct integration with Google GenAI SDK and REST API fallback.
+- **OpenAI Compatible:** Connects to OpenAI, Anthropic Claude, and OpenRouter endpoints.
+- **Local Ollama:** Connects to local LLMs running via `http://localhost:11434/v1`.
 - **Zero-Config Mock Provider:** Deterministic offline simulator capable of responding to conversational prompts and tool calls without external network dependencies.
 
 ### 3.5. Credential Management & Auto-Detection (`src/auth/accountManager.js`)
