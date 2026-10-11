@@ -13,5 +13,6 @@ contextBridge.exposeInMainWorld('tsunAPI', {
   setAuth: (data) => ipcRenderer.invoke('auth:set', data),
   logoutAuth: (provider) => ipcRenderer.invoke('auth:logout', provider),
   getWorkspace: () => ipcRenderer.invoke('workspace:get'),
-  selectWorkspace: () => ipcRenderer.invoke('workspace:select')
+  selectWorkspace: () => ipcRenderer.invoke('workspace:select'),
+  generateTTS: (text, options) => ipcRenderer.invoke('tts:generate', { text, options })
 });

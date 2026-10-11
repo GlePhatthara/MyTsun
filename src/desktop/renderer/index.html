@@ -229,6 +229,36 @@
             </div>
           </div>
 
+          <!-- PaxaLabs Text-to-Speech Section -->
+          <div class="tts-section" id="ttsSection" style="margin-bottom: 1.25rem; padding: 1rem; background: rgba(249, 203, 153, 0.28); border: 1px solid var(--border-glass); border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">🔊 ระบบเสียงพูด PaxaLabs TTS (Khanom Chan ซึนเดเระ)</span>
+              <button type="button" class="btn btn-secondary" id="btnTestTtsVoice" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+                ▶️ ทดสอบเสียง Malfoy
+              </button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <input type="checkbox" id="chkTtsEnabled" checked style="accent-color: var(--color-tsun);" />
+              <label for="chkTtsEnabled" style="font-size: 0.82rem; color: var(--text-secondary); cursor: pointer;">
+                เปิดใช้งานเสียงพูดอัตโนมัติทุกครั้งที่ Malfoy พิมพ์เสร็จ
+              </label>
+            </div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="paxaApiKey" style="font-size: 0.75rem; margin-bottom: 0.25rem;">PaxaLabs API Key</label>
+                <input type="password" id="paxaApiKey" placeholder="pxa_..." style="font-size: 0.8rem; padding: 0.4rem 0.6rem;" />
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="paxaVoice" style="font-size: 0.75rem; margin-bottom: 0.25rem;">ตัวละครเสียง</label>
+                <select id="paxaVoice" style="font-size: 0.8rem; padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid var(--border-glass); background: var(--bg-card); color: var(--text-primary); width: 100%;">
+                  <option value="khanomchan" selected>ขนมชั้น (Khanom Chan - ซึนเดเระ เย่อหยิ่ง/เขิน)</option>
+                  <option value="lukchup">ลูกชุบ (Luk Chup - อ่อนวัย สดใส)</option>
+                  <option value="bualoi">บัวลอย (Bua Loi - นุ่มนวล)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <!-- Provider Tabs -->
           <div class="provider-tabs" id="providerTabs">
             <button type="button" class="tab-btn active" data-tab="gemini">Google Gemini</button>

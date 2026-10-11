@@ -31,6 +31,7 @@
   - [Tsun-Dere Gauge and Emotional Engine](#tsun-dere-gauge-0--100)
   - [Agentic Tool Gating and Filesystem Guard](#agentic-tool-gating-system)
   - [Dual Interface: Desktop App and Terminal TUI](#dual-interface-desktop-app-and-terminal-tui)
+  - [PaxaLabs Tsundere Voice Synthesis (TTS)](#paxalabs-tsundere-voice-synthesis-tts)
   - [Autonomous ReAct Agent Engine](#autonomous-react-agent-engine)
   - [Universal Multi-LLM Provider Support](#universal-multi-llm-provider-support)
 - [3. Slash Commands](#3-slash-commands)
@@ -82,9 +83,15 @@ An execution interceptor that guards the filesystem while enforcing roleplay rul
    * **Heart Rate and Vitals Monitor:** Real-time pulse animation with dynamic BPM calculations indicating emotional volatility.
    * **Theme Engine:** Built-in dual themes including Moon Mode (Deep Oceanic Teal) and Sun Mode (Warm Cream and Sage).
    * **Workspace Selector:** Native folder dialog for selecting and binding local repository directories.
-   * **Interactive Chat and Event Feed:** Rich markdown rendering, code formatting, action cards, and speech synthesis (TTS) support.
+   * **Interactive Chat and Event Feed:** Rich markdown rendering, code formatting, action cards, and voice synthesis audio integration.
 2. **Terminal TUI / CLI:**
    * Pure ANSI color formatting, ASCII art character expressions, interactive prompts, and terminal sound effects.
+
+### PaxaLabs Tsundere Voice Synthesis (TTS)
+* **Khanom Chan Signature Voice:** Integrates PaxaLabs Flash v1 (`paxa-tts-flash-v1`) with the signature `khanomchan` voice actor for high-fidelity Thai tsundere speech synthesis (along with `lukchup` and `bualoi` alternates).
+* **Contextual Emotion Tagging:** Evaluates mood tiers and dialogue keywords to automatically insert dynamic vocal inflection tags (`[annoyed]`, `[angry]`, `[nervous]`).
+* **Intelligent Pre-Speech Sanitization:** Strips markdown code blocks, emojis, kaomojis, URLs, and formatting markers before vocalization to guarantee fluid pronunciation.
+* **Desktop Voice Controls:** Auto-playback on incoming replies, in-message audio replay button (🔊), interactive voice tester, and customizable API keys and voice selection in the settings modal.
 
 ### Autonomous ReAct Agent Engine
 * Runs an iterative **Thought -> Action -> Observation -> Final Answer** reasoning loop.
@@ -141,6 +148,7 @@ An execution interceptor that guards the filesystem while enforcing roleplay rul
 |               User Presentation Layer                  |
 |   - Electron Desktop GUI (Liquid Glass, Live Avatars)  |
 |   - Terminal TUI / CLI (ANSI Colors, ASCII Art, Sound) |
+|   - PaxaLabs TTS Engine (Khanom Chan Tsundere Audio)   |
 +---------------------------+----------------------------+
                             | User Input / Slash Commands
                             v
@@ -277,6 +285,8 @@ Built specifically for live stage presentations at **Stupid Hackathon Thailand (
 │   │   ├── agenticTools.js     # Safe filesystem & shell tool implementations
 │   │   ├── toolGating.js       # Permission & watermark interceptor
 │   │   └── index.js            # Tool exports
+│   ├── tts/
+│   │   └── paxaTTS.js          # PaxaLabs Tsundere TTS & emotion tag engine
 │   ├── ui/
 │   │   ├── asciiAvatar.js      # ASCII art generator
 │   │   ├── colors.js           # ANSI color definitions

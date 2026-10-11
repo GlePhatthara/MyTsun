@@ -242,8 +242,28 @@ function updateMoodDisplay(gauge, mood) {
   }
 }
 
+// PaxaLabs Audio Playback Controller
+let currentTtsAudio = null;
+
+function playTtsAudio(base64Data) {
+  if (!base64Data) return;
+  try {
+    if (currentTtsAudio) {
+      currentTtsAudio.pause();
+      currentTtsAudio = null;
+    }
+    const audioSrc = `data:audio/mpeg;base64,${base64Data}`;
+    currentTtsAudio = new Audio(audioSrc);
+    currentTtsAudio.play().catch(err => {
+      console.warn('Audio playback prevented or failed:', err);
+    });
+  } catch (err) {
+    console.error('Failed to play TTS audio:', err);
+  }
+}
+
 // Append Chat Message (Claude Flat Style)
-function appendMessage(sender, text, isUser = false, isCommand = false, isError = false, steps = [], heartImpact = null) {
+function appendMessage(sender, text, isUser = false, isCommand = false, isError = false, steps = [], heartImpact = null, audioBase64 = null) {
   text = convertEmojiToKaomojiClient(text || '');
 
   // Strip any stray internal ReAct artifacts from showing to the user
@@ -268,6 +288,36 @@ function appendMessage(sender, text, isUser = false, isCommand = false, isError 
   author.className = 'msg-author';
   author.textContent = isUser ? identity().userName : sender;
   header.appendChild(author);
+
+  // Audio Replay Button for Bot Messages
+  if (!isUser && !isError && text) {
+    const audioBtn = document.createElement('button');
+    audioBtn.type = 'button';
+    audioBtn.className = 'btn-msg-audio';
+    audioBtn.title = 'ฟังเสียง Malfoy';
+    audioBtn.innerHTML = '🔊';
+    audioBtn.style.cssText = 'background:none; border:none; cursor:pointer; font-size:0.85rem; margin-left:0.4rem; padding:0; opacity:0.75; transition:opacity 0.2s;';
+    audioBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (audioBase64) {
+        playTtsAudio(audioBase64);
+      } else {
+        audioBtn.style.opacity = '0.3';
+        try {
+          const res = await window.tsunAPI.generateTTS(text);
+          if (res && res.success && res.audioBase64) {
+            audioBase64 = res.audioBase64;
+            playTtsAudio(res.audioBase64);
+          }
+        } catch (err) {
+          console.error('TTS replay failed:', err);
+        } finally {
+          audioBtn.style.opacity = '0.75';
+        }
+      }
+    });
+    header.appendChild(audioBtn);
+  }
 
   // Dynamic Heart Impact Badge
   if (heartImpact && !isUser) {
@@ -428,7 +478,12 @@ async function sendMessage(text) {
     updateMoodDisplay(res.gauge, res.mood);
 
     const botTitle = identity().aiName;
-    appendMessage(botTitle, res.reply, false, res.isCommand, res.isError, res.steps, res.heartImpact);
+    appendMessage(botTitle, res.reply, false, res.isCommand, res.isError, res.steps, res.heartImpact, res.audioBase64);
+
+    // Speak Malfoy's response out loud via PaxaLabs TTS
+    if (res.audioBase64) {
+      playTtsAudio(res.audioBase64);
+    }
   } catch (err) {
     appendMessage(identity().aiName, `เกิดข้อผิดพลาด: ${err.message}`, false, false, true);
   } finally {
@@ -486,6 +541,16 @@ function openSettingsModal() {
       switchTab(currentSettings.activeProvider);
     }
     document.getElementById('chkAgenticMode').checked = currentSettings.agenticMode !== false;
+
+    // Load PaxaLabs TTS config
+    if (currentSettings.tts) {
+      const chkTts = document.getElementById('chkTtsEnabled');
+      const paxaKey = document.getElementById('paxaApiKey');
+      const paxaVc = document.getElementById('paxaVoice');
+      if (chkTts) chkTts.checked = currentSettings.tts.enabled !== false;
+      if (paxaKey) paxaKey.value = currentSettings.tts.apiKey || '';
+      if (paxaVc) paxaVc.value = currentSettings.tts.voice || 'khanomchan';
+    }
   }
   refreshAuthStatus();
   settingsModal.style.display = 'flex';
@@ -586,6 +651,34 @@ document.getElementById('btnLoadGeminiModels').addEventListener('click', async (
   }
 });
 
+// Test PaxaLabs Tsundere Voice
+const btnTestTtsVoice = document.getElementById('btnTestTtsVoice');
+if (btnTestTtsVoice) {
+  btnTestTtsVoice.addEventListener('click', async () => {
+    btnTestTtsVoice.disabled = true;
+    const oldText = btnTestTtsVoice.textContent;
+    btnTestTtsVoice.textContent = '⏳ กำลังสร้างเสียง...';
+    try {
+      const apiKey = document.getElementById('paxaApiKey').value.trim();
+      const voice = document.getElementById('paxaVoice').value;
+      const res = await window.tsunAPI.generateTTS('หา?! ย-อย่าเข้าใจผิดล่ะ! ก-ก็ไม่ได้อยากคุยด้วยซะหน่อย! ต-แต่วันนี้จะยอมพูดด้วยนิดหน่อยก็ได้!', {
+        apiKey,
+        voice
+      });
+      if (res && res.success && res.audioBase64) {
+        playTtsAudio(res.audioBase64);
+      } else {
+        alert('เกิดข้อผิดพลาดในการสร้างเสียง: ' + (res?.error || 'Unknown error'));
+      }
+    } catch (err) {
+      alert('เกิดข้อผิดพลาด: ' + err.message);
+    } finally {
+      btnTestTtsVoice.disabled = false;
+      btnTestTtsVoice.textContent = oldText;
+    }
+  });
+}
+
 // Save Settings
 btnSaveSettings.addEventListener('click', async () => {
   const activeTab = currentTab;
@@ -604,7 +697,13 @@ btnSaveSettings.addEventListener('click', async () => {
     aiName: document.getElementById('aiDisplayName').value.trim() || 'myTsun',
     activeProvider: activeTab,
     agenticMode: document.getElementById('chkAgenticMode').checked,
-    providers: newProviders
+    providers: newProviders,
+    tts: {
+      enabled: document.getElementById('chkTtsEnabled') ? document.getElementById('chkTtsEnabled').checked : true,
+      apiKey: (document.getElementById('paxaApiKey')?.value || '').trim() || 'pxa_Q2u8EI5300gToSiqZXwjvCGtOnNEqGEkJwmSHfnM',
+      voice: document.getElementById('paxaVoice')?.value || 'khanomchan',
+      model: 'paxa-tts-flash-v1'
+    }
   };
 
   try {

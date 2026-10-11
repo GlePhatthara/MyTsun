@@ -10,6 +10,7 @@ import { createProvider, GeminiProvider, OpenAICompatibleProvider, ClaudeProvide
 import { accountManager } from '../auth/accountManager.js';
 import { AgentEngine } from '../agent/agentEngine.js';
 import { detectEasterEgg } from '../easter/index.js';
+import { generatePaxaTTS, PAXALABS_DEFAULT_KEY, PAXALABS_DEFAULT_VOICE, PAXALABS_DEFAULT_MODEL } from '../tts/paxaTTS.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -61,7 +62,13 @@ const DEFAULT_SETTINGS = {
       label: 'Mock / Demo Mode (No API Key)'
     }
   },
-  soundEnabled: true
+  soundEnabled: true,
+  tts: {
+    enabled: true,
+    apiKey: process.env.PAXALABS_API_KEY || PAXALABS_DEFAULT_KEY,
+    voice: PAXALABS_DEFAULT_VOICE,
+    model: PAXALABS_DEFAULT_MODEL
+  }
 };
 
 function loadSettings() {
@@ -77,6 +84,10 @@ function loadSettings() {
         providers: {
           ...DEFAULT_SETTINGS.providers,
           ...(data.providers || {})
+        },
+        tts: {
+          ...DEFAULT_SETTINGS.tts,
+          ...(data.tts || {})
         }
       };
     }
@@ -182,6 +193,24 @@ ipcMain.handle('settings:save', async (_event, newSettings) => {
   currentSettings = { ...currentSettings, ...safeSettings };
   const ok = saveSettings(currentSettings);
   return { success: ok, settings: currentSettings };
+});
+
+// PaxaLabs TTS Audio Generation Handler
+ipcMain.handle('tts:generate', async (_event, { text, options } = {}) => {
+  try {
+    const ttsConf = currentSettings.tts || {};
+    const res = await generatePaxaTTS(text, {
+      apiKey: ttsConf.apiKey || PAXALABS_DEFAULT_KEY,
+      voice: ttsConf.voice || PAXALABS_DEFAULT_VOICE,
+      model: ttsConf.model || PAXALABS_DEFAULT_MODEL,
+      mood: stateMachine.getMood(),
+      gauge: stateMachine.getGauge(),
+      ...(options || {})
+    });
+    return res;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
 });
 
 // Workspace Handlers
@@ -498,6 +527,28 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
     }
     aiResponse = aiResponse.replace(/(?:\r?\\n|\\s)*[-—~]*\\s*(?:มัลฟอยด์|มัลฟอย|myTsun)\s*$/i, '').trim();
 
+    // 5.7 Generate PaxaLabs TTS Voice (Tsundere Haughty/Embarrassed Tone)
+    let ttsAudioBase64 = null;
+    let ttsSpokenText = null;
+    if (currentSettings.tts?.enabled !== false && currentSettings.soundEnabled !== false) {
+      try {
+        const ttsConf = currentSettings.tts || {};
+        const ttsRes = await generatePaxaTTS(aiResponse, {
+          apiKey: ttsConf.apiKey || PAXALABS_DEFAULT_KEY,
+          voice: ttsConf.voice || PAXALABS_DEFAULT_VOICE,
+          model: ttsConf.model || PAXALABS_DEFAULT_MODEL,
+          mood: stateMachine.getMood(),
+          gauge: stateMachine.getGauge()
+        });
+        if (ttsRes && ttsRes.success) {
+          ttsAudioBase64 = ttsRes.audioBase64;
+          ttsSpokenText = ttsRes.spokenText;
+        }
+      } catch (ttsErr) {
+        console.warn('PaxaLabs TTS voice generation error:', ttsErr.message);
+      }
+    }
+
     // Update history
     chatHistory.push({ role: 'user', content: userInput });
     chatHistory.push({ role: 'assistant', content: aiResponse });
@@ -516,7 +567,9 @@ ipcMain.handle('chat:send', async (_event, userInput) => {
       mood: stateMachine.getMood(),
       moodName: stateMachine.getMoodName(),
       providerUsed: providerKey,
-      heartImpact: dynamicImpact
+      heartImpact: dynamicImpact,
+      audioBase64: ttsAudioBase64,
+      spokenText: ttsSpokenText
     };
   } catch (err) {
     return {

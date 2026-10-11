@@ -31,7 +31,8 @@ The application is engineered with a modular, layered architecture supporting bo
 |  |   - Multi-Sprite Reactive Avatar |  |   - Terminal Audio Beeps   |  |
 |  |   - Animated Heart Rate Monitor  |  |   - Interactive Readline   |  |
 |  |   - Workspace Directory Chooser  |  |   - Realtime Gauge Display |  |
-|  +----------------------------------+  +----------------------------+  |
+|  |   - PaxaLabs TTS Voice Synthesis |  +----------------------------+  |
+|  +----------------------------------+                                  |
 +-----------------------------------+------------------------------------+
                                     | Commands / Natural Language
                                     v
@@ -126,12 +127,23 @@ Automatic discovery of existing developer environments:
   5. `shy.png`: Flustered, deep blush (0-29%).
 - **Heart Rate Monitor:** Simulated electrocardiogram (ECG) monitor displaying fluctuating BPM based on emotional tension.
 - **Workspace Selector:** Native dialog for opening and switching workspace folders.
-- **Speech Synthesis:** Web Speech API integration for audible tsundere voice output.
+- **Speech Synthesis (TTS):** PaxaLabs Flash v1 integration with Thai tsundere voice actors (Khanom Chan / Luk Chup / Bua Loi), dynamic emotion tagging, in-message audio replay buttons, and settings modal controls.
 
 #### B. Terminal TUI / CLI (`src/ui/`, `src/cli/`)
 - Multi-line ANSI ASCII character portraits.
 - Real-time colorful gauge meters.
 - Native terminal bell and audio player triggers.
+
+### 3.7. PaxaLabs Tsundere Text-to-Speech Engine (`src/tts/paxaTTS.js`)
+Dedicated Thai speech synthesis module tailored for the tsundere persona:
+- **API Architecture:** High-speed streaming REST integration with PaxaLabs TTS API (`https://api.paxalabs.com/v1/tts`) using model `paxa-tts-flash-v1`.
+- **Character Voice Profiles:**
+  - `khanomchan`: (Default) Expressive, prideful, and easily flustered tsundere voice.
+  - `lukchup`: Youthful, upbeat, and energetic alternate.
+  - `bualoi`: Soft, calm, and soothing alternate.
+- **Dynamic Emotion Tagging (`injectTsundereEmotionTags`):** Evaluates response text and emotional gauge level to inject context-aware PaxaLabs inflection tags such as `[annoyed]` (high tsun scoffing), `[angry]` (temper flare), and `[nervous]` (blushing/dere breakthrough).
+- **Intelligent Pre-Speech Sanitizer (`sanitizeTextForTTS`):** Removes markdown code blocks, backticks, emojis/kaomojis, URLs, and gauge math before voice synthesis to ensure natural spoken delivery.
+- **Desktop UI Integration:** Automatic audio playback on bot responses, individual message replay buttons (🔊), voice preview button in Settings, and customizable API keys and voice selection.
 
 ---
 
@@ -146,6 +158,7 @@ Automatic discovery of existing developer environments:
 | **Phase 5** | Audio engine, sound FX, and Easter eggs | Completed |
 | **Phase 6** | Automated live demo runner, testing suite, and documentation | Completed |
 | **Desktop Expansion** | Electron GUI, transparent anime sprites, heart rate monitor, dual themes, workspace selector | Completed |
+| **Voice Synthesis** | PaxaLabs TTS integration, emotion tag injector, sanitization, replay UI, settings modal controls | Completed |
 
 ---
 
