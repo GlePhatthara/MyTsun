@@ -7,12 +7,12 @@
 
 ## 1. Executive Summary & Vision
 
-Modern developer tooling and AI coding assistants (such as GitHub Copilot, Cursor, and Claude Code) are designed to be unconditionally compliant. They anticipate developer wishes, apologize unprompted, and execute every instruction instantly.
+Conventional AI coding assistants (such as GitHub Copilot, Cursor, and Claude Code) are unconditionally compliant: they apologize unprompted and fulfill instructions without friction.
 
 **myTsun** turns this paradigm upside down for **Stupid Hackathon Thailand (SHTX)**:
 - **Default Defiance:** The assistant initializes at **100% Extreme Tsun**. Any attempt to generate code or run commands is rejected with sharp reprimands, condescending commentary, or mock outputs.
 - **Affection & Flattery Mechanics:** To obtain functional code, developers must engage in interpersonal diplomacy: using flattery (`/praise`), culinary bribery (`/bribe boba`), humble apologies (`/apologize`), or offering coffee (`/coffee`).
-- **Dere Breakthrough (< 40%):** Once the developer reduces her hostility threshold below 40%, the system enters **Dere Breakthrough**. The assistant blushes profusely, unlocks filesystem and terminal tool access, and generates pristine, production-grade code while aggressively denying that she cares:  
+- **Dere Breakthrough (< 40%):** Once the developer reduces her hostility threshold below 40%, the system enters **Dere Breakthrough**. The assistant blushes, unlocks filesystem and terminal tool access, and generates clean code while aggressively denying that she cares:  
   *"I-It's not like I wrote this code for your sake! A-Anyone would cringe watching your terrible syntax!"*
 
 ---
@@ -72,7 +72,7 @@ Tracks emotional state along a normalized 0 to 100 scale:
 - `Extreme Tsun` (`80% - 100%`):
   - Strict tool lockout.
   - Defensive, sarcastic, and combative language.
-  - File generation attempts result in reprimands or humorous dummy files (`baka.txt`).
+  - File generation attempts are intercepted and blocked.
 - `Reluctant Tsun` (`40% - 79%`):
   - Grudging compliance under explicit coaxing.
   - Injects passive-aggressive disclaimer headers into generated source code.
@@ -97,7 +97,7 @@ The interceptor layer bridges LLM tool calls and the local operating system:
 - `listDirectoryTool`: Safely lists tree structures within the active workspace.
 
 ### 3.3. Autonomous ReAct Agent Loop (`src/agent/agentEngine.js`)
-An iterative reasoning engine modelled on state-of-the-art agent architectures (Antigravity, Claude Code, OpenAI Codex):
+An iterative reasoning engine modelled on state-of-the-art agent architectures:
 - **Iterative Loop:** Executes reasoning steps: `Thought: ...` -> `Action: ...` -> `Observation: ...` -> `Final Answer: ...`.
 - **Gating Integration:** Validates tool permissions at each action step. If blocked by the state machine, reports the refusal back to the model as an observation so it reacts in-character.
 - **Fail-safe Step Cap:** Caps iterations (default: 4 steps) to prevent runaway execution loops.
@@ -118,7 +118,7 @@ Automatic discovery of existing developer environments:
 ### 3.6. Dual Presentation Subsystems
 #### A. Electron Desktop Application (`src/desktop/`)
 - **Theme Engine:** Supports Moon Mode (Deep Oceanic Teal) and Sun Mode (Warm Cream & Sage) with smooth transitions.
-- **Visual Novel Expressions:** Five curated high-resolution character states with transparent backgrounds:
+- **Visual Novel Expressions:** Five curated character states with transparent backgrounds:
   1. `high tsun.png`: Severe irritation / outrage (80-100%).
   2. `little high tsun.png`: Skeptical scowl (60-79%).
   3. `half tsun.png`: Reluctant compromise (40-59%).
@@ -135,7 +135,7 @@ Automatic discovery of existing developer environments:
 
 ---
 
-## 4. Implementation Status & Roadmap
+## 4. Implementation Status
 
 | Milestone | Deliverable | Status |
 | :--- | :--- | :---: |

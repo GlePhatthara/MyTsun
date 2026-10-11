@@ -9,15 +9,15 @@
 </p>
 
 ```text
-  ----------------------------------------------------------------------------
-   ( > _ < )  myTsun: "H-Huh?! Did you think I would just obey your orders?!"
-   [##########] 100% EXTREME TSUN
-  
-                  ...after softening her up with /bribe and /praise...
-  
-   (/ / / /)  myTsun: "I-It's not like I wanted to write code for you, baka!"
-   [##........] 20% DERE BREAKTHROUGH [TOOLS UNLOCKED]
-  ----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+ ( > _ < )  myTsun: "H-Huh?! Did you think I would just obey your orders?!"
+ [##########] 100% EXTREME TSUN
+
+                ...after softening her up with /bribe and /praise...
+
+ (/ / / /)  myTsun: "I-It's not like I wanted to write code for you, baka!"
+ [##........] 20% DERE BREAKTHROUGH [TOOLS UNLOCKED]
+----------------------------------------------------------------------------
 ```
 
 > **The Tsundere AI Pair-Programmer for Stupid Hackathon Thailand (SHTX)**  
@@ -34,7 +34,7 @@
   - [Autonomous ReAct Agent Engine](#autonomous-react-agent-engine)
   - [Universal Multi-LLM Provider Support](#universal-multi-llm-provider-support)
 - [3. Slash Commands](#3-slash-commands)
-- [4. Secret Easter Eggs](#4-secret-easter-eggs)
+- [4. Easter Eggs](#4-easter-eggs)
 - [5. System Architecture](#5-system-architecture)
 - [6. Quickstart and Installation](#6-quickstart-and-installation)
 - [7. Automated Live Stage Demo](#7-automated-live-stage-demo)
@@ -46,12 +46,12 @@
 
 ## 1. Concept & Pitch
 
-Modern AI coding assistants (such as Copilot, Cursor, and Claude Code) are designed to be unconditionally compliant. You give an instruction, and they immediately fulfill it while offering polite apologies and deferential pleasantries. For the spirit of the Stupid Hackathon, that is completely uninspired.
+Modern AI coding assistants (such as Copilot, Cursor, and Claude Code) are unconditionally compliant. You give an instruction, and they immediately obey while offering polite apologies. For the spirit of the Stupid Hackathon, that lacks personality.
 
-**myTsun** rectifies this by introducing realistic interpersonal friction to developer-AI interactions:
-* **Hostile Boot State:** The application starts at **100% Extreme Tsun**. She questions your engineering ability, locks all execution tools, and rejects every request with biting remarks.
-* **Earn Her Favor:** To make any headway, you must engage in thoughtful persuasion: flattering her architectural prowess (`/praise`), offering treats like boba or strawberry cake (`/bribe`), or apologizing for your clumsy coding (`/apologize`).
-* **Dere Breakthrough (< 40%):** Once her defenses collapse below 40%, her avatar blushes, her heart rate spikes, and she unlocks autonomous file-writing, terminal command execution, and clean code generation, all while adamantly denying she cares:
+**myTsun** flips this paradigm by introducing interpersonal friction into developer-AI interactions:
+* **Hostile Boot State:** Initializes at **100% Extreme Tsun**. She questions your coding skills, locks all execution tools, and rejects every request with biting remarks.
+* **Earn Her Favor:** To get any code written, you must persuade her: flattering her intellect (`/praise`), offering treats like boba or strawberry cake (`/bribe`), or apologizing for your clumsy code (`/apologize`).
+* **Dere Breakthrough (< 40%):** Once her hostility drops below 40%, her avatar blushes, heart rate rises, and she unlocks autonomous file-writing, shell command execution, and clean code generation, all while insisting:
   > *"I-It's not like I wrote this code for you or anything! I just could not bear watching an amateur make such a mess!"*
 
 ---
@@ -60,16 +60,16 @@ Modern AI coding assistants (such as Copilot, Cursor, and Claude Code) are desig
 
 ### Tsun-Dere Gauge (0 - 100%)
 The state machine models emotional resistance on a dynamic 0 to 100 scale:
-* **Extreme Tsun (80 - 100%):** Outright refusal. Tool calls are strictly intercepted and blocked. File creations are replaced with sarcastic rejections or dummy files (`baka.txt`).
-* **Reluctant Tsun (40 - 79%):** Sarcastic compliance. When forced to write code, she injects sarcastic watermarks and playful complaints directly into source file headers.
-* **Dere Breakthrough (0 - 39%):** Complete cooperation. Tools are unlocked unconditionally. She generates clean, high-performance code with affectionate header notes while acting flustered.
+* **Extreme Tsun (80 - 100%):** Outright refusal. Tool calls are intercepted and blocked.
+* **Reluctant Tsun (40 - 79%):** Sarcastic compliance. When writing code, she injects sarcastic header watermarks directly into the generated files.
+* **Dere Breakthrough (0 - 39%):** Full cooperation. Tools are unlocked unconditionally, generating clean code with affectionate header notes while acting flustered.
 * **Special Emotional States:**
   * **Nuclear Meltdown (100% Lockout):** Triggered when the user runs destructive commands like `rm -rf /` or `/nuke`.
   * **Blush Meltdown (0% Flustered):** Triggered when the user confesses affection via `/love` or `/confess`.
   * **Anti-Spam Rage:** Repeating commands without flattery spikes the gauge directly back to 100%.
 
 ### Agentic Tool Gating System
-An execution interceptor that guards the filesystem while executing the tsundere roleplay rules:
+An execution interceptor that guards the filesystem while enforcing roleplay rules:
 * `writeFile`: Creates or overwrites project files. Automatically injects mood-specific comment headers.
 * `readFile`: Inspects existing files within the project sandbox.
 * `runCommand`: Executes shell commands with built-in timeouts and security checks.
@@ -80,25 +80,23 @@ An execution interceptor that guards the filesystem while executing the tsundere
 1. **Desktop GUI (Electron):**
    * **Reactive Character Expressions:** Five dedicated sprite states (`High Tsun`, `Little High Tsun`, `Half Tsun`, `Normal`, and `Shy/Blush`) with transparent backgrounds that update dynamically with the gauge.
    * **Heart Rate and Vitals Monitor:** Real-time pulse animation with dynamic BPM calculations indicating emotional volatility.
-   * **Theme Engine:** Built-in dual themes including Moon Mode (Deep Oceanic Teal) and Sun Mode (Warm Cream and Sage) with instant switching.
-   * **Workspace Selector:** Native folder dialog for picking and binding any local repository directory.
+   * **Theme Engine:** Built-in dual themes including Moon Mode (Deep Oceanic Teal) and Sun Mode (Warm Cream and Sage).
+   * **Workspace Selector:** Native folder dialog for selecting and binding local repository directories.
    * **Interactive Chat and Event Feed:** Rich markdown rendering, code formatting, action cards, and speech synthesis (TTS) support.
 2. **Terminal TUI / CLI:**
    * Pure ANSI color formatting, ASCII art character expressions, interactive prompts, and terminal sound effects.
 
 ### Autonomous ReAct Agent Engine
-Constructed with an enterprise-grade agentic architecture:
 * Runs an iterative **Thought -> Action -> Observation -> Final Answer** reasoning loop.
 * Dynamically adapts system prompts based on the current mood tier.
-* Shows structured step-by-step reasoning and tool execution logs.
+* Displays step-by-step reasoning and tool execution logs.
 
-### Universal Multi-LLM Support
+### Universal Multi-LLM Provider Support
 * **Google Gemini:** Native support for Gemini 2.5 Pro / Flash, Gemini 1.5, and Gemini 3.8.
 * **OpenAI:** GPT-4o, GPT-4o-mini, and compatible REST endpoints.
 * **Anthropic Claude:** Claude 3.7 Sonnet and Claude 3.5 Sonnet.
 * **Local Ollama and OpenRouter:** Full support for local models (such as Llama 3.3) and custom gateways.
-* **Account Auto-Detection:** Automatically discovers existing local credentials (Google ADC, Claude Code, and OpenAI CLI).
-* **Mock Provider (Offline Demo):** Built-in deterministic offline engine requiring **zero API keys and no internet connection**, ensuring 100% reliable stage presentations.
+* **Offline Mock Provider:** Built-in deterministic offline engine requiring **zero API keys and no internet connection**, ensuring 100% reliable stage presentations.
 
 ---
 
@@ -106,7 +104,7 @@ Constructed with an enterprise-grade agentic architecture:
 
 | Command | Effect on Gauge | Description |
 | :--- | :---: | :--- |
-| `/praise <text>` | **-20% Tsun** | Offer sincere compliments on her intelligence, beauty, or code elegance |
+| `/praise <text>` | **-20% Tsun** | Offer sincere compliments on her intelligence or code elegance |
 | `/bribe <item>` | **-25% Tsun** | Bribe her with food and sweets (boba milk tea, strawberry shortcake, macarons) |
 | `/apologize` | **-15% Tsun** | Apologize for your mistakes and plead for mercy |
 | `/coffee` | **-18% Tsun** | Serve hot specialty coffee to soothe her stress |
@@ -224,7 +222,7 @@ Built specifically for live stage presentations at **Stupid Hackathon Thailand (
   ```bash
   npm run demo
   ```
-* Run with zero delays for testing or fast-paced review:
+* Run with zero delays for testing:
   ```bash
   npm run demo -- --quick
   ```
@@ -236,8 +234,8 @@ Built specifically for live stage presentations at **Stupid Hackathon Thailand (
 **myTsun** is a satirical AI pair-programmer created for **Stupid Hackathon Thailand (SHTX)**. While conventional AI assistants eagerly follow every developer command, myTsun introduces the **Tsun-Dere State Machine (0–100%)**:
 - **At 100% (Extreme Tsun):** She rejects code generation, locks your tools, hurls insults, and tells you to code it yourself.
 - **Bribing and Flattery:** Developers must lower her defenses using `/bribe` (offering boba or cake) and `/praise` (sincere flattery).
-- **Below 40% (Dere Breakthrough):** The avatar blushes profusely, agentic file-writing tools are unlocked, and she secretly writes pristine code while insisting: *"I-It's not like I did this for you or anything, baka!"*
-- **Desktop and CLI Experiences:** Seamlessly switch between a retro ANSI terminal interface and a modern Electron GUI with real-time avatar animations, heart-rate vitals, and theme customizability.
+- **Below 40% (Dere Breakthrough):** The avatar blushes, agentic file-writing tools are unlocked, and she secretly writes pristine code while insisting: *"I-It's not like I did this for you or anything, baka!"*
+- **Desktop and CLI Experiences:** Switch between a retro ANSI terminal interface and a modern Electron GUI with real-time avatar animations, heart-rate vitals, and theme customizability.
 - **Offline Mock Fallback:** Works 100% out of the box with zero setup or API keys required, while fully supporting Gemini, OpenAI, Claude, and Ollama.
 
 ---
@@ -258,10 +256,12 @@ Built specifically for live stage presentations at **Stupid Hackathon Thailand (
 │   │   └── parser.js           # Slash command & sentiment analyzer
 │   ├── desktop/
 │   │   ├── main.js             # Electron main process & IPC handlers
-│   │   ├── preload.js          # Electron preload bridge
+│   │   ├── preload.cjs         # Electron CommonJS preload bridge
+│   │   ├── assets/             # Window icon assets
 │   │   └── renderer/           # Glassmorphism frontend (HTML, CSS, JS)
 │   │       ├── assets/         # Character sprites (5 expressions + heart)
 │   │       ├── app.js          # UI controller & renderer logic
+│   │       ├── index.html      # Application layout
 │   │       └── style.css       # Sun/Moon themes & animations
 │   ├── easter/
 │   │   └── index.js            # Secret easter eggs (Nuclear Meltdown, etc.)
@@ -270,17 +270,24 @@ Built specifically for live stage presentations at **Stupid Hackathon Thailand (
 │   ├── prompt/
 │   │   └── dynamicPrompt.js    # Mood-based system prompt generator
 │   ├── sound/
-│   │   └── index.js            # Audio effects & speech synthesizer
+│   │   └── index.js            # Audio effects & melody synthesizer
 │   ├── state/
 │   │   └── TsunDereState.js    # Core Tsun-Dere state machine
 │   ├── tools/
 │   │   ├── agenticTools.js     # Safe filesystem & shell tool implementations
-│   │   └── toolGating.js       # Permission & watermark interceptor
+│   │   ├── toolGating.js       # Permission & watermark interceptor
+│   │   └── index.js            # Tool exports
+│   ├── ui/
+│   │   ├── asciiAvatar.js      # ASCII art generator
+│   │   ├── colors.js           # ANSI color definitions
+│   │   ├── gaugeBar.js         # Gauge progress bar renderer
+│   │   ├── tuiRenderer.js      # Status cards & turn summaries
+│   │   └── index.js            # UI barrel export
 │   └── index.js                # Core package entrypoint
-├── test/                       # Comprehensive test suite (Node.js native test runner)
+├── test/                       # Automated test suite (62 tests passing)
 ├── demo/                       # Live stage demo runner
 ├── DEMO_SCRIPT.md              # Stage presentation script & cues
-├── PROJECT_SPEC.md             # Complete technical architecture specification
+├── PROJECT_SPEC.md             # Technical architecture specification
 └── package.json                # Project dependencies and npm scripts
 ```
 
